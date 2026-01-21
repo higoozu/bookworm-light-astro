@@ -1,14 +1,13 @@
 ---
-title: Why a balloon is a flexible bag
+title: "How to make toys from old Olarpaper"
 meta_title: ""
 description: "meta description"
-date: 2025-04-02T05:00:00Z
-image: "/images/posts/02.jpg"
-categories: ["development"]
-authors: ["John Doe"]
+date: 2025-04-07T05:00:00Z
+image: "/images/posts/01.jpg"
+categories: ["art"]
+authors: ["Mark Dinn"]
 tags: ["diy", "toy"]
 draft: false
-selection: true
 ---
 
 Nemo vel ad consectetur namut rutrum ex, venenatis sollicitudin urna. Aliquam erat volutpat. Integer eu ipsum sem. Ut bibendum lacus vestibulum maximus suscipit. Quisque vitae nibh iaculis neque blandit euismod.

@@ -1,0 +1,16 @@
+{
+  "hero": {
+    "title": "Wanderlust Chronicles",
+    "description": "Discovering the hidden gems and untold stories from around the globe.",
+    "image": "/images/posts/04.jpg",
+    "date": "Explore 2026"
+  },
+  "explore": [
+    { "name": "Europe", "image": "/images/posts/03.jpg", "link": "/categories/europe" },
+    { "name": "Asia", "image": "/images/posts/03.jpg", "link": "/categories/asia" },
+    { "name": "Nature", "image": "/images/posts/03.jpg", "link": "/tags/nature" },
+    { "name": "Urban", "image": "/images/posts/03.jpg", "link": "/tags/urban" },
+    { "name": "Culinary", "image": "/images/posts/03.jpg", "link": "/tags/food" },
+    { "name": "Hidden Gems", "image": "/images/posts/04.jpg", "link": "/tags/hidden-gems" }
+  ]
+}

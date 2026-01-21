@@ -1,22 +1,70 @@
 ---
-import Posts from "@/components/Posts.astro";
-import config from "@/config/config.json";
+// src/pages/index.astro
 import Base from "@/layouts/Base.astro";
-import Pagination from "@/layouts/components/Pagination.astro";
+import Hero from "@/layouts/components/Hero.astro";
+import PostCard from "@/layouts/components/PostCard.astro";
+import SelectionCard from "@/layouts/components/SelectionCard.astro"; // 引入新组件
+import Explore from "@/layouts/components/Explore.astro";
 import { getSinglePage } from "@/lib/contentParser.astro";
 import { sortByDate } from "@/lib/utils/sortFunctions";
+import homepage from "@/config/homepage.json";
 
 const posts = await getSinglePage("posts");
 const sortedPosts = sortByDate(posts);
-const totalPages = Math.ceil(posts.length / config.settings.pagination);
-const currentPosts = sortedPosts.slice(0, config.settings.pagination);
+
+// 1. 筛选精选文章，且只取最新的 2 篇
+const selectionPosts = sortedPosts
+  .filter((post) => post.data.selection === true)
+  .slice(0, 2);
+
+// 2. 获取最新 6 篇文章
+const recentPosts = sortedPosts.slice(0, 6);
 ---
 
 <Base>
+  <Hero 
+    title={homepage.hero.title} 
+    description={homepage.hero.description} 
+    image={homepage.hero.image}
+    date={homepage.hero.date}
+  />
+
   <section class="section">
     <div class="container">
-      <Posts posts={currentPosts} className="mb-16" />
-      <Pagination currentPage={1} totalPages={totalPages} />
+      <div class="mb-12 border-b border-border pb-6">
+        <h2 class="h2 font-serif italic uppercase tracking-wider">Editor's Selection</h2>
+      </div>
+      <div class="row gy-2">
+        {selectionPosts.length > 0 ? (
+          selectionPosts.map((post) => (
+            <div class="col-12 md:col-6">
+              <SelectionCard post={post} />
+            </div>
+          ))
+        ) : (
+          <div class="col-12 text-center py-10">
+            <p class="italic text-text opacity-60">Add 'selection: true' to your post frontmatter to feature stories here.</p>
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <Explore items={homepage.explore} />
+
+  <section class="section">
+    <div class="container">
+      <div class="mb-14 border-b border-border pb-6 flex justify-between items-end">
+        <h2 class="h2 font-serif italic">Recent Stories</h2>
+        <a href="/blog" class="btn btn-outline-primary btn-sm mb-2">View All Posts</a>
+      </div>
+      <div class="row gy-5 gx-4">
+        {recentPosts.map((post) => (
+          <div class="col-12 sm:col-6 md:col-4">
+            <PostCard post={post} />
+          </div>
+        ))}
+      </div>
     </div>
   </section>
 </Base>

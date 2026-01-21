@@ -1,0 +1,86 @@
+---
+import { getSinglePage } from "@/lib/contentParser.astro";
+import dateFormat from "@/lib/utils/dateFormat";
+import { humanize, plainify, slugify } from "@/lib/utils/textConverter";
+import { Image } from "astro:assets";
+import { BiCalendarEdit } from "react-icons/bi";
+
+// 获取所有作者信息用于匹配头像
+const authors = await getSinglePage("authors");
+
+const { post } = Astro.props;
+const { title, image, date, summary } = post.data;
+
+// 匹配当前文章的作者
+const postAuthors = authors.filter((author) =>
+  post.data.authors
+    .map((auth: string) => slugify(auth))
+    .includes(slugify(author.data.title))
+);
+---
+
+<div class="h-full">
+  {image && (
+    <div class="overflow-hidden group mb-6">
+      <a href={`/blog/${post.id}`} class="block">
+        <Image
+          class="group-hover:scale-[1.03] transition duration-300 w-full object-cover"
+          src={image}
+          alt={title}
+          width={445}
+          height={230}
+          format="webp"
+        />
+      </a>
+    </div>
+  )}
+
+  <h3 class="mb-3 h4">
+    <a
+      href={`/blog/${post.id}`}
+      class="block hover:text-primary transition duration-300 leading-snug"
+    >
+      {title}
+    </a>
+  </h3>
+
+  <ul class="mb-4 flex flex-wrap items-center text-text text-sm">
+    <li class="mr-4">
+      {postAuthors.map((author) => (
+        <a
+          href={`/authors/${slugify(author.data.title)}`}
+          class="flex items-center hover:text-primary font-medium"
+        >
+          {author.data.image && (
+            <Image
+              src={author.data.image}
+              alt={author.data.title}
+              height={40}
+              width={40}
+              class="mr-2 h-5 w-5 rounded-full"
+            />
+          )}
+          <span>{author.data.title}</span>
+        </a>
+      ))}
+    </li>
+    <li class="flex items-center font-medium opacity-70">
+      <BiCalendarEdit className="mr-1 h-4 w-4 text-gray-600" />
+      {dateFormat(date!)}
+    </li>
+  </ul>
+
+  <p class="text-text line-clamp-2 text-sm leading-relaxed opacity-90">
+    {summary ? summary : plainify(post.body ?? "").slice(0, 100)}
+  </p>
+</div>
+
+<style>
+  /* 解决图片留白的关键：确保容器高度自适应内容 */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+</style>

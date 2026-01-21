@@ -9,10 +9,6 @@
       "url": "/about"
     },
     {
-      "name": "Contact",
-      "url": "/contact"
-    },
-    {
       "name": "Pages",
       "url": "",
       "hasChildren": true,
@@ -44,10 +40,6 @@
     {
       "name": "About",
       "url": "/about"
-    },
-    {
-      "name": "Contact",
-      "url": "/contact"
     },
     {
       "name": "Elements",

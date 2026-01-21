@@ -1,0 +1,41 @@
+---
+// src/pages/blog/index.astro
+import Posts from "@/components/Posts.astro";
+import config from "@/config/config.json";
+import Base from "@/layouts/Base.astro";
+import Pagination from "@/layouts/components/Pagination.astro";
+import { getSinglePage } from "@/lib/contentParser.astro";
+import { sortByDate } from "@/lib/utils/sortFunctions";
+
+// 获取所有文章并排序
+const posts = await getSinglePage("posts");
+const sortedPosts = sortByDate(posts);
+
+// 分页逻辑
+const { pagination } = config.settings;
+const totalPages = Math.ceil(posts.length / pagination);
+const currentPosts = sortedPosts.slice(0, pagination);
+---
+
+<Base title={"All Posts"}>
+  <section class="section pb-0">
+    <div class="container text-center">
+      <h1 class="h2 font-serif italic mb-4">All Stories</h1>
+      <p class="text-text opacity-60 uppercase tracking-widest text-sm">Explore our travel journals and guides</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <Posts posts={currentPosts} className="mb-16" />
+      
+      {totalPages > 1 && (
+        <Pagination 
+          section="blog" 
+          currentPage={1} 
+          totalPages={totalPages} 
+        />
+      )}
+    </div>
+  </section>
+</Base>

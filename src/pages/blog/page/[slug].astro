@@ -8,9 +8,11 @@ import { sortByDate } from "@/lib/utils/sortFunctions";
 
 export async function getStaticPaths() {
   const posts = await getSinglePage("posts");
-  const totalPages = Math.ceil(posts.length / config.settings.pagination);
+  const { pagination } = config.settings;
+  const totalPages = Math.ceil(posts.length / pagination);
   const paths = [];
 
+  // 从第 2 页开始生成路径 (因为第 1 页是 /blog/index.astro)
   for (let i = 1; i < totalPages; i++) {
     paths.push({
       params: {
@@ -24,18 +26,24 @@ export async function getStaticPaths() {
 const { slug } = Astro.params;
 const posts = await getSinglePage("posts");
 const sortedPosts = sortByDate(posts);
-const totalPages = Math.ceil(posts.length / config.settings.pagination);
+
+const { pagination } = config.settings;
+const totalPages = Math.ceil(posts.length / pagination);
 const currentPage = slug && !isNaN(Number(slug)) ? Number(slug) : 1;
-const indexOfLastPost = currentPage * config.settings.pagination;
-const indexOfFirstPost = indexOfLastPost - config.settings.pagination;
+const indexOfLastPost = currentPage * pagination;
+const indexOfFirstPost = indexOfLastPost - pagination;
 const currentPosts = sortedPosts.slice(indexOfFirstPost, indexOfLastPost);
 ---
 
-<Base>
+<Base title={`Blog - Page ${currentPage}`}>
   <section class="section">
+    <div class="container text-center mb-10">
+      <h1 class="h2 font-serif italic">All Stories</h1>
+      <p class="text-text opacity-60 uppercase tracking-widest text-sm">Page {currentPage} of {totalPages}</p>
+    </div>
     <div class="container">
-      <Posts className="mb-16" posts={currentPosts} />
-      <Pagination totalPages={totalPages} currentPage={currentPage} />
+      <Posts posts={currentPosts} className="mb-16" />
+      <Pagination section="blog" totalPages={totalPages} currentPage={currentPage} />
     </div>
   </section>
 </Base>
