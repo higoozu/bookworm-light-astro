@@ -3,7 +3,9 @@
     "title": "Wanderlust Chronicles",
     "description": "Discovering the hidden gems and untold stories from around the globe.",
     "image": "/images/posts/04.jpg",
-    "date": "Explore 2026"
+    "date": "Explore 2026",
+    "button": "Read Latest Stories",
+    "link": "/blog"
   },
   "explore": [
     { "name": "Europe", "image": "/images/posts/03.jpg", "link": "/categories/europe" },

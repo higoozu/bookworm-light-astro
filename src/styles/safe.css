@@ -18,5 +18,15 @@ input#nav-toggle:checked ~ #nav-menu {
 
 .form-input,
 .form-textarea {
-  @apply rounded-md border-border py-3 text-text focus:border-primary focus:ring-transparent;
+  @apply rounded-md border-border dark:border-border py-3;
+  @apply bg-body dark:bg-body;
+  @apply text-text-dark dark:text-text-light;
+  @apply focus:border-primary dark:focus:border-primary;
+  @apply focus:ring-transparent;
+  @apply transition-all duration-200;
+}
+
+.form-input::placeholder,
+.form-textarea::placeholder {
+  @apply text-text dark:text-text;
 }

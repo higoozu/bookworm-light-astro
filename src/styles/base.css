@@ -3,7 +3,8 @@ html {
 }
 
 body {
-  @apply bg-body font-primary font-normal leading-relaxed text-text;
+  @apply bg-body dark:bg-body font-primary font-normal leading-relaxed text-text dark:text-text;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 h1,
@@ -12,7 +13,8 @@ h3,
 h4,
 h5,
 h6 {
-  @apply font-primary font-bold leading-tight text-dark;
+  @apply font-primary font-bold leading-tight text-text-dark dark:text-text-light;
+  transition: color 0.3s ease;
 }
 
 h1,

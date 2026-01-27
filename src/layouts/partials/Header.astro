@@ -1,7 +1,7 @@
 ---
 import Logo from "@/components/Logo.astro";
 import menu from "@/config/menu.json";
-import { IoSearch } from "react-icons/io5";
+import { IoSearch, IoSunny, IoMoon, IoInvertMode } from "react-icons/io5";
 
 export interface ChildNavigationLink {
   name: string;
@@ -29,7 +29,7 @@ const { main }: { main: NavigationLink[] } = menu;
     <label
       id="show-button"
       for="nav-toggle"
-      class="order-2 flex cursor-pointer items-center text-black md:order-1 md:hidden"
+      class="order-2 flex cursor-pointer items-center text-text-dark dark:text-text-light md:order-1 md:hidden"
     >
       <svg class="h-6 fill-current" viewBox="0 0 20 20">
         <title>Menu Open</title>
@@ -39,7 +39,7 @@ const { main }: { main: NavigationLink[] } = menu;
     <label
       id="hide-button"
       for="nav-toggle"
-      class="order-2 hidden cursor-pointer items-center text-black md:order-1"
+      class="order-2 hidden cursor-pointer items-center text-text-dark dark:text-text-light md:order-1"
     >
       <svg class="h-6 fill-current" viewBox="0 0 20 20">
         <title>Menu Close</title>
@@ -86,15 +86,182 @@ const { main }: { main: NavigationLink[] } = menu;
         ))
       }
     </ul>
-    <div class="order-1 ml-auto flex md:order-2 md:ml-0">
+    <div class="order-1 ml-auto flex items-center md:order-2 md:ml-0">
+      <!-- Theme Switcher -->
+      <div class="nav-item nav-dropdown group relative cursor-pointer mr-4 md:mr-0 md:ml-4">
+        <button
+          id="theme-toggle-btn"
+          class="inline-flex items-center p-2 text-xl text-text-dark dark:text-text-light transition hover:text-primary dark:hover:text-primary"
+          title="Toggle theme"
+          aria-label="Toggle theme"
+        >
+          <!-- 月亮图标 (light模式显示) -->
+          <span id="theme-icon" class="h-5 w-5 flex items-center justify-center">
+            <IoMoon class="h-5 w-5" />
+          </span>
+        </button>
+        <!-- Theme dropdown menu - 宽度调整，其他设计与标准菜单一致 -->
+        <ul class="nav-dropdown-list theme-dropdown-list hidden group-hover:block md:invisible md:absolute md:block md:opacity-0 md:group-hover:visible md:group-hover:opacity-100">
+          <li class="nav-dropdown-item">
+            <button
+              class="theme-option nav-dropdown-link"
+              data-theme="light"
+              title="Light mode"
+            >
+              <span class="inline-flex items-center gap-2">
+                <IoSunny class="h-4 w-4 flex-shrink-0" />
+                <span>Light</span>
+              </span>
+            </button>
+          </li>
+          <li class="nav-dropdown-item">
+            <button
+              class="theme-option nav-dropdown-link"
+              data-theme="dark"
+              title="Dark mode"
+            >
+              <span class="inline-flex items-center gap-2">
+                <IoMoon class="h-4 w-4 flex-shrink-0" />
+                <span>Dark</span>
+              </span>
+            </button>
+          </li>
+          <li class="nav-dropdown-item">
+            <button
+              class="theme-option nav-dropdown-link"
+              data-theme="system"
+              title="System mode"
+            >
+              <span class="inline-flex items-center gap-2">
+                <IoInvertMode class="h-4 w-4 flex-shrink-0" />
+                <span>System</span>
+              </span>
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Search -->
       <a
-        class="mr-4 inline-block cursor-pointer p-2 text-xl text-dark transition hover:text-primary md:mr-0"
+        class="mr-4 inline-block cursor-pointer p-2 text-xl text-text-dark dark:text-text-light transition hover:text-primary dark:hover:text-primary md:mr-0"
         href="/search"
-        title="seach"
-        aria-label="seach"
+        title="search"
+        aria-label="search"
       >
         <IoSearch />
       </a>
     </div>
   </nav>
 </header>
+
+<script is:inline>
+  // Theme Manager - 优化版本
+  class ThemeManager {
+    constructor() {
+      this.html = document.documentElement;
+      this.themeIcon = document.getElementById("theme-icon");
+      this.themeOptions = document.querySelectorAll("[data-theme]");
+      this.mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+      
+      // 缓存DOM元素，避免重复查询
+      this.navToggle = document.getElementById("nav-toggle");
+      
+      this.init();
+    }
+
+    init() {
+      // 应用初始主题
+      this.applyStoredTheme();
+      
+      // 绑定事件
+      this.themeOptions.forEach(option => {
+        option.addEventListener("click", e => this.handleThemeChange(e));
+      });
+      
+      // 监听系统主题变化
+      this.mediaQuery.addEventListener("change", () => this.onSystemThemeChange());
+      
+      // Astro路由变化时重新初始化
+      document.addEventListener("astro:after-swap", () => this.reinit());
+    }
+
+    reinit() {
+      // 重新获取元素引用
+      this.themeIcon = document.getElementById("theme-icon");
+      this.themeOptions = document.querySelectorAll("[data-theme]");
+      this.navToggle = document.getElementById("nav-toggle");
+      
+      // 重新绑定事件
+      this.themeOptions.forEach(option => {
+        option.removeEventListener("click", this.handleThemeChange);
+        option.addEventListener("click", e => this.handleThemeChange(e));
+      });
+      
+      // 应用当前主题
+      this.applyStoredTheme();
+    }
+
+    applyStoredTheme() {
+      const saved = this.getSavedTheme();
+      this.applyTheme(saved);
+      this.updateActiveState(saved);
+    }
+
+    getSavedTheme() {
+      return localStorage.getItem("theme") || "system";
+    }
+
+    getEffectiveTheme(theme) {
+      if (theme === "dark") return "dark";
+      if (theme === "light") return "light";
+      return this.mediaQuery.matches ? "dark" : "light";
+    }
+
+    applyTheme(theme) {
+      const effective = this.getEffectiveTheme(theme);
+      const isDark = effective === "dark";
+      
+      // 应用dark类
+      this.html.classList.toggle("dark", isDark);
+      
+      // 更新图标：根据effective theme显示相应图标
+      this.updateIcon(effective);
+    }
+
+    updateIcon(effective) {
+      if (!this.themeIcon) return;
+      
+      const sunIcon = '<svg class="h-5 w-5 fill-current" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line><line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line><line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line><line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line></svg>';
+      const moonIcon = '<svg class="h-5 w-5 fill-current" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>';
+      
+      this.themeIcon.innerHTML = effective === "dark" ? sunIcon : moonIcon;
+    }
+
+    updateActiveState(theme) {
+      this.themeOptions.forEach(option => {
+        const isActive = option.getAttribute("data-theme") === theme;
+        option.classList.toggle("active", isActive);
+      });
+    }
+
+    handleThemeChange(e) {
+      const theme = e.currentTarget.getAttribute("data-theme");
+      localStorage.setItem("theme", theme);
+      
+      this.applyTheme(theme);
+      this.updateActiveState(theme);
+      
+      // 关闭移动菜单
+      if (this.navToggle) this.navToggle.checked = false;
+    }
+
+    onSystemThemeChange() {
+      const current = this.getSavedTheme();
+      if (current === "system") {
+        this.applyTheme("system");
+      }
+    }
+  }
+
+  // 初始化
+  const themeManager = new ThemeManager();
