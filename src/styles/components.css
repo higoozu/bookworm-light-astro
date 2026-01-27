@@ -14,16 +14,6 @@
   transition: color 0.3s ease;
 }
 
-.page-heading:after {
-  content: '';
-  display: block;
-  width: 40px;
-  height: 4px;
-  background-color: var(--color-primary);
-  border-radius: 9999px;
-  margin: 1rem auto 0;
-}
-
 /* image cover */
 .img-cover {
   @apply leading-none;

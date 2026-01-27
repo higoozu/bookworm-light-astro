@@ -4,99 +4,80 @@ import dateFormat from "@/lib/utils/dateFormat";
 import { humanize, plainify, slugify } from "@/lib/utils/textConverter";
 import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
-import { BiCalendarEdit, BiCategoryAlt } from "react-icons/bi";
 
 type Props = {
   posts: CollectionEntry<"posts">[];
   className?: string;
 };
 
-const authors = await getSinglePage("authors");
 const { className, posts } = Astro.props;
 ---
 
 <div
+  id="post-container"
   class={`row gy-5 gx-4 ${className} ${posts.length == 1 ? "justify-center" : ""} `}
 >
   {
     posts.map((post) => (
-      // 统一布局：手机1列 (col-12)，平板2列 (sm:col-6)，桌面3列 (lg:col-4)
       <div class="col-12 sm:col-6 lg:col-4">
         {post.data.image && (
-          <a
-            href={`/blog/${post.id}`}
-            class="rounded-lg block hover:text-primary overflow-hidden group"
-          >
-            <Image
-              class="group-hover:scale-[1.03] transition duration-300 w-full object-cover"
-              src={post.data.image}
-              alt={post.data.title}
-              width={445}
-              height={230}
-              format="webp"
-            />
-          </a>
+          <div class="overflow-hidden rounded-xl mb-6 transition-all duration-300">
+            <a
+              href={`/blog/${post.id}`}
+              class="block aspect-16/10 overflow-hidden group"
+            >
+              <Image
+                class="group-hover:scale-105 transition duration-700 w-full h-full object-cover"
+                src={post.data.image}
+                alt={post.data.title}
+                width={445}
+                height={280}
+                format="webp"
+              />
+            </a>
+          </div>
         )}
         
-        <ul class="mt-6 mb-4 flex flex-wrap items-center text-text text-sm">
-          <li class="mr-5">
-            {authors
-              .filter((author) =>
-                post.data.authors
-                  .map((auth: string) => slugify(auth))
-                  .includes(slugify(author.data.title))
-              )
-              .map((author) => (
-                <a
-                  href={`/authors/${slugify(author.data.title)}`}
-                  class="flex items-center hover:text-primary font-medium"
-                >
-                  {author.data.image && (
-                    <Image
-                      src={author.data.image}
-                      alt={author.data.title}
-                      height={50}
-                      width={50}
-                      class="mr-2 h-6 w-6 rounded-full"
-                    />
-                  )}
-                  <span>{author.data.title}</span>
-                </a>
-              ))}
+        <ul class="mb-3 flex items-center flex-nowrap whitespace-nowrap overflow-hidden text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-text/70">
+          <li class="flex items-center shrink-0">
+            <a
+              href={`/authors/${slugify(post.data.authors[0])}`}
+              class="hover:text-primary transition-colors"
+            >
+              {post.data.authors[0]}
+            </a>
+            {post.data.authors.length > 1 && (
+              <span class="ml-1 text-text/40 lowercase font-medium shrink-0">et al.</span>
+            )}
           </li>
-          <li class="mr-5 flex items-center flex-wrap font-medium">
-            <BiCalendarEdit className="mr-1 h-5 w-5 text-gray-600" />
+
+          <li class="flex items-center shrink-0">
+            <span class="mx-2 opacity-30 text-xs shrink-0">/</span>
             {dateFormat(post.data.date!)}
           </li>
-          <li class="mr-5 flex items-center flex-wrap">
-            <BiCategoryAlt className="mr-1 h-[18px] w-[18px] text-gray-600" />
-            <ul>
-              {post.data.categories.map((category: string, i: number) => (
-                <li class="inline-block">
-                  <a
-                    href={`/categories/${slugify(category)}`}
-                    class="mr-2 hover:text-primary font-medium"
-                  >
-                    {humanize(category)}
-                    {i !== post.data.categories.length - 1 && ","}
-                  </a>
-                </li>
-              ))}
-            </ul>
+
+          <li class="flex items-center overflow-hidden min-w-0">
+            <span class="mx-2 opacity-30 text-xs shrink-0">/</span>
+            <a
+              href={`/categories/${slugify(post.data.categories[0])}`}
+              class="hover:text-primary transition-colors truncate"
+            >
+              {humanize(post.data.categories[0])}
+            </a>
           </li>
         </ul>
 
-        <h3 class="mb-4 h4">
+        <h3 class="mb-3 h4 font-bold leading-tight">
           <a
             href={`/blog/${post.id}`}
-            class="block hover:text-primary transition duration-300 leading-snug"
+            class="block hover:text-primary transition-colors duration-300"
           >
             {post.data.title}
           </a>
         </h3>
 
         <p class="text-text line-clamp-2 text-sm leading-relaxed">
-          {plainify(post.body ?? "")}
+          {plainify(post.body ?? "").slice(0, 100)}
         </p>
       </div>
     ))

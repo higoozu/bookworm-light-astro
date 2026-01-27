@@ -1,32 +1,60 @@
 ---
 import Base from "@/layouts/Base.astro";
-import { getTaxonomy } from "@/lib/taxonomyParser.astro";
+import { getTaxonomy, getAllTaxonomy } from "@/lib/taxonomyParser.astro";
 import { humanize } from "@/lib/utils/textConverter";
+import taxonomyData from "@/config/taxonomy.json"; // 引入配置
 
+// 获取唯一分类列表
 const categories = await getTaxonomy("posts", "categories");
+// 获取所有分类用于计数
+const allCategories = await getAllTaxonomy("posts", "categories");
 
-import { BiCategoryAlt } from "react-icons/bi";
+// 组合分类数据：名称、计数、图片
+const categoryItems = categories.map((category) => {
+  // 计算该分类下的文章数量
+  const count = allCategories.filter((c) => c === category).length;
+  // 从配置文件中匹配图片，对应 taxonomy.json 中的 categories 数组
+  const metadata = taxonomyData.categories?.find((item) => item.name === category);
+  
+  return {
+    name: category,
+    count: count,
+    // 如果配置中没有图片，使用默认占位图
+    image: metadata?.image || "/images/image-placeholder.png", 
+  };
+});
 ---
 
 <Base title={"Categories"}>
   <section class="section">
-    <div class="container text-center">
-      <h1 class="h2 page-heading">Categories</h1>
-      <ul class="space-x-4">
+    <div class="container">
+      <h1 class="h2 page-heading text-center mb-16">Categories</h1>
+      
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {
-          categories.map((category) => (
-            <li class="inline-block">
-              <a
-                href={`/categories/${category}`}
-                class="rounded-lg bg-light px-4 py-2 text-dark transition hover:bg-primary hover:text-white flex items-center group"
-              >
-                <BiCategoryAlt className="mr-1 text-primary group-hover:text-white transition h-6 w-6 scale-75" />
-                {humanize(category || "")}
-              </a>
-            </li>
+          categoryItems.map((item) => (
+            <a 
+              href={`/categories/${item.name}`} 
+              class="relative group aspect-square overflow-hidden block rounded-xl shadow-sm transition-all duration-300"
+            >
+              <img 
+                src={item.image} 
+                alt={item.name} 
+                class="w-full h-full object-cover transition duration-700 group-hover:scale-110" 
+              />
+              
+              <div class="absolute inset-0 bg-black/40 flex flex-col items-center justify-center transition-all duration-300 group-hover:bg-black/20">
+                <span class="text-white dark:text-dark text-lg md:text-xl font-bold tracking-wider uppercase drop-shadow-md">
+                  {humanize(item.name)}
+                </span>
+                <span class="text-white/90 dark:text-dark/90 text-sm mt-1 font-medium bg-black/20 px-3 py-0.5 rounded-full backdrop-blur-sm">
+                  {item.count} {item.count > 1 ? 'articles' : 'article'}
+                </span>
+              </div>
+            </a>
           ))
         }
-      </ul>
+      </div>
     </div>
   </section>
 </Base>

@@ -1,0 +1,34 @@
+{
+  "tags": [
+    {
+      "name": "diy",
+      "image": "/images/posts/01.jpg"
+    },
+    {
+      "name": "toy",
+      "image": "/images/posts/02.jpg"
+    },
+    {
+      "name": "balloon",
+      "image": "/images/posts/01.jpg"
+    },
+    {
+      "name": "gas",
+      "image": "/images/posts/01.jpg"
+    }
+  ],
+  "categories": [
+    {
+      "name": "art",
+      "image": "/images/posts/03.jpg"
+    },
+    {
+      "name": "accessories",
+      "image": "/images/posts/03.jpg"
+    },
+    {
+      "name": "food",
+      "image": "/images/posts/05.jpg"
+    }
+  ]
+}
