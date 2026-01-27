@@ -1,19 +1,21 @@
 ---
+// src/layouts/components/Explore.astro
 const { items } = Astro.props;
 ---
 
-<section class="section">
-  <div class="container">
-    <h2 class="h4 mb-10 font-bold uppercase tracking-widest text-center">Explore by Destination</h2>
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-      {items.map((item: any) => (
-        <a href={item.link} class="relative group h-40 overflow-hidden block">
-          <img src={item.image} alt={item.name} class="w-full h-full object-cover transition duration-500 group-hover:scale-110" />
-          <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
-            <span class="text-white font-medium tracking-wide uppercase">{item.name}</span>
-          </div>
-        </a>
-      ))}
-    </div>
-  </div>
-</section>
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+  {items.map((item: any) => (
+    <a href={item.link} class="relative group aspect-square overflow-hidden block rounded-lg">
+      <img 
+        src={item.image} 
+        alt={item.name} 
+        class="w-full h-full object-cover transition duration-700 group-hover:scale-110" 
+      />
+      <div class="absolute inset-0 bg-black/40 flex items-center justify-center transition-all duration-300 group-hover:bg-black/20">
+        <span class="text-white dark:text-dark text-base font-bold tracking-[0.2em] uppercase group-hover:border-white transition-colors">
+          {item.name}
+        </span>
+      </div>
+    </a>
+  ))}
+</div>

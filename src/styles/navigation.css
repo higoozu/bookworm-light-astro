@@ -99,33 +99,3 @@
 .search-modal.open {
   @apply visible opacity-100;
 }
-
-/* 悬停导航栏样式 */
-#scroll-navbar {
-  @apply transition-all duration-300 ease-out;
-}
-
-#scroll-navbar.hidden {
-  @apply -translate-y-full;
-}
-
-/* 手机菜单样式 */
-#mobile-menu-overlay.hidden {
-  @apply !hidden;
-}
-
-#mobile-menu-content.hidden {
-  @apply !hidden;
-}
-
-.mobile-menu-toggle svg {
-  @apply transition-transform duration-200;
-}
-
-.mobile-menu-toggle svg.rotate-180 {
-  @apply rotate-180;
-}
-
-.mobile-theme-option.text-primary {
-  @apply text-primary;
-}
