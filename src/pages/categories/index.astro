@@ -2,25 +2,45 @@
 import Base from "@/layouts/Base.astro";
 import { getTaxonomy, getAllTaxonomy } from "@/lib/taxonomyParser.astro";
 import { humanize } from "@/lib/utils/textConverter";
-import taxonomyData from "@/config/taxonomy.json"; // 引入配置
+import taxonomyData from "@/config/taxonomy.json";
+import { Picture } from "astro:assets";
+
+// Import all images from src/assets
+const allImages = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/assets/images/**/*.{jpeg,jpg,png,gif}"
+);
 
 // 获取唯一分类列表
 const categories = await getTaxonomy("posts", "categories");
 // 获取所有分类用于计数
 const allCategories = await getAllTaxonomy("posts", "categories");
 
-// 组合分类数据：名称、计数、图片
+// Helper to resolve image path to module
+const resolveImage = (imagePath: string) => {
+  // Convert public path (e.g. /images/posts/01.jpg) to assets path
+  const assetPath = imagePath.startsWith("/images/")
+    ? `/src/assets${imagePath}`
+    : `/src/assets/images${imagePath}`;
+
+  const imageModule = allImages[assetPath];
+
+  if (!imageModule) {
+    // Fallback to placeholder if not found
+    return allImages["/src/assets/images/image-placeholder.png"];
+  }
+  return imageModule;
+};
+
+// 组合分类数据
 const categoryItems = categories.map((category) => {
-  // 计算该分类下的文章数量
   const count = allCategories.filter((c) => c === category).length;
-  // 从配置文件中匹配图片，对应 taxonomy.json 中的 categories 数组
   const metadata = taxonomyData.categories?.find((item) => item.name === category);
+  const imagePath = metadata?.image || "/images/image-placeholder.png";
   
   return {
     name: category,
     count: count,
-    // 如果配置中没有图片，使用默认占位图
-    image: metadata?.image || "/images/image-placeholder.png", 
+    imageFunc: resolveImage(imagePath), // Return the glob function
   };
 });
 ---
@@ -37,10 +57,13 @@ const categoryItems = categories.map((category) => {
               href={`/categories/${item.name}`} 
               class="relative group aspect-square overflow-hidden block rounded-xl shadow-sm transition-all duration-300"
             >
-              <img 
-                src={item.image} 
-                alt={item.name} 
-                class="w-full h-full object-cover transition duration-700 group-hover:scale-110" 
+              <Picture
+                src={item.imageFunc()}
+                alt={item.name}
+                formats={['avif', 'webp']}
+                widths={[400, 800]}
+                sizes="(max-width: 768px) 50vw, 25vw"
+                class="w-full h-full object-cover transition duration-700 group-hover:scale-110"
               />
               
               <div class="absolute inset-0 bg-black/40 flex flex-col items-center justify-center transition-all duration-300 group-hover:bg-black/20">

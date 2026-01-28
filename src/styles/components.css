@@ -47,29 +47,13 @@
 
 .social-icons a {
   @apply block h-11 w-11 rounded-lg border transition;
-  border-color: var(--color-light);
-  background-color: var(--color-light);
-  color: var(--color-text-dark);
+  @apply border-light bg-light text-text-dark;
   text-align: center;
   text-decoration: none;
 }
 
 .social-icons a:hover {
-  background-color: var(--color-primary);
-  border-color: var(--color-primary);
-  color: white;
-}
-
-.dark .social-icons a {
-  border-color: var(--color-light);
-  background-color: var(--color-light);
-  color: var(--color-text-dark);
-}
-
-.dark .social-icons a:hover {
-  background-color: var(--color-primary);
-  border-color: var(--color-primary);
-  color: white;
+  @apply bg-primary border-primary text-white;
 }
 
 .social-icons svg {
@@ -122,21 +106,12 @@
   @apply prose-h6:mb-6;
   @apply prose-blockquote:rounded-lg prose-blockquote:border-primary prose-blockquote:px-7 prose-blockquote:py-3;
   @apply prose-blockquote:text-lg prose-blockquote:leading-8;
-  color: var(--color-text-dark);
-}
-
-.dark .content {
-  color: var(--color-text-light);
+  @apply text-text-dark dark:text-text-light;
 }
 
 .content blockquote {
-  background-color: var(--color-light);
-  border-left: 4px solid var(--color-primary);
-}
-
-.dark .content blockquote {
-  background-color: var(--color-light);
-  border-left: 4px solid var(--color-primary);
+  @apply bg-light border-l-[4px];
+  border-left-color: var(--color-primary);
 }
 
 /* Link styling in content */
@@ -154,9 +129,7 @@
 
 /* Code and pre styling */
 .content pre {
-  @apply px-6 py-5 rounded-lg;
-  background-color: var(--color-light);
-  overflow-x: auto;
+  @apply px-6 py-5 rounded-lg bg-light overflow-x-auto;
 }
 
 .content code {
@@ -165,75 +138,43 @@
 
 /* Table styling */
 .content table {
-  position: relative;
-  overflow: hidden;
-  border-radius: 0.5rem;
-  border: 1px solid var(--color-border);
+  @apply relative overflow-hidden rounded-lg border border-border;
 }
 
 .content thead {
-  background-color: var(--color-light);
-  border-color: var(--color-border);
+  @apply bg-light border-border;
 }
 
 .content th {
-  position: relative;
-  z-index: 10;
-  padding: 1.125rem 1rem;
-  color: var(--color-text-dark);
-  font-weight: 600;
-}
-
-.dark .content th {
-  color: var(--color-text-dark);
+  @apply relative z-10 py-4 px-4 font-semibold text-text-dark;
 }
 
 .content tr {
-  border-color: var(--color-border);
+  @apply border-border;
 }
 
 .content td {
-  position: relative;
-  z-index: 10;
-  padding: 1.125rem 0.75rem;
-  color: var(--color-text-dark);
-}
-
-.dark .content td {
-  color: var(--color-text-dark);
+  @apply relative z-10 py-4 px-3 text-text-dark;
 }
 
 /* Tab */
 .tab {
-  @apply overflow-hidden rounded-lg border;
-  border-color: var(--color-border);
+  @apply overflow-hidden rounded-lg border border-border;
 }
 
 .tab-nav {
-  @apply flex border-b m-0 list-none;
-  background-color: var(--color-light);
-  border-color: var(--color-border);
+  @apply flex border-b m-0 list-none bg-light border-border;
 }
 
 .tab-nav-item {
   @apply cursor-pointer border-b-[3px] py-2 text-lg my-0 px-8;
-  color: var(--color-text-dark);
-  border-color: var(--color-border);
+  @apply text-text-dark border-border;
   opacity: 0.8;
   transition: all 0.2s ease;
 }
 
 .tab-nav-item.active {
-  opacity: 1;
-  border-color: var(--color-text-dark);
-}
-
-.dark .tab-nav-item {
-  color: var(--color-text-dark);
-}
-
-.dark .tab-nav-item.active {
-  border-color: var(--color-text-dark);
+  @apply border-text-dark opacity-100;
 }
 
 .tab-content-panel {
@@ -250,14 +191,11 @@
 
 /* Accordion */
 .accordion {
-  @apply mb-6 overflow-hidden rounded-lg border;
-  background-color: var(--color-light);
-  border-color: var(--color-border);
+  @apply mb-6 overflow-hidden rounded-lg border bg-light border-border;
 }
 
 .accordion-header {
-  @apply flex w-full cursor-pointer items-center justify-between px-8 py-4 text-lg;
-  color: var(--color-text-dark);
+  @apply flex w-full cursor-pointer items-center justify-between px-8 py-4 text-lg text-text-dark;
   transition: all 0.2s ease;
 }
 
@@ -325,6 +263,7 @@
   color: currentColor;
 }
 
+/* Notice colors - using specific hex values as originally defined */
 .notice.note {
   color: #1B83E2;
   border-color: #1B83E2;
@@ -376,6 +315,5 @@
 /* Footer links */
 footer p a {
   @apply transition-all duration-200;
-  @apply hover:text-primary dark:hover:text-primary;
+  @apply hover:text-primary;
 }
-

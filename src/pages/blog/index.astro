@@ -1,32 +1,143 @@
 ---
-// src/pages/blog/index.astro
 import Posts from "@/components/Posts.astro";
 import config from "@/config/config.json";
 import Base from "@/layouts/Base.astro";
 import Pagination from "@/layouts/components/Pagination.astro";
 import { getSinglePage } from "@/lib/contentParser.astro";
+import { getAllTaxonomy, getTaxonomy } from "@/lib/taxonomyParser.astro";
 import { sortByDate } from "@/lib/utils/sortFunctions";
+import { humanize, slugify, plainify } from "@/lib/utils/textConverter";
+import { Picture } from "astro:assets";
+import dateFormat from "@/lib/utils/dateFormat";
 
-// 获取所有文章并排序
+// Get all posts and sort
 const posts = await getSinglePage("posts");
 const sortedPosts = sortByDate(posts);
 
-// 分页逻辑
-const { pagination } = config.settings;
-const totalPages = Math.ceil(posts.length / pagination);
-const currentPosts = sortedPosts.slice(0, pagination);
+// Get Categories/Tags for the filter bar
+const categories = await getTaxonomy("posts", "categories");
+const allCategories = await getAllTaxonomy("posts", "categories");
+
+// Pagination Logic (Custom for Blog Index: 1 Highlight + 9 Grid = 10 items)
+const { pagination } = config.settings; // Default is 9
+const postsOnFirstPage = pagination + 1; // 10 posts
+
+// Calculate Total Pages
+// We take 10 items for page 1. Remaining items are divided by 9.
+const remainingPosts = Math.max(0, sortedPosts.length - postsOnFirstPage);
+const totalPages = 1 + Math.ceil(remainingPosts / pagination);
+
+const currentPosts = sortedPosts.slice(0, postsOnFirstPage);
+
+// Highlight Logic
+const highlightPost = currentPosts[0];
+const gridPosts = currentPosts.slice(1);
 ---
 
 <Base title={"All Posts"}>
+  <!-- Lively Hero Section -->
   <section class="section pb-0">
-    <div class="container text-center">
-      <h1 class="h2 font-serif italic mb-4">All Stories</h1>
+    <div class="container">
+      <div class="bg-section-bg dark:bg-section-bg rounded-4xl p-8 md:p-16 text-center transition-colors relative overflow-hidden group">
+        <!-- Decorative subtle element -->
+        <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-primary/50 to-transparent opacity-50"></div>
+        
+        <h1 class="text-4xl md:text-6xl font-serif italic font-bold mb-6 text-text-dark dark:text-text-light relative z-10">
+          Wanderlust Chronicles
+        </h1>
+        <p class="text-lg md:text-xl text-text opacity-80 max-w-2xl mx-auto mb-10 relative z-10">
+          Discover hidden gems, travel tips, and stories from around the globe. Where will your next adventure begin?
+        </p>
+
+        <!-- Interactive Category Pills -->
+        <div class="flex flex-wrap justify-center gap-3 relative z-10">
+          {categories.slice(0, 6).map((category) => {
+             const count = allCategories.filter((c) => c === category).length;
+             return (
+              <a 
+                href={`/categories/${category}`}
+                class="inline-flex items-center px-5 py-2.5 rounded-full bg-white dark:bg-body shadow-sm hover:shadow-md hover:scale-105 transition-all duration-300 border border-transparent hover:border-primary/30 group-cat"
+              >
+                <span class="font-bold text-sm uppercase tracking-wider text-text-dark dark:text-text-light group-cat-hover:text-primary">
+                  {humanize(category)}
+                </span>
+                <span class="ml-2 text-xs opacity-50 bg-theme-light/50 dark:bg-theme-dark/50 px-2 py-0.5 rounded-full">
+                  {count}
+                </span>
+              </a>
+            );
+          })}
+          <a href="/categories" class="inline-flex items-center px-4 py-2 rounded-full text-sm font-bold text-text/60 hover:text-primary transition-colors">
+            View All →
+          </a>
+        </div>
+      </div>
     </div>
   </section>
 
-  <section class="section">
+  <!-- Featured "Latest" Post (Desktop: Horizontal, Mobile: Stacked) -->
+  {highlightPost && (
+    <section class="pt-16 pb-8">
+      <div class="container">
+        <div class="flex items-center gap-2 mb-8">
+          <span class="w-8 h-[2px] bg-primary"></span>
+          <span class="text-xs font-bold uppercase tracking-[0.2em] text-text/60">Latest Story</span>
+        </div>
+
+        <a href={`/blog/${highlightPost.id}`} class="group block">
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+            <!-- Image Side -->
+            <div class="md:col-span-8 relative overflow-hidden rounded-2xl aspect-video md:aspect-auto md:h-[450px]">
+               {highlightPost.data.image && (
+                <Picture
+                  src={highlightPost.data.image}
+                  alt={highlightPost.data.title}
+                  formats={['avif', 'webp']}
+                  widths={[800, 1200]}
+                  sizes="(max-width: 768px) 100vw, 66vw"
+                  class="w-full h-full object-cover transition duration-700 group-hover:scale-105"
+                />
+               )}
+               <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-300"></div>
+            </div>
+
+            <!-- Content Side -->
+            <div class="md:col-span-4 flex flex-col justify-center">
+              <div class="flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-text/60 mb-4">
+                 {highlightPost.data.categories?.[0] && (
+                    <span class="text-primary">{humanize(highlightPost.data.categories[0])}</span>
+                 )}
+                 <span>•</span>
+                 <span>{dateFormat(highlightPost.data.date)}</span>
+              </div>
+              
+              <h2 class="text-3xl md:text-4xl font-bold text-text-dark dark:text-text-light leading-tight mb-4 group-hover:text-primary transition-colors">
+                {highlightPost.data.title}
+              </h2>
+              
+              <p class="text-text line-clamp-3 md:line-clamp-4 mb-6 leading-relaxed">
+                {highlightPost.data.summary || plainify(highlightPost.body).slice(0, 150)}...
+              </p>
+
+              <span class="inline-flex items-center text-sm font-bold uppercase tracking-widest text-text-dark dark:text-text-light group-hover:underline decoration-2 underline-offset-4">
+                Read Article
+              </span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </section>
+  )}
+
+  <!-- Remaining Posts Grid -->
+  <section class="section pt-0">
     <div class="container">
-      <Posts posts={currentPosts} className="mb-16" />
+      <div class="flex items-center gap-2 mb-10">
+        <span class="w-8 h-[2px] bg-border dark:border-border"></span>
+        <span class="text-xs font-bold uppercase tracking-[0.2em] text-text/60">Recent Posts</span>
+      </div>
+
+      <Posts posts={gridPosts} className="mb-16" />
       
       {totalPages > 1 && (
         <Pagination 

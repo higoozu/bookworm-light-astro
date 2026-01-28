@@ -1,101 +1,18 @@
-/* navbar items */
-.navbar {
-  @apply relative flex max-w-[1260px] flex-wrap items-center justify-between;
-}
+/* Navigation Styles - Cleaned up for Tailwind 4 */
 
-.navbar-brand img {
-  @apply h-auto max-w-[170px] sm:h-auto sm:max-w-full;
-}
+/* 
+   Most styles are now utility classes in Header.astro.
+   Reserved for complex animations or specific overrides.
+*/
 
-.navbar-nav {
-  @apply text-center md:text-left;
+/* Example: Custom scrollbar for mobile menu if needed */
+#mobile-menu::-webkit-scrollbar {
+  width: 6px;
 }
-
-.nav-item {
-  @apply mx-1;
+#mobile-menu::-webkit-scrollbar-track {
+  background: transparent;
 }
-
-.nav-link {
-  @apply p-3 text-lg font-semibold text-text-dark dark:text-text-light;
-  @apply transition hover:text-primary dark:hover:text-primary md:p-4;
-}
-
-/* Standard dropdown menu */
-.nav-dropdown-list {
-  @apply z-10 rounded-lg bg-white dark:bg-body px-6 py-3;
-  @apply shadow dark:shadow-dark transition;
-  @apply border border-border dark:border-border;
-}
-
-.nav-dropdown-item {
-  @apply mb-1;
-}
-
-.nav-dropdown-link {
-  @apply block min-w-[150px] py-1 text-[17px] font-semibold;
-  @apply text-text-dark dark:text-text-light;
-  @apply transition hover:text-primary dark:hover:text-primary;
-}
-
-/* Theme dropdown menu - 宽度110px，其他与标准菜单一致 */
-.theme-dropdown-list {
-  @apply z-50 rounded-lg bg-white dark:bg-body px-6 py-3;
-  @apply shadow dark:shadow-dark transition;
-  @apply border border-border dark:border-border;
-  @apply absolute right-0 mt-0;
-  min-width: 110px;
-}
-
-.theme-dropdown-list .nav-dropdown-item {
-  @apply mb-1;
-}
-
-.theme-dropdown-list .theme-option {
-  @apply w-full text-left py-1 text-[17px] font-semibold;
-  @apply text-text-dark dark:text-text-light;
-  @apply transition;
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  display: block;
-  min-width: auto;
-  padding: 0.25rem 0;
-}
-
-/* Hover和Active状态相同 - 只改文字颜色 */
-.theme-dropdown-list .theme-option:hover,
-.theme-dropdown-list .theme-option.active {
-  @apply text-primary dark:text-primary;
-}
-
-/* 图标样式 */
-.theme-dropdown-list .theme-option svg {
-  display: inline-block;
-  margin-right: 0.5rem;
-  flex-shrink: 0;
-}
-
-/* search style */
-.search-modal {
-  @apply invisible absolute top-0 left-0 right-0 z-10 h-10 bg-body dark:bg-body opacity-0 transition md:h-full;
-  transition: opacity 0.3s ease;
-}
-
-.search-modal .form-input {
-  @apply h-full w-full border-0 text-lg;
-  @apply bg-body dark:bg-body text-text-dark dark:text-text-light;
-}
-
-.search-modal .form-input::placeholder {
-  @apply text-text dark:text-text;
-}
-
-.search-modal .search-close {
-  @apply absolute top-1/2 right-2 -translate-y-1/2 p-3 text-h4;
-  @apply text-text-dark dark:text-text-light;
-  @apply hover:text-primary dark:hover:text-primary transition;
-}
-
-.search-modal.open {
-  @apply visible opacity-100;
+#mobile-menu::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.5);
+  border-radius: 20px;
 }

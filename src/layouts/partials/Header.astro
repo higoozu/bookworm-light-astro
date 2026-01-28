@@ -1,7 +1,7 @@
 ---
 import Logo from "@/components/Logo.astro";
 import menu from "@/config/menu.json";
-import { IoSearch, IoSunny, IoMoon, IoInvertMode } from "react-icons/io5";
+import { IoSearch, IoSunny, IoMoon, IoInvertMode, IoMenu, IoClose } from "react-icons/io5";
 
 export interface ChildNavigationLink {
   name: string;
@@ -16,252 +16,418 @@ export interface NavigationLink {
 }
 
 const { main }: { main: NavigationLink[] } = menu;
+const { pathname } = Astro.url;
 ---
 
-<header class="header pt-6">
-  <nav class="navbar container">
-    <!-- logo -->
-    <div class="order-0">
+<!-- Header Spacer to prevent content overlap -->
+<div class="header-spacer h-16 md:h-20"></div>
+
+<header
+  id="main-header"
+  class="absolute top-0 left-0 w-full z-50 will-change-transform"
+>
+  <div class="container mx-auto px-4 h-16 md:h-20 flex items-center justify-between">
+    <!-- Logo -->
+    <div class="flex-shrink-0 z-[60] relative">
       <Logo />
     </div>
-    <!-- navbar toggler -->
-    <input id="nav-toggle" type="checkbox" class="hidden" />
-    <label
-      id="show-button"
-      for="nav-toggle"
-      class="order-2 flex cursor-pointer items-center text-text-dark dark:text-text-light md:order-1 md:hidden"
-    >
-      <svg class="h-6 fill-current" viewBox="0 0 20 20">
-        <title>Menu Open</title>
-        <path d="M0 3h20v2H0V3z m0 6h20v2H0V9z m0 6h20v2H0V0z"></path>
-      </svg>
-    </label>
-    <label
-      id="hide-button"
-      for="nav-toggle"
-      class="order-2 hidden cursor-pointer items-center text-text-dark dark:text-text-light md:order-1"
-    >
-      <svg class="h-6 fill-current" viewBox="0 0 20 20">
-        <title>Menu Close</title>
-        <polygon
-          points="11 9 22 9 22 11 11 11 11 22 9 22 9 11 -2 11 -2 9 9 9 9 -2 11 -2"
-          transform="rotate(45 10 10)"></polygon>
-      </svg>
-    </label>
-    <!-- /navbar toggler -->
 
-    <ul
-      id="nav-menu"
-      class="navbar-nav order-3 hidden w-full md:order-1 md:flex md:w-auto"
-    >
-      {
-        main.map((menu) => (
-          <>
-            {menu.hasChildren ? (
-              <li class="nav-item nav-dropdown group relative cursor-pointer">
-                <span class="nav-link inline-flex items-center">
-                  {menu.name}
-                  <svg class="h-5 w-5 fill-current" viewBox="0 0 20 20">
-                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                  </svg>
-                </span>
-                <ul class="nav-dropdown-list hidden group-hover:block md:invisible md:absolute md:block md:opacity-0 md:group-hover:visible md:group-hover:opacity-100">
-                  {menu.children?.map((child) => (
-                    <li class="nav-dropdown-item">
-                      <a href={child.url} class="nav-dropdown-link">
-                        {child.name}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </li>
-            ) : (
-              <li class="nav-item">
-                <a href={menu.url} class="nav-link block">
+    <!-- Desktop Menu -->
+    <nav class="hidden md:flex items-center gap-8">
+      <ul class="flex items-center gap-6">
+        {
+          main.map((menu) => (
+            <li class="relative group">
+              {menu.hasChildren ? (
+                <>
+                  <button class="flex items-center gap-1 py-2 text-lg font-medium text-text-dark dark:text-text-light hover:text-primary dark:hover:text-primary transition-colors">
+                    {menu.name}
+                    <svg class="h-4 w-4 fill-current opacity-70 group-hover:rotate-180 transition-transform duration-200" viewBox="0 0 20 20">
+                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                    </svg>
+                  </button>
+                  <ul class="absolute top-full left-0 min-w-[200px] bg-white dark:bg-body rounded-lg shadow-lg border border-border dark:border-border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0 p-2">
+                    {menu.children?.map((child) => (
+                      <li>
+                        <a
+                          href={child.url}
+                          class={`block px-4 py-2 hover:text-primary dark:hover:text-primary hover:bg-theme-light/5 dark:hover:bg-theme-dark/5 rounded-md transition-colors ${
+                            pathname === child.url || pathname === `${child.url}/`
+                              ? "text-primary font-semibold"
+                              : "text-text-dark dark:text-text-light"
+                          }`}
+                        >
+                          {child.name}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              ) : (
+                <a
+                  href={menu.url}
+                  class={`block py-2 text-lg font-medium transition-colors ${
+                    pathname === menu.url || pathname === `${menu.url}/`
+                      ? "text-primary"
+                      : "text-text-dark dark:text-text-light hover:text-primary dark:hover:text-primary"
+                  }`}
+                >
                   {menu.name}
                 </a>
-              </li>
-            )}
-          </>
-        ))
-      }
-    </ul>
-    <div class="order-1 ml-auto flex items-center md:order-2 md:ml-0">
-      <!-- Theme Switcher -->
-      <div class="nav-item nav-dropdown group relative cursor-pointer mr-4 md:mr-0 md:ml-4">
-        <button
-          id="theme-toggle-btn"
-          class="inline-flex items-center p-2 text-xl text-text-dark dark:text-text-light transition hover:text-primary dark:hover:text-primary"
-          title="Toggle theme"
-          aria-label="Toggle theme"
-        >
-          <!-- 月亮图标 (light模式显示) -->
-          <span id="theme-icon" class="h-5 w-5 flex items-center justify-center">
-            <IoMoon class="h-5 w-5" />
-          </span>
-        </button>
-        <!-- Theme dropdown menu - 宽度调整，其他设计与标准菜单一致 -->
-        <ul class="nav-dropdown-list theme-dropdown-list hidden group-hover:block md:invisible md:absolute md:block md:opacity-0 md:group-hover:visible md:group-hover:opacity-100">
-          <li class="nav-dropdown-item">
-            <button
-              class="theme-option nav-dropdown-link"
-              data-theme="light"
-              title="Light mode"
-            >
-              <span class="inline-flex items-center gap-2">
-                <IoSunny class="h-4 w-4 flex-shrink-0" />
-                <span>Light</span>
-              </span>
-            </button>
-          </li>
-          <li class="nav-dropdown-item">
-            <button
-              class="theme-option nav-dropdown-link"
-              data-theme="dark"
-              title="Dark mode"
-            >
-              <span class="inline-flex items-center gap-2">
-                <IoMoon class="h-4 w-4 flex-shrink-0" />
-                <span>Dark</span>
-              </span>
-            </button>
-          </li>
-          <li class="nav-dropdown-item">
-            <button
-              class="theme-option nav-dropdown-link"
-              data-theme="system"
-              title="System mode"
-            >
-              <span class="inline-flex items-center gap-2">
-                <IoInvertMode class="h-4 w-4 flex-shrink-0" />
-                <span>System</span>
-              </span>
-            </button>
-          </li>
-        </ul>
-      </div>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
 
+    <!-- Desktop Controls -->
+    <div class="hidden md:flex items-center gap-4">
       <!-- Search -->
       <a
-        class="mr-4 inline-block cursor-pointer p-2 text-xl text-text-dark dark:text-text-light transition hover:text-primary dark:hover:text-primary md:mr-0"
         href="/search"
-        title="search"
-        aria-label="search"
+        class="p-2 text-xl text-text-dark dark:text-text-light hover:text-primary dark:hover:text-primary transition-colors"
+        aria-label="Search"
       >
         <IoSearch />
       </a>
+
+      <!-- Theme Switcher -->
+      <div class="relative group">
+        <button
+          class="p-2 text-xl text-text-dark dark:text-text-light hover:text-primary dark:hover:text-primary transition-colors cursor-pointer"
+          aria-label="Toggle Theme"
+        >
+          <span class="theme-icon-display">
+            <span class="theme-icon-light hidden"><IoSunny /></span>
+            <span class="theme-icon-dark hidden"><IoMoon /></span>
+            <span class="theme-icon-system hidden"><IoInvertMode /></span>
+          </span>
+        </button>
+        <!-- Theme Dropdown -->
+        <div class="absolute right-0 top-full mt-2 w-32 bg-white dark:bg-body rounded-lg shadow-lg border border-border dark:border-border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0 overflow-hidden">
+            <button class="theme-btn w-full text-left px-4 py-2 flex items-center gap-2 hover:bg-theme-light/5 dark:hover:bg-theme-dark/5 text-text-dark dark:text-text-light cursor-pointer data-[active=true]:text-primary data-[active=true]:font-semibold transition-colors" data-theme="light">
+                <IoSunny className="text-sm" /> <span>Light</span>
+            </button>
+            <button class="theme-btn w-full text-left px-4 py-2 flex items-center gap-2 hover:bg-theme-light/5 dark:hover:bg-theme-dark/5 text-text-dark dark:text-text-light cursor-pointer data-[active=true]:text-primary data-[active=true]:font-semibold transition-colors" data-theme="dark">
+                <IoMoon className="text-sm" /> <span>Dark</span>
+            </button>
+            <button class="theme-btn w-full text-left px-4 py-2 flex items-center gap-2 hover:bg-theme-light/5 dark:hover:bg-theme-dark/5 text-text-dark dark:text-text-light cursor-pointer data-[active=true]:text-primary data-[active=true]:font-semibold transition-colors" data-theme="system">
+                <IoInvertMode className="text-sm" /> <span>System</span>
+            </button>
+        </div>
+      </div>
     </div>
-  </nav>
+
+    <!-- Mobile Controls -->
+    <div class="flex md:hidden items-center gap-3 z-[60] relative">
+      <a
+        href="/search"
+        class="p-2 text-2xl text-text-dark dark:text-text-light transition-colors"
+        aria-label="Search"
+      >
+        <IoSearch />
+      </a>
+      <button
+        id="mobile-menu-toggle"
+        class="p-2 text-3xl text-text-dark dark:text-text-light transition-colors focus:outline-none"
+        aria-label="Toggle Menu"
+      >
+        <span class="icon-menu block"><IoMenu /></span>
+        <span class="icon-close hidden"><IoClose /></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Menu Overlay -->
+  <div
+    id="mobile-overlay"
+    class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[40] opacity-0 invisible transition-all duration-300 md:hidden"
+  >
+  </div>
+
+  <!-- Mobile Menu Sidebar -->
+  <div
+    id="mobile-menu"
+    class="fixed top-0 right-0 h-[100dvh] w-full bg-white/95 dark:bg-body/95 backdrop-blur-md z-[50] transform translate-x-full transition-transform duration-300 md:hidden flex flex-col pt-20 shadow-2xl overscroll-contain"
+  >
+    <div class="flex-1 overflow-y-auto py-6 px-6">
+      <ul class="space-y-4">
+        {
+          main.map((menu) => (
+            <li class="border-b border-border dark:border-border pb-4 last:border-0">
+              {menu.hasChildren ? (
+                <details class="group">
+                  <summary class="flex items-center justify-between text-xl font-medium text-text-dark dark:text-text-light cursor-pointer list-none">
+                    {menu.name}
+                    <svg class="h-5 w-5 fill-current transform group-open:rotate-180 transition-transform duration-300" viewBox="0 20 20">
+                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                    </svg>
+                  </summary>
+                  <ul class="mt-4 ml-4 space-y-3">
+                    {menu.children?.map((child) => (
+                      <li>
+                        <a
+                          href={child.url}
+                          class={`mobile-nav-link block text-lg transition-colors ${
+                            pathname === child.url || pathname === `${child.url}/`
+                              ? "text-primary font-medium"
+                              : "text-text-dark/80 dark:text-text-light/80 hover:text-primary dark:hover:text-primary"
+                          }`}
+                        >
+                          {child.name}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              ) : (
+                <a
+                  href={menu.url}
+                  class={`mobile-nav-link block text-xl font-medium ${
+                    pathname === menu.url
+                      ? "text-primary"
+                      : "text-text-dark dark:text-text-light"
+                  }`}
+                >
+                  {menu.name}
+                </a>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <!-- Mobile Theme Switcher -->
+    <div class="border-t border-border dark:border-border p-6 bg-theme-light/5 dark:bg-theme-dark/5">
+        <p class="text-sm text-text-dark/60 dark:text-text-light/60 mb-3 uppercase font-semibold tracking-wider">Switch Theme</p>
+        <div class="flex items-center gap-4">
+            <button class="theme-btn-mobile flex-1 flex flex-col items-center gap-2 p-3 rounded-lg border border-border dark:border-border bg-white dark:bg-body text-text-dark dark:text-text-light data-[active=true]:border-primary data-[active=true]:text-primary transition-all" data-theme="light">
+                <IoSunny className="text-xl" />
+                <span class="text-xs font-medium">Light</span>
+            </button>
+            <button class="theme-btn-mobile flex-1 flex flex-col items-center gap-2 p-3 rounded-lg border border-border dark:border-border bg-white dark:bg-body text-text-dark dark:text-text-light data-[active=true]:border-primary data-[active=true]:text-primary transition-all" data-theme="dark">
+                <IoMoon className="text-xl" />
+                <span class="text-xs font-medium">Dark</span>
+            </button>
+            <button class="theme-btn-mobile flex-1 flex flex-col items-center gap-2 p-3 rounded-lg border border-border dark:border-border bg-white dark:bg-body text-text-dark dark:text-text-light data-[active=true]:border-primary data-[active=true]:text-primary transition-all" data-theme="system">
+                <IoInvertMode className="text-xl" />
+                <span class="text-xs font-medium">System</span>
+            </button>
+        </div>
+    </div>
+  </div>
 </header>
 
-<script is:inline>
-  // Theme Manager - 优化版本
-  class ThemeManager {
-    constructor() {
-      this.html = document.documentElement;
-      this.themeIcon = document.getElementById("theme-icon");
-      this.themeOptions = document.querySelectorAll("[data-theme]");
-      this.mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-      
-      // 缓存DOM元素，避免重复查询
-      this.navToggle = document.getElementById("nav-toggle");
-      
-      this.init();
+<script>
+    document.addEventListener("astro:page-load", () => {
+        new NavbarController();
+        initTheme();
+    });
+
+    /**
+     * Navbar Controller
+     * Handles scroll interactions using a state machine and requestAnimationFrame
+     */
+    class NavbarController {
+        constructor() {
+            this.header = document.getElementById("main-header");
+            if (!this.header) return;
+
+            this.lastScrollY = window.scrollY;
+            this.headerHeight = this.header.offsetHeight || 80;
+            this.isMenuOpen = false;
+            this.ticking = false;
+
+            // Styles
+            this.classes = {
+                fixed: ["fixed", "-translate-y-full"], // Hidden state
+                visible: ["translate-y-0"], // Visible modifier
+                absolute: ["absolute", "translate-y-0"], // Top state
+                styled: ["bg-white/90", "backdrop-blur-md", "dark:bg-body/90", "border-b", "border-border", "dark:border-border"],
+                transparent: ["border-transparent", "border-b"],
+                animating: ["transition-transform", "duration-300"]
+            };
+
+            // Bind methods
+            this.onScroll = this.onScroll.bind(this);
+            this.toggleMenu = this.toggleMenu.bind(this);
+            
+            // Listeners
+            window.addEventListener("scroll", this.onScroll, { passive: true });
+            
+            // Mobile Menu
+            this.mobileToggle = document.getElementById("mobile-menu-toggle");
+            this.mobileToggle?.addEventListener("click", () => this.toggleMenu());
+            
+            this.mobileOverlay = document.getElementById("mobile-overlay");
+            this.mobileOverlay?.addEventListener("click", () => this.toggleMenu(false));
+
+            // Init state
+            this.update();
+        }
+
+        onScroll() {
+            if (!this.ticking) {
+                window.requestAnimationFrame(() => {
+                    this.update();
+                    this.ticking = false;
+                });
+                this.ticking = true;
+            }
+        }
+
+        update() {
+            if (this.isMenuOpen) return;
+
+            const currentScrollY = window.scrollY;
+            const scrollDiff = currentScrollY - this.lastScrollY;
+            const isScrollingDown = scrollDiff > 0;
+
+            // --- State Machine ---
+
+            // 1. AT TOP (Reset)
+            if (currentScrollY <= 0) {
+                this.setTopState();
+            } 
+            // 2. SCROLLED DOWN
+            else if (currentScrollY > this.headerHeight) {
+                this.setScrolledState(isScrollingDown);
+            }
+            // 3. BUFFER ZONE (0 < y <= height)
+            // Do nothing. Leave in previous state (usually Absolute if coming from top)
+            
+            this.lastScrollY = currentScrollY;
+        }
+
+        setTopState() {
+            // Remove animation to prevent snapping when resetting absolute position
+            this.header.classList.remove(...this.classes.animating);
+            
+            // Visuals: Transparent
+            this.header.classList.remove(...this.classes.styled);
+            this.header.classList.add(...this.classes.transparent);
+
+            // Position: Absolute Top
+            this.header.classList.remove(...this.classes.fixed);
+            this.header.classList.remove("-translate-y-full"); // Ensure no hidden translate
+            this.header.classList.add(...this.classes.absolute);
+        }
+
+        setScrolledState(isScrollingDown) {
+            // Visuals: Styled
+            this.header.classList.remove(...this.classes.transparent);
+            this.header.classList.add(...this.classes.styled);
+
+            if (isScrollingDown) {
+                // --- ACTION A: HIDE ---
+                // If it was Absolute: Silent Switch (No animation, just snap to hidden fixed)
+                // If it was Fixed Visible: Slide Out (Animation)
+                
+                if (this.header.classList.contains("absolute")) {
+                    this.header.classList.remove(...this.classes.animating); // Silent
+                    this.header.classList.remove(...this.classes.absolute);
+                    this.header.classList.add(...this.classes.fixed); // Adds -translate-y-full implied
+                } else {
+                    this.header.classList.add(...this.classes.animating); // Animate
+                    this.header.classList.remove(...this.classes.visible);
+                    this.header.classList.add(...this.classes.fixed); // Ensure it has base fixed/hidden classes
+                }
+            } else {
+                // --- ACTION B: SHOW ---
+                // Switch to Fixed Visible
+                this.header.classList.add(...this.classes.animating); // Animate slide in
+                this.header.classList.remove("absolute", "-translate-y-full");
+                this.header.classList.add("fixed", "top-0", "translate-y-0");
+            }
+        }
+
+        toggleMenu(forceState) {
+            this.isMenuOpen = typeof forceState === 'boolean' ? forceState : !this.isMenuOpen;
+            
+            const mobileMenu = document.getElementById("mobile-menu");
+            const iconMenu = this.mobileToggle?.querySelector(".icon-menu");
+            const iconClose = this.mobileToggle?.querySelector(".icon-close");
+
+            if (this.isMenuOpen) {
+                // Open
+                mobileMenu?.classList.remove("translate-x-full");
+                this.mobileOverlay?.classList.remove("opacity-0", "invisible");
+                iconMenu?.classList.add("hidden");
+                iconClose?.classList.remove("hidden");
+                document.body.style.overflow = "hidden";
+
+                // Fix Black BG: Force styled header
+                this.header.classList.remove(...this.classes.transparent);
+                this.header.classList.add(...this.classes.styled);
+            } else {
+                // Close
+                mobileMenu?.classList.add("translate-x-full");
+                this.mobileOverlay?.classList.add("opacity-0", "invisible");
+                iconMenu?.classList.remove("hidden");
+                iconClose?.classList.add("hidden");
+                document.body.style.overflow = "";
+
+                // Reset state based on scroll
+                this.update(); 
+            }
+        }
     }
 
-    init() {
-      // 应用初始主题
-      this.applyStoredTheme();
-      
-      // 绑定事件
-      this.themeOptions.forEach(option => {
-        option.addEventListener("click", e => this.handleThemeChange(e));
-      });
-      
-      // 监听系统主题变化
-      this.mediaQuery.addEventListener("change", () => this.onSystemThemeChange());
-      
-      // Astro路由变化时重新初始化
-      document.addEventListener("astro:after-swap", () => this.reinit());
-    }
+    function initTheme() {
+        const themeBtns = document.querySelectorAll('.theme-btn');
+        const themeBtnsMobile = document.querySelectorAll('.theme-btn-mobile');
+        
+        const savedTheme = localStorage.getItem("theme") || "system";
+        setTheme(savedTheme);
+        updateThemeUI(savedTheme);
 
-    reinit() {
-      // 重新获取元素引用
-      this.themeIcon = document.getElementById("theme-icon");
-      this.themeOptions = document.querySelectorAll("[data-theme]");
-      this.navToggle = document.getElementById("nav-toggle");
-      
-      // 重新绑定事件
-      this.themeOptions.forEach(option => {
-        option.removeEventListener("click", this.handleThemeChange);
-        option.addEventListener("click", e => this.handleThemeChange(e));
-      });
-      
-      // 应用当前主题
-      this.applyStoredTheme();
-    }
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        mediaQuery.addEventListener('change', () => {
+            if (localStorage.getItem("theme") === "system") {
+                setTheme("system");
+            }
+        });
 
-    applyStoredTheme() {
-      const saved = this.getSavedTheme();
-      this.applyTheme(saved);
-      this.updateActiveState(saved);
-    }
+        [...themeBtns, ...themeBtnsMobile].forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const theme = (e.currentTarget as HTMLElement).dataset.theme;
+                if (theme) setTheme(theme);
+            });
+        });
 
-    getSavedTheme() {
-      return localStorage.getItem("theme") || "system";
-    }
+        function setTheme(theme) {
+            localStorage.setItem("theme", theme);
+            updateThemeUI(theme);
+            const html = document.documentElement;
+            if (theme === 'dark') html.classList.add('dark');
+            else if (theme === 'light') html.classList.remove('dark');
+            else {
+                if (window.matchMedia('(prefers-color-scheme: dark)').matches) html.classList.add('dark');
+                else html.classList.remove('dark');
+            }
+        }
 
-    getEffectiveTheme(theme) {
-      if (theme === "dark") return "dark";
-      if (theme === "light") return "light";
-      return this.mediaQuery.matches ? "dark" : "light";
-    }
+        function updateThemeUI(theme) {
+            // Update active states for buttons and icons (simplified for brevity)
+            [...themeBtns, ...themeBtnsMobile].forEach(btn => {
+                const btnTheme = btn.dataset.theme;
+                if (btnTheme === theme) btn.setAttribute('data-active', 'true');
+                else btn.removeAttribute('data-active');
+            });
+            
+            const iconLight = document.querySelector('.theme-icon-light');
+            const iconDark = document.querySelector('.theme-icon-dark');
+            const iconSystem = document.querySelector('.theme-icon-system');
+            
+            iconLight?.classList.add('hidden');
+            iconDark?.classList.add('hidden');
+            iconSystem?.classList.add('hidden');
 
-    applyTheme(theme) {
-      const effective = this.getEffectiveTheme(theme);
-      const isDark = effective === "dark";
-      
-      // 应用dark类
-      this.html.classList.toggle("dark", isDark);
-      
-      // 更新图标：根据effective theme显示相应图标
-      this.updateIcon(effective);
+            if (theme === 'light') iconLight?.classList.remove('hidden');
+            else if (theme === 'dark') iconDark?.classList.remove('hidden');
+            else iconSystem?.classList.remove('hidden');
+        }
     }
-
-    updateIcon(effective) {
-      if (!this.themeIcon) return;
-      
-      const sunIcon = '<svg class="h-5 w-5 fill-current" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line><line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line><line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line><line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line></svg>';
-      const moonIcon = '<svg class="h-5 w-5 fill-current" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>';
-      
-      this.themeIcon.innerHTML = effective === "dark" ? sunIcon : moonIcon;
-    }
-
-    updateActiveState(theme) {
-      this.themeOptions.forEach(option => {
-        const isActive = option.getAttribute("data-theme") === theme;
-        option.classList.toggle("active", isActive);
-      });
-    }
-
-    handleThemeChange(e) {
-      const theme = e.currentTarget.getAttribute("data-theme");
-      localStorage.setItem("theme", theme);
-      
-      this.applyTheme(theme);
-      this.updateActiveState(theme);
-      
-      // 关闭移动菜单
-      if (this.navToggle) this.navToggle.checked = false;
-    }
-
-    onSystemThemeChange() {
-      const current = this.getSavedTheme();
-      if (current === "system") {
-        this.applyTheme("system");
-      }
-    }
-  }
-
-  // 初始化
-  const themeManager = new ThemeManager();
+</script>

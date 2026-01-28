@@ -1,12 +1,15 @@
 ---
 import Posts from "@/components/Posts.astro";
 import Base from "@/layouts/Base.astro";
+import Pagination from "@/layouts/components/Pagination.astro";
 import { getSinglePage } from "@/lib/contentParser.astro";
 import { getTaxonomy } from "@/lib/taxonomyParser.astro";
 import { sortByDate } from "@/lib/utils/sortFunctions";
 import taxonomyFilter from "@/lib/utils/taxonomyFilter";
 import { humanize } from "@/lib/utils/textConverter";
-import taxonomyData from "@/config/taxonomy.json"; // 引入图片配置
+import taxonomyData from "@/config/taxonomy.json";
+import config from "@/config/config.json";
+import { Picture } from "astro:assets";
 
 export async function getStaticPaths() {
   const tags = await getTaxonomy("posts", "tags");
@@ -22,44 +25,75 @@ const posts = await getSinglePage("posts");
 const filterByTags = taxonomyFilter(posts, "tags", tag);
 const sortedPosts = sortByDate(filterByTags);
 
+// Pagination Logic
+const { pagination } = config.settings;
+const totalPages = Math.ceil(sortedPosts.length / pagination);
+const currentPosts = sortedPosts.slice(0, pagination);
+
 const title = humanize(tag || "");
 
-// 获取当前标签的主题图片
+// Image Logic
+const allImages = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/assets/images/**/*.{jpeg,jpg,png,gif}"
+);
+
 const tagMetadata = taxonomyData.tags.find((item) => item.name === tag);
-const tagImage = tagMetadata?.image || "/images/image-placeholder.png";
+const imagePath = tagMetadata?.image || "/images/image-placeholder.png";
+
+const assetPath = imagePath.startsWith("/images/")
+    ? `/src/assets${imagePath}`
+    : `/src/assets/images${imagePath}`;
+
+const imageModule = allImages[assetPath] || allImages["/src/assets/images/image-placeholder.png"];
 ---
 
 <Base title={title || "Tag"}>
   <section class="section">
     <div class="container">
-      <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-16 gap-6">
+      <div class="flex flex-row items-center justify-between mb-16 gap-6">
         
-        <div class="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-6">
-          <div class="w-24 h-24 md:w-32 md:h-32 overflow-hidden rounded-full shadow-lg">
-            <img 
-              src={tagImage} 
-              alt={title} 
-              class="w-full h-full object-cover"
-            />
+        <div class="flex flex-row items-center gap-4 md:gap-6">
+          <div class="w-24 h-24 md:w-32 md:h-32 overflow-hidden rounded-full shadow-lg shrink-0">
+             <Picture
+                src={imageModule()}
+                alt={title}
+                formats={['avif', 'webp']}
+                widths={[200, 400]}
+                sizes="128px"
+                class="w-full h-full object-cover"
+              />
           </div>
           
-          <div>
-            <p class="hidden md:block text-text uppercase tracking-widest text-xs mb-1 font-medium">Tag</p>
-            <h1 class="h2 text-dark">#{title}</h1>
+          <div class="flex flex-col">
+            <p class="text-text uppercase tracking-widest text-xs mb-1 font-medium">Tag</p>
+            <h1 class="h2 text-dark mb-1">{title}</h1>
+            <div class="md:hidden flex items-center gap-2">
+                 <span class="text-sm font-bold text-dark uppercase tracking-wider">
+                    {sortedPosts.length} {sortedPosts.length > 1 ? 'ARTICLES' : 'ARTICLE'}
+                 </span>
+            </div>
           </div>
         </div>
         
-        <div class="flex flex-row md:flex-col items-center md:items-center gap-2 md:gap-0">
-          <span class="text-base md:text-5xl font-bold text-dark leading-none">
+        <div class="hidden md:flex flex-col items-center gap-0">
+          <span class="text-5xl font-bold text-dark leading-none">
             {sortedPosts.length}
           </span>
-          <span class="text-base uppercase tracking-widest text-dark font-semibold md:mt-2">
+          <span class="text-base uppercase tracking-widest text-dark font-semibold mt-2">
             {sortedPosts.length > 1 ? 'articles' : 'article'}
           </span>
         </div>
       </div>
 
-      <Posts posts={sortedPosts} fluid={false} />
+      <Posts posts={currentPosts} fluid={false} />
+      
+      {totalPages > 1 && (
+        <Pagination 
+          section={`/tags/${tag}`} 
+          currentPage={1} 
+          totalPages={totalPages} 
+        />
+      )}
     </div>
   </section>
 </Base>

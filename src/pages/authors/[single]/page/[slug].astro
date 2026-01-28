@@ -1,0 +1,61 @@
+---
+import Posts from "@/components/Posts.astro";
+import Base from "@/layouts/Base.astro";
+import { getSinglePage } from "@/lib/contentParser.astro";
+import { sortByDate } from "@/lib/utils/sortFunctions";
+import { slugify } from "@/lib/utils/textConverter";
+import config from "@/config/config.json";
+
+export async function getStaticPaths() {
+  const authors = await getSinglePage("authors");
+  const posts = await getSinglePage("posts");
+  const { pagination } = config.settings;
+  const paths = [];
+
+  for (const author of authors) {
+    const authorPosts = posts.filter((post) => {
+        return post.data.authors
+            .map((auth) => slugify(auth))
+            .includes(slugify(author.data.title));
+    });
+    const totalPages = Math.ceil(authorPosts.length / pagination);
+    
+    // Generate paths for page 2 onwards
+    for (let i = 1; i < totalPages; i++) {
+      paths.push({
+        params: {
+          single: author.id,
+          slug: (i + 1).toString(),
+        },
+        props: { author }, // Pass author prop to page
+      });
+    }
+  }
+  return paths;
+}
+
+const { single, slug } = Astro.params;
+const { author } = Astro.props; // Get author from props
+const posts = await getSinglePage("posts");
+const sortPostsByDate = sortByDate(posts);
+
+const currentAuthorPosts = sortPostsByDate.filter((post) => {
+  return post.data.authors
+    .map((auth) => slugify(auth))
+    .includes(slugify(author.data.title));
+});
+
+const { pagination } = config.settings;
+const currentPage = slug && !isNaN(Number(slug)) ? Number(slug) : 1;
+const indexOfLastPost = currentPage * pagination;
+const indexOfFirstPost = indexOfLastPost - pagination;
+const currentPosts = currentAuthorPosts.slice(indexOfFirstPost, indexOfLastPost);
+---
+
+<Base title={`${author.data.title} - Page ${currentPage}`}>
+  <section class="section">
+    <div class="container">
+      <Posts posts={currentPosts} showSummary={false} showAuthor={false} fluid={false} />
+    </div>
+  </section>
+</Base>

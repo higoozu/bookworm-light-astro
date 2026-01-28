@@ -1,49 +1,82 @@
 ---
-import { markdownify } from "@/lib/utils/textConverter";
-import { Image } from "astro:assets";
+import { markdownify, slugify } from "@/lib/utils/textConverter";
+import { Picture } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
-import { BsArrowRightCircle } from "react-icons/bs";
+import { getSinglePage } from "@/lib/contentParser.astro";
 
 type Props = {
   authors: CollectionEntry<"authors">[];
 };
 const { authors } = Astro.props;
+
+// Fetch posts to calculate counts
+const allPosts = await getSinglePage("posts");
+
+// Pre-calculate counts
+const authorCounts = new Map<string, number>();
+authors.forEach(author => {
+    const count = allPosts.filter(post => 
+        post.data.authors
+            .map(a => slugify(a))
+            .includes(slugify(author.data.title))
+    ).length;
+    authorCounts.set(author.id, count);
+});
+
+// Image Logic
+const allImages = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/assets/images/**/*.{jpeg,jpg,png,gif}"
+);
+
+const resolveImage = (imagePath: string) => {
+  const assetPath = imagePath.startsWith("/images/")
+    ? `/src/assets${imagePath}`
+    : `/src/assets/images${imagePath}`;
+
+  const imageModule = allImages[assetPath];
+  return imageModule || allImages["/src/assets/images/image-placeholder.png"];
+};
 ---
 
 <div class="row justify-center">
   {
-    authors.map((author) => (
-      <div class="col-12 mb-8 sm:col-6 md:col-4">
-        {author.data.image && (
+    authors.map((author) => {
+      const imageModule = author.data.image ? resolveImage(author.data.image) : resolveImage("/images/image-placeholder.png");
+      
+      return (
+        <div class="col-12 mb-8 sm:col-6 md:col-4">
           <div class="mb-4">
-            <Image
-              src={author.data.image}
-              alt={author.data.title}
-              height={150}
-              width={150}
-              class="mx-auto rounded-lg"
-            />
+            <a href={`/authors/${author.id}`} class="block group">
+                <div class="w-[150px] h-[150px] mx-auto overflow-hidden rounded-full shadow-md group-hover:scale-105 transition-transform duration-300">
+                    <Picture
+                    src={imageModule()}
+                    alt={author.data.title}
+                    formats={['avif', 'webp']}
+                    widths={[150, 300]}
+                    sizes="150px"
+                    class="w-full h-full object-cover"
+                    />
+                </div>
+            </a>
           </div>
-        )}
-        <h3 class="h4 mt-8 mb-3">
-          <a
-            href={`/authors/${author.id}`}
-            class="block hover:text-primary transition duration-200"
-          >
-            {author.data.title}
-          </a>
-        </h3>
-        {author.body && (
-          <p class="mb-3" set:text={markdownify(author.body.slice(0, 100))} />
-        )}
+          <h3 class="h4 mt-6 mb-2">
+            <a
+              href={`/authors/${author.id}`}
+              class="block hover:text-primary transition duration-200"
+            >
+              {author.data.title}
+            </a>
+          </h3>
+          
+          <p class="text-xs font-bold uppercase tracking-widest text-text/60 mb-4">
+              {authorCounts.get(author.id)} {authorCounts.get(author.id)! !== 1 ? 'Articles' : 'Article'}
+          </p>
 
-        <a
-          href={`/authors/${author.id}`}
-          class="inline-flex items-center text-primary transition duration-200 hover:opacity-70"
-        >
-          Read More <BsArrowRightCircle className="inline ml-2" />
-        </a>
-      </div>
-    ))
+          {author.body && (
+            <p class="mb-3" set:text={markdownify(author.body.slice(0, 100))} />
+          )}
+        </div>
+      );
+    })
   }
 </div>

@@ -22,8 +22,8 @@
       "theme_color": {
         "primary": "#2EC4B6",
         "accent": "#FF9F1C",
-        "body": "#1C1C1E",
-        "border": "#424245",
+        "body": "#18181b",
+        "border": "#505050",
         "light": "#2C2C2E",
         "dark": "#FAFAFA",
         "white": "#000000",

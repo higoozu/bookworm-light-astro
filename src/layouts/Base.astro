@@ -176,7 +176,7 @@ const { title, meta_title, description, image, noindex, canonical } =
     <!-- Theme initialization script - must run before first paint -->
     <script is:inline>
       (function () {
-        const theme = localStorage.getItem("theme") || "system";
+        const getTheme = () => localStorage.getItem("theme") || "system";
         const htmlElement = document.documentElement;
 
         function applyTheme(themeValue) {
@@ -196,7 +196,13 @@ const { title, meta_title, description, image, noindex, canonical } =
           }
         }
 
-        applyTheme(theme);
+        // Initial application
+        applyTheme(getTheme());
+
+        // Re-apply on View Transitions swap (prevents flash of white)
+        document.addEventListener("astro:after-swap", () => {
+          applyTheme(getTheme());
+        });
       })();
     </script>
 

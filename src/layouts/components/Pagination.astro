@@ -11,12 +11,12 @@ const hasNextPage = totalPages > currentPage;
       data-next-page={nextPage}
       data-total-pages={totalPages}
       data-section={section}
-      class={`btn btn-primary px-10 py-3 mb-4 transition-all ${!hasNextPage ? 'hidden' : 'inline-block'}`}
+      class={`btn btn-primary px-10 py-3 mb-4 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${!hasNextPage ? 'hidden' : 'inline-block'}`}
     >
       Load More
     </button>
     
-    <p class="text-text/50 text-xs uppercase tracking-[0.2em] font-bold">
+    <p class="text-text/50 text-xs uppercase tracking-[0.2em] font-bold transition-opacity duration-300">
       Page <span id="current-page-display">{currentPage}</span> of {totalPages}
     </p>
   </div>
@@ -28,7 +28,9 @@ const hasNextPage = totalPages > currentPage;
     const display = document.getElementById('current-page-display');
     const container = document.getElementById('post-container');
 
-    if (!btn || !container || !display) return;
+    // Prevent multiple initializations if already setup
+    if (!btn || !container || !display || btn.hasAttribute('data-initialized')) return;
+    btn.setAttribute('data-initialized', 'true');
 
     btn.onclick = async () => {
       const next = btn.getAttribute('data-next-page');
@@ -37,14 +39,20 @@ const hasNextPage = totalPages > currentPage;
       
       if (!next || !total) return;
 
+      const originalText = btn.innerText;
       btn.innerText = "Loading...";
       btn.disabled = true;
+      btn.classList.add("animate-pulse");
 
-      const url = sec ? (sec.startsWith('/') ? `${sec}/page/${next}` : `/${sec}/page/${next}`) : `/page/${next}`;
+      // Construct URL: Handle root sections vs nested sections
+      // If section starts with '/', append '/page/X'. If not, prepend '/'.
+      // For tags: section="/tags/mytag" -> "/tags/mytag/page/2"
+      const baseUrl = sec ? (sec.startsWith('/') ? sec : `/${sec}`) : '';
+      const url = `${baseUrl}/page/${next}`;
       
       try {
         const res = await fetch(url);
-        if (!res.ok) throw new Error("404");
+        if (!res.ok) throw new Error(`Failed to load: ${res.status}`);
         
         const html = await res.text();
         const parser = new DOMParser();
@@ -52,6 +60,8 @@ const hasNextPage = totalPages > currentPage;
         const newPosts = doc.getElementById('post-container');
         
         if (newPosts) {
+          // Append new content with a simple fade-in effect could be added via CSS, 
+          // but for now just inserting HTML is standard.
           container.insertAdjacentHTML('beforeend', newPosts.innerHTML);
           display.innerText = next;
           
@@ -59,25 +69,27 @@ const hasNextPage = totalPages > currentPage;
           const totalVal = parseInt(total);
           
           if (nextVal >= totalVal) {
-            // 彻底隐藏并移除按钮
-            btn.style.display = 'none';
-            btn.remove(); 
+            btn.style.display = 'none'; // Hide button
+            btn.remove(); // Remove from DOM
           } else {
             btn.setAttribute('data-next-page', (nextVal + 1).toString());
-            btn.innerText = "Load More";
+            btn.innerText = originalText;
             btn.disabled = false;
+            btn.classList.remove("animate-pulse");
           }
+        } else {
+            throw new Error("No post container found in response");
         }
       } catch (e) {
-        btn.innerText = "Error, try again";
+        console.error("Pagination Error:", e);
+        btn.innerText = "Retry";
         btn.disabled = false;
-        console.error("Load more failed:", e);
+        btn.classList.remove("animate-pulse");
       }
     };
   }
 
-  // 初始化
+  // Init
   setupLoadMore();
-  // 适配 ClientRouter：在每次导航完成后重新初始化
   document.addEventListener('astro:page-load', setupLoadMore);
 </script>

@@ -1,0 +1,53 @@
+---
+import Posts from "@/components/Posts.astro";
+import Base from "@/layouts/Base.astro";
+import { getSinglePage } from "@/lib/contentParser.astro";
+import { getTaxonomy } from "@/lib/taxonomyParser.astro";
+import { sortByDate } from "@/lib/utils/sortFunctions";
+import taxonomyFilter from "@/lib/utils/taxonomyFilter";
+import { humanize } from "@/lib/utils/textConverter";
+import config from "@/config/config.json";
+
+export async function getStaticPaths() {
+  const tags = await getTaxonomy("posts", "tags");
+  const posts = await getSinglePage("posts");
+  const { pagination } = config.settings;
+  const paths = [];
+
+  for (const tag of tags) {
+    const filterByTags = taxonomyFilter(posts, "tags", tag);
+    const totalPages = Math.ceil(filterByTags.length / pagination);
+    
+    // Generate paths for page 2 onwards
+    for (let i = 1; i < totalPages; i++) {
+      paths.push({
+        params: {
+          tag: tag,
+          slug: (i + 1).toString(),
+        },
+      });
+    }
+  }
+  return paths;
+}
+
+const { tag, slug } = Astro.params;
+const posts = await getSinglePage("posts");
+const filterByTags = taxonomyFilter(posts, "tags", tag);
+const sortedPosts = sortByDate(filterByTags);
+
+const { pagination } = config.settings;
+const currentPage = slug && !isNaN(Number(slug)) ? Number(slug) : 1;
+const indexOfLastPost = currentPage * pagination;
+const indexOfFirstPost = indexOfLastPost - pagination;
+const currentPosts = sortedPosts.slice(indexOfFirstPost, indexOfLastPost);
+const title = humanize(tag || "");
+---
+
+<Base title={`${title} - Page ${currentPage}`}>
+  <section class="section">
+    <div class="container">
+      <Posts posts={currentPosts} fluid={false} />
+    </div>
+  </section>
+</Base>
