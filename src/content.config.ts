@@ -46,12 +46,12 @@ const authorsCollection = defineCollection({
 // Posts collection schema
 const postsCollection = defineCollection({
   loader: glob({ pattern: "**/*.{md,mdx}", base: "src/content/posts" }),
-  schema: z.object({
+  schema: ({ image }) => z.object({ // 注意这里引入了 image 辅助函数
     title: z.string(),
     meta_title: z.string().optional(),
     description: z.string().optional(),
     date: z.date().optional(),
-    image: z.string().optional(),
+    image: image().optional(), // 将 z.string() 修改为 image()
     categories: z.array(z.string()).default(["others"]),
     authors: z.array(z.string()).default(["Admin"]),
     tags: z.array(z.string()).default(["others"]),

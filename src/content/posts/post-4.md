@@ -3,7 +3,7 @@ title: "Why a balloon is a flexible bag that can be inflated with a gas"
 meta_title: ""
 description: "meta description"
 date: 2025-04-04T16:56:47+06:00
-image: "/images/posts/04.jpg"
+image: "../../assets/images/posts/04.jpg"
 draft: false
 authors: ["Mark Dinn", "John Doe"]
 tags: ["Balloon", "Gas"]

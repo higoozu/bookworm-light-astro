@@ -37,4 +37,8 @@ export default defineConfig({
     shikiConfig: { theme: "one-dark-pro", wrap: true },
     extendDefaultPlugins: true,
   },
+  build: {
+    // 将 '_astro' 修改为你喜欢的名称，例如 'assets'
+    assets: 'assets' 
+  }
 });

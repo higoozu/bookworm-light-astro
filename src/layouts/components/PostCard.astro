@@ -47,7 +47,7 @@ const postAuthors = authors.filter((author) =>
             <>
               <a
                 href={`/authors/${slugify(author.data.title)}`}
-                class="flex items-center hover:text-primary font-medium"
+                class="flex items-center hover:text-primary"
               >
                 <span class="hover:text-primary transition-colors">
                   {author.data.title}
@@ -58,8 +58,8 @@ const postAuthors = authors.filter((author) =>
           ))
         }
       </li>
-      <li class="ml-4 flex items-center">
-        <span class="mr-2 opacity-30">•</span>
+      <li class="ml-2 flex items-center">
+        <span class="mr-2 opacity-30">/</span>
         {dateFormat(date!)}
       </li>
     </ul>
