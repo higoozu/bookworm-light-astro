@@ -94,222 +94,87 @@
   @apply hover:text-primary dark:hover:text-primary;
 }
 
-/* Content style - prose for markdown content */
+/* Content style - Refined for "Storytelling" feel */
 .content {
   @apply prose max-w-none;
-  @apply prose-headings:font-bold prose-headings:text-text-dark dark:prose-headings:text-text-light;
-  @apply prose-h1:mb-4 prose-h1:text-h1-sm md:prose-h1:text-h1;
-  @apply prose-h2:mb-4 prose-h2:mt-4 prose-h2:text-h2-sm md:prose-h2:text-h2;
-  @apply prose-h3:mt-4 prose-h3:text-h3-sm md:prose-h3:text-h3;
-  @apply prose-h4:mt-4;
-  @apply prose-h5:mb-4;
-  @apply prose-h6:mb-6;
-  @apply prose-blockquote:rounded-lg prose-blockquote:border-primary prose-blockquote:px-7 prose-blockquote:py-3;
-  @apply prose-blockquote:text-lg prose-blockquote:leading-8;
-  @apply text-text-dark dark:text-text-light;
+  /* Headings: Serif, Bold */
+  @apply prose-headings:font-serif prose-headings:font-bold prose-headings:text-text-dark dark:prose-headings:text-text-light;
+  @apply prose-h1:mb-6 prose-h1:text-4xl md:prose-h1:text-5xl;
+  @apply prose-h2:mt-12 prose-h2:mb-6 prose-h2:text-3xl md:prose-h2:text-4xl;
+  @apply prose-h3:mt-8 prose-h3:mb-4 prose-h3:text-2xl md:prose-h3:text-3xl;
+  
+  /* Body: Sans-serif, Readable */
+  @apply prose-p:font-sans prose-p:text-lg prose-p:leading-[1.8] prose-p:text-text-dark/90 dark:prose-p:text-text-light/90 prose-p:mb-8;
 }
 
+/* Blockquotes: Distinctive */
 .content blockquote {
-  @apply bg-light border-l-[4px];
-  border-left-color: var(--color-primary);
+  @apply font-serif italic text-xl leading-relaxed;
+  @apply border-l-[4px] border-primary;
+  @apply bg-light;
+  @apply py-6 px-8 my-10 rounded-r-lg;
+  font-style: normal; /* Reset default tailwind italic if needed, but font-serif italic usually implies italic style */
+}
+
+/* Remove default quotes from blockquote */
+.content blockquote p:first-of-type::before {
+  content: none;
+}
+.content blockquote p:last-of-type::after {
+  content: none;
 }
 
 /* Link styling in content */
 .content a {
-  @apply text-primary dark:text-primary transition duration-200;
+  @apply text-primary font-medium transition duration-200 decoration-2 underline-offset-2 hover:underline;
   @apply hover:text-text-dark dark:hover:text-text-light;
 }
 
 /* Image styling in content */
 .content img {
-  @apply rounded-lg;
-  max-width: 100%;
-  height: auto;
+  @apply rounded-xl shadow-sm my-10;
 }
 
 /* Code and pre styling */
 .content pre {
-  @apply px-6 py-5 rounded-lg bg-light overflow-x-auto;
+  @apply px-6 py-5 rounded-xl bg-light overflow-x-auto border border-border;
+  @apply text-sm leading-relaxed;
 }
 
 .content code {
-  @apply text-text-dark dark:text-text-light;
+  @apply text-primary font-medium bg-light px-1.5 py-0.5 rounded-md;
+}
+.content pre code {
+  @apply bg-transparent p-0 text-inherit;
+}
+
+/* List styling */
+.content ul, .content ol {
+  @apply my-8 pl-6;
+}
+.content li {
+  @apply mb-3 text-lg leading-relaxed pl-2 marker:text-primary;
 }
 
 /* Table styling */
 .content table {
-  @apply relative overflow-hidden rounded-lg border border-border;
+  @apply relative overflow-hidden rounded-lg border border-border my-10 w-full;
 }
 
 .content thead {
-  @apply bg-light border-border;
+  @apply bg-light border-b border-border;
 }
 
 .content th {
-  @apply relative z-10 py-4 px-4 font-semibold text-text-dark;
+  @apply relative z-10 py-4 px-6 font-bold text-left text-text-dark dark:text-text-light text-sm uppercase tracking-wider;
 }
 
 .content tr {
-  @apply border-border;
+  @apply border-b border-border last:border-0;
 }
 
 .content td {
-  @apply relative z-10 py-4 px-3 text-text-dark;
-}
-
-/* Tab */
-.tab {
-  @apply overflow-hidden rounded-lg border border-border;
-}
-
-.tab-nav {
-  @apply flex border-b m-0 list-none bg-light border-border;
-}
-
-.tab-nav-item {
-  @apply cursor-pointer border-b-[3px] py-2 text-lg my-0 px-8;
-  @apply text-text-dark border-border;
-  opacity: 0.8;
-  transition: all 0.2s ease;
-}
-
-.tab-nav-item.active {
-  @apply border-text-dark opacity-100;
-}
-
-.tab-content-panel {
-  @apply p-8;
-}
-
-.tab-content-panel p {
-  @apply mb-0;
-}
-
-.tab-content-panel.active {
-  @apply block;
-}
-
-/* Accordion */
-.accordion {
-  @apply mb-6 overflow-hidden rounded-lg border bg-light border-border;
-}
-
-.accordion-header {
-  @apply flex w-full cursor-pointer items-center justify-between px-8 py-4 text-lg text-text-dark;
-  transition: all 0.2s ease;
-}
-
-.accordion-header:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-}
-
-.dark .accordion-header:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-}
-
-.accordion-icon {
-  width: 0.8em;
-  height: 0.8em;
-  margin-left: auto;
-  rotate: -90deg;
-  transition: rotate 0.2s ease;
-  flex-shrink: 0;
-}
-
-.accordion-content {
-  max-height: 0;
-  overflow: hidden;
-  padding-left: 2rem;
-  padding-right: 2rem;
-  padding-top: 0;
-  padding-bottom: 0;
-  transition: max-height 0.2s ease;
-}
-
-.accordion.active .accordion-icon {
-  rotate: 0;
-}
-
-.accordion.active .accordion-content {
-  max-height: 100vh;
-  padding-bottom: 2rem;
-}
-
-/* Notice */
-.notice {
-  @apply mb-6 rounded-lg border px-8 py-6;
-  transition: all 0.2s ease;
-}
-
-.notice-head {
-  @apply flex items-center;
-}
-
-.notice-head svg {
-  @apply mr-3;
-}
-
-.notice-head p {
-  @apply font-primary text-xl font-semibold m-0;
-  color: currentColor;
-}
-
-.notice-body {
-  @apply mt-3;
-}
-
-.notice-body p {
-  @apply my-0;
-  color: currentColor;
-}
-
-/* Notice colors - using specific hex values as originally defined */
-.notice.note {
-  color: #1B83E2;
-  border-color: #1B83E2;
-  background-color: rgba(27, 131, 226, 0.1);
-}
-
-.notice.tip {
-  color: #40D294;
-  border-color: #40D294;
-  background-color: rgba(64, 210, 148, 0.1);
-}
-
-.notice.info {
-  color: #E3A72C;
-  border-color: #E3A72C;
-  background-color: rgba(227, 167, 44, 0.1);
-}
-
-.notice.warning {
-  color: #DB2C23;
-  border-color: #DB2C23;
-  background-color: rgba(219, 44, 35, 0.1);
-}
-
-.dark .notice.note {
-  color: #5BA3FF;
-  border-color: #5BA3FF;
-  background-color: rgba(91, 163, 255, 0.1);
-}
-
-.dark .notice.tip {
-  color: #5ADBA8;
-  border-color: #5ADBA8;
-  background-color: rgba(90, 219, 168, 0.1);
-}
-
-.dark .notice.info {
-  color: #F4B860;
-  border-color: #F4B860;
-  background-color: rgba(244, 184, 96, 0.1);
-}
-
-.dark .notice.warning {
-  color: #FF6B63;
-  border-color: #FF6B63;
-  background-color: rgba(255, 107, 99, 0.1);
+  @apply relative z-10 py-4 px-6 text-text-dark dark:text-text-light text-base;
 }
 
 /* Footer links */

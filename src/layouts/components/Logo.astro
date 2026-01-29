@@ -1,39 +1,97 @@
 ---
-import { Image } from "astro:assets";
+import { Picture } from "astro:assets";
 import config from "@/config/config.json";
-const { src } = Astro.props;
+
 const {
   logo,
+  logo_darkmode,
   logo_width,
   logo_height,
   logo_text,
   title,
 }: {
   logo: string;
+  logo_darkmode: string;
   logo_width: any;
   logo_height: any;
   logo_text: string;
   title: string;
 } = config.site;
+
+// Import all images from src/assets
+const allImages = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/assets/images/**/*.{jpeg,jpg,png,gif,svg}"
+);
+
+// Helper to resolve image path to module
+const resolveImage = (imagePath: string) => {
+  if (!imagePath) return null;
+  // If it's already a full src/assets path, use it. Otherwise, assume it's under images
+  const assetPath = imagePath.startsWith("/src/assets/") 
+    ? imagePath 
+    : imagePath.startsWith("/images/") 
+      ? `/src/assets${imagePath}` 
+      : `/src/assets/images/${imagePath.replace(/^\//, '')}`;
+
+  return allImages[assetPath] || null;
+};
+
+const lightLogoModule = resolveImage(logo);
+const darkLogoModule = resolveImage(logo_darkmode || logo);
+
+const width = parseInt(logo_width.replace("px", ""));
+const height = parseInt(logo_height.replace("px", ""));
 ---
 
-<a href="/" class="navbar-brand block">
+<a href="/" class="navbar-brand inline-flex items-center gap-3 group">
   {
-    src || logo ? (
-      <Image
-        width={logo_width.replace("px", "") * 2}
-        height={logo_height.replace("px", "") * 2}
-        src={src ? src : logo}
-        alt={title}
-        style={{
-          height: logo_height.replace("px", "") + "px",
-          width: logo_width.replace("px", "") + "px",
-        }}
-      />
-    ) : logo_text ? (
-      logo_text
-    ) : (
-      title
+    (lightLogoModule || darkLogoModule) && (
+      <div class="relative flex items-center shrink-0">
+        {lightLogoModule && (
+          <div class={darkLogoModule ? "dark:hidden" : ""}>
+            <Picture
+              src={lightLogoModule()}
+              alt={title}
+              width={width}
+              height={height}
+              formats={["avif", "webp"]}
+              class="object-contain"
+              style={{
+                height: height + "px",
+                width: "auto",
+              }}
+            />
+          </div>
+        )}
+        {darkLogoModule && (
+          <div class="hidden dark:block">
+            <Picture
+              src={darkLogoModule()}
+              alt={title}
+              width={width}
+              height={height}
+              formats={["avif", "webp"]}
+              class="object-contain"
+              style={{
+                height: height + "px",
+                width: "auto",
+              }}
+            />
+          </div>
+        )}
+      </div>
     )
+  }
+
+  {
+    logo_text ? (
+      <span class="text-xl font-bold text-text-dark dark:text-text-light group-hover:text-primary transition-colors">
+        {logo_text}
+      </span>
+    ) : !lightLogoModule && !darkLogoModule ? (
+      <span class="text-xl font-bold text-text-dark dark:text-text-light group-hover:text-primary transition-colors">
+        {title}
+      </span>
+    ) : null
   }
 </a>

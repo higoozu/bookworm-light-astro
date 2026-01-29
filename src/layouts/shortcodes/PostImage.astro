@@ -1,0 +1,34 @@
+---
+import { Picture } from "astro:assets";
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  caption?: string;
+  style?: "standard" | "wide";
+}
+
+const { src, alt, caption, style = "standard" } = Astro.props;
+
+const containerClass = style === "wide" 
+  ? "w-full md:-ml-[10%] md:w-[120%] my-8" // Wide: Break out of container on desktop
+  : "w-full my-8"; // Standard: Contain
+
+const imageClass = "w-full h-auto rounded-lg shadow-sm";
+---
+
+<figure class={containerClass}>
+  <Picture
+    src={src}
+    alt={alt}
+    formats={["avif", "webp"]}
+    widths={[720, 1200, 1600]}
+    sizes={style === "wide" ? "(max-width: 768px) 100vw, 1200px" : "(max-width: 768px) 100vw, 720px"}
+    class={imageClass}
+  />
+  {caption && (
+    <figcaption class="text-right text-xs text-text/60 mt-2 italic font-serif">
+      {caption}
+    </figcaption>
+  )}
+</figure>

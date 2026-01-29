@@ -4,30 +4,78 @@ import { defineCollection, z } from "astro:content";
 // About collection schema
 const aboutCollection = defineCollection({
   loader: glob({ pattern: "**/-*.{md,mdx}", base: "src/content/about" }),
-  schema: z.object({
-    title: z.string(),
-    meta_title: z.string().optional(),
-    image: z.string().optional(),
-    draft: z.boolean().optional(),
-    what_i_do: z.object({
+  schema: ({ image }) =>
+    z.object({
       title: z.string(),
-      items: z.array(
-        z.object({
+      meta_title: z.string().optional(),
+      description: z.string().optional(),
+      image: image().optional(),
+      draft: z.boolean().optional(),
+      hero: z.object({
+        title: z.string(),
+        slogan: z.string(),
+        image: image(),
+      }),
+      introduction: z.object({
+        title: z.string(),
+        subtitle: z.string().optional(),
+        avatar: image().optional(),
+        stats: z.array(
+          z.object({
+            label: z.string(),
+            value: z.string(),
+            icon: z.string(),
+          }),
+        ),
+      }),
+      sections: z.object({
+        upcoming: z.object({
           title: z.string(),
-          description: z.string(),
+          items: z.array(
+            z.object({
+              title: z.string(),
+              label: z.string().optional(),
+              image: image(),
+            }),
+          ),
         }),
-      ),
+        favorites: z.object({
+          title: z.string(),
+          items: z.array(
+            z.object({
+              title: z.string(),
+              description: z.string(),
+              image: image(),
+            }),
+          ),
+        }),
+        journey: z.object({
+          title: z.string(),
+          milestones: z.array(
+            z.object({
+              year: z.string(),
+              title: z.string(),
+              description: z.string(),
+            }),
+          ),
+        }),
+      }),
+      cta: z
+        .object({
+          label: z.string(),
+          link: z.string(),
+        })
+        .optional(),
     }),
-  }),
 });
 
 // Authors collection schema
 const authorsCollection = defineCollection({
   loader: glob({ pattern: "**/*.{md,mdx}", base: "src/content/authors" }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     title: z.string(),
     meta_title: z.string().optional(),
-    image: z.string().optional(),
+    image: image().optional(),
     description: z.string().optional(),
     social: z
       .object({

@@ -40,24 +40,17 @@ const currentPosts = currentAuthorPosts.slice(0, pagination);
 const allImages = import.meta.glob<{ default: ImageMetadata }>(
   "/src/assets/images/**/*.{jpeg,jpg,png,gif}"
 );
+const placeholderImage = allImages["/src/assets/images/image-placeholder.png"];
 
-const resolveImage = (imagePath: string) => {
-  const assetPath = imagePath.startsWith("/images/")
-    ? `/src/assets${imagePath}`
-    : `/src/assets/images${imagePath}`;
-
-  const imageModule = allImages[assetPath];
-  return imageModule || allImages["/src/assets/images/image-placeholder.png"];
-};
-
-const imageModule = image ? resolveImage(image) : resolveImage("/images/image-placeholder.png");
+// image is now ImageMetadata from schema
+const imageSrc = image || placeholderImage();
 ---
 
 <Base
   title={title}
   meta_title={meta_title}
   description={description}
-  image={image}
+  image={image?.src} 
 >
   <section class="section">
     <div class="container">
@@ -66,10 +59,10 @@ const imageModule = image ? resolveImage(image) : resolveImage("/images/image-pl
         
         <!-- Left Area: Avatar + Info Column -->
         <div class="flex flex-row items-start gap-4 md:gap-8 flex-1 max-w-3xl">
-          {image && (
+          {imageSrc && (
             <div class="w-20 h-20 md:w-32 md:h-32 overflow-hidden rounded-full shadow-lg shrink-0">
               <Picture
-                src={imageModule()}
+                src={imageSrc}
                 alt={title}
                 formats={['avif', 'webp']}
                 widths={[160, 320]}
@@ -79,9 +72,9 @@ const imageModule = image ? resolveImage(image) : resolveImage("/images/image-pl
             </div>
           )}
           
-          <div class="flex flex-col flex-1">
-            <h1 class="h2 text-dark mb-2">{title}</h1>
-            <div class="content text-sm text-text/80 leading-relaxed max-w-prose">
+          <div class="flex flex-col flex-1 min-w-0">
+            <h1 class="text-2xl md:text-4xl font-bold text-text-dark dark:text-text-light mb-1 md:mb-2">{title}</h1>
+            <div class="content text-sm text-text/80 leading-relaxed mb-3 line-clamp-3 md:line-clamp-none">
                <Content />
             </div>
             
@@ -100,7 +93,7 @@ const imageModule = image ? resolveImage(image) : resolveImage("/images/image-pl
         </div>
         
         <!-- Desktop Right Stats -->
-        <div class="hidden md:flex flex-col items-center gap-0 shrink-0 pl-8 md:pl-12">
+        <div class="hidden md:flex flex-col items-center gap-0 shrink-0 border-l border-border dark:border-border pl-8 md:pl-12">
           <span class="text-5xl font-bold text-text-dark dark:text-text-light leading-none">
             {currentAuthorPosts.length}
           </span>

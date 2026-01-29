@@ -1,21 +1,47 @@
 ---
 // src/layouts/components/Explore.astro
+import { Picture } from "astro:assets";
+
 const { items } = Astro.props;
+
+// Import all images from src/assets
+const allImages = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/assets/images/**/*.{jpeg,jpg,png,gif}"
+);
+
+// Resolve image path to module
+const resolveImage = (imagePath: string) => {
+  const assetPath = imagePath.startsWith("/images/")
+    ? `/src/assets${imagePath}`
+    : `/src/assets/images${imagePath}`;
+
+  return allImages[assetPath] || null;
+};
 ---
 
-<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-  {items.map((item: any) => (
-    <a href={item.link} class="relative group aspect-square overflow-hidden block rounded-lg">
-      <img 
-        src={item.image} 
-        alt={item.name} 
-        class="w-full h-full object-cover transition duration-700 group-hover:scale-110" 
-      />
-      <div class="absolute inset-0 bg-black/40 flex items-center justify-center transition-all duration-300 group-hover:bg-black/20">
-        <span class="text-white dark:text-dark text-base font-bold tracking-[0.2em] uppercase group-hover:border-white transition-colors">
-          {item.name}
-        </span>
-      </div>
-    </a>
-  ))}
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+  {items.map((item: any) => {
+    const imageModule = item.image ? resolveImage(item.image) : null;
+    return (
+      <a href={item.link} class="relative group aspect-square overflow-hidden block rounded-2xl bg-light transition-all duration-300">
+        {imageModule && (
+          <Picture
+            src={imageModule()}
+            alt={item.name}
+            formats={["avif", "webp"]}
+            widths={[200, 400]}
+            sizes="(max-width: 768px) 50vw, 16vw"
+            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-115 opacity-90 group-hover:opacity-100"
+          />
+        )}
+              <div class="absolute inset-0 bg-black/30 group-hover:bg-black/10 flex items-center justify-center transition-all duration-500">
+                <div class="px-2 py-1 transition-all duration-500 transform scale-95 group-hover:scale-100">
+                  <span class="text-neutral-50 text-base md:text-base font-bold tracking-[0.2em] uppercase">
+                    {item.name}
+                  </span>
+                </div>
+              </div>
+        </a>
+    );
+  })}
 </div>

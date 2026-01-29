@@ -1,7 +1,7 @@
 ---
 title: John Doe
 meta_title: ""
-image: /images/authors/john-doe.jpg
+image: "@/assets/images/authors/john-doe.jpg"
 description: this is meta description
 social:
   facebook: https://www.facebook.com/johndoe

@@ -1,61 +1,248 @@
 ---
 import Base from "@/layouts/Base.astro";
-import { markdownify } from "@/lib/utils/textConverter";
-import { Image } from "astro:assets";
+import { Picture } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
 import { getEntry, render } from "astro:content";
+import {
+  IoAirplaneOutline,
+  IoGlobeOutline,
+  IoRestaurantOutline,
+} from "react-icons/io5";
 
 const entry = (await getEntry("about", "-index")) as CollectionEntry<"about">;
 const { Content } = await render(entry);
-const { title, meta_title, image, what_i_do } = entry.data;
+const {
+  title,
+  meta_title,
+  description,
+  image,
+  hero,
+  introduction,
+  sections,
+  cta,
+} = entry.data;
+
+const metaImage = (image ?? hero.image)?.src;
+
+const statIcons = {
+  globe: IoGlobeOutline,
+  plane: IoAirplaneOutline,
+  bowl: IoRestaurantOutline,
+} as const;
 ---
 
-<Base title={title} meta_title={meta_title} image={image}>
-  <section class="section">
-    <div class="container">
-      <div class="row md:gx-4">
-        <div class="sm:col-5 md:col-4">
-          {
-            image && (
-              <div class="img-cover mb-8">
-                <Image
-                  src={image}
-                  width={295}
-                  height={395}
-                  alt={title}
-                  class="rounded-lg w-full"
-                />
-              </div>
-            )
-          }
+<Base
+  title={title}
+  meta_title={meta_title}
+  description={description}
+  image={metaImage}
+>
+  <!-- Hero Section -->
+  <section class="pt-8 pb-4">
+    <div class="max-w-340 mx-auto px-4">
+      <div class="relative w-full h-[40vh] md:h-[55vh] overflow-hidden rounded-4xl bg-light transition-colors duration-300 shadow-sm">
+        <div class="absolute inset-0 z-0">
+          <Picture
+            src={hero.image}
+            alt={hero.title}
+            class="w-full h-full object-cover"
+            formats={["avif", "webp"]}
+            widths={[900, 1400, 2000]}
+            sizes="(max-width: 1200px) 100vw, 1400px"
+            fallbackFormat="jpg"
+            loading="eager"
+            decoding="async"
+          />
+          <div class="absolute inset-0 bg-linear-to-t from-black/90 via-black/30 to-transparent dark:from-black/95 dark:via-black/40 opacity-80" />
         </div>
-        <div class="sm:col-7 md:col-8">
-          <h1 set:html={markdownify(title)} class="h3 mb-8" />
-
-          <div class="content">
-            <Content />
+        
+        <div class="absolute inset-0 flex items-center justify-center text-center px-6 z-10">
+          <div class="max-w-3xl">
+            <h1 class="text-4xl md:text-6xl font-bold  text-neutral-50">
+              {hero.title}
+            </h1>
+            <p class="mt-4 text-base md:text-xl text-neutral-100/90 font-medium max-w-2xl mx-auto">
+              {hero.slogan}
+            </p>
           </div>
-          <a href="#" class="btn btn-primary text-white py-2"
-            >Get In Touch</a
-          >
         </div>
       </div>
     </div>
   </section>
 
+  <!-- Introduction Section -->
+  <section class="section">
+    <div class="container">
+      <div class="row gy-10 items-start">
+        <div class="lg:col-7">
+          <div class="max-w-2xl">
+            {introduction.subtitle && (
+              <p class="text-xs uppercase tracking-[0.35em] text-text/60 mb-4 font-bold">
+                {introduction.subtitle}
+              </p>
+            )}
+            <h2 class="text-3xl md:text-4xl font-bold text-text-dark dark:text-text-light mb-6">
+              {introduction.title}
+            </h2>
+            <div class="content">
+              <Content />
+            </div>
+          </div>
+        </div>
+        <div class="lg:col-5">
+          <div class="rounded-3xl border border-border bg-white dark:bg-body p-8 md:p-10">
+            {introduction.avatar && (
+              <div class="mx-auto mb-10 h-40 w-40 overflow-hidden rounded-full border-4 border-white dark:border-dark">
+                <Picture
+                  src={introduction.avatar}
+                  alt={title}
+                  class="w-full h-full object-cover"
+                  formats={["avif", "webp"]}
+                  widths={[200, 320, 420]}
+                  sizes="160px"
+                  fallbackFormat="jpg"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+            )}
+            <div class="grid gap-6">
+              {introduction.stats.map((stat) => {
+                const StatIcon = statIcons[stat.icon] ?? IoGlobeOutline;
+                return (
+                  <div class="flex items-center gap-5">
+                    <div class="h-12 w-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                      <StatIcon className="h-6 w-6" aria-hidden="true" />
+                    </div>
+                    <div>
+                      <div class="text-2xl font-bold text-text-dark dark:text-text-light leading-none mb-1">
+                        {stat.value}
+                      </div>
+                      <div class="text-[10px] uppercase tracking-[0.2em] text-text/50 font-bold">
+                        {stat.label}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            {cta && (
+              <a
+                href={cta.link}
+                class="btn btn-primary text-white py-3 px-8 mt-10 inline-flex w-full justify-center"
+              >
+                {cta.label}
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stories Beyond the Map Section -->
   <section class="section pt-0">
     <div class="container">
-      <h3 class="page-heading mb-20">{what_i_do.title}</h3>
-      <div class="row justify-center gy-4 text-center">
-        {
-          what_i_do.items.map((item: any) => (
-            <div class="lg:col-4 md:col-6">
-              <i class="{{.icon}} fa-3x text-primary mb-4" />
-              <h4 class="text-dark font-weight-700 mb-3">{item.title}</h4>
-              <p>{item.description}</p>
-            </div>
-          ))
-        }
+      <div class="mb-12 md:mb-16 text-center">
+        <h2 class="text-3xl md:text-4xl font-bold text-text-dark dark:text-text-light tracking-tight">
+          Stories Beyond the Map
+        </h2>
+      </div>
+      <div class="grid gap-8 lg:grid-cols-3 items-stretch">
+        
+        <!-- Upcoming Adventures: Flex-grow layout to eliminate whitespace -->
+        <article class="rounded-3xl border border-border bg-section-bg dark:bg-body/50 p-6 md:p-8 flex flex-col h-full">
+          <h3 class="text-xl md:text-2xl font-bold text-text-dark dark:text-text-light mb-6 shrink-0">
+            {sections.upcoming.title}
+          </h3>
+          <div class="flex flex-col gap-4 flex-1">
+            {sections.upcoming.items.map((item) => (
+              <div class="relative overflow-hidden rounded-2xl flex-1 max-h-30 group">
+                <Picture
+                  src={item.image}
+                  alt={item.title}
+                  class="w-full h-full object-cover"
+                  formats={["avif", "webp"]}
+                  widths={[240, 360, 480]}
+                  sizes="(max-width: 800px) 100vw, 280px"
+                  fallbackFormat="jpg"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div class="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
+                <div class="absolute left-4 bottom-3 text-[10px] font-bold uppercase tracking-[0.2em] text-neutral-50">
+                  {item.label ?? "To Be Explored"}
+                </div>
+              </div>
+            ))}
+          </div>
+        </article>
+
+        <!-- Favorites -->
+        <article class="rounded-3xl border border-border bg-section-bg dark:bg-body/50 p-6 md:p-8 flex flex-col h-full">
+          <h3 class="text-xl md:text-2xl font-bold text-text-dark dark:text-text-light mb-6 shrink-0">
+            {sections.favorites.title}
+          </h3>
+          <div class="space-y-6 flex-1 flex flex-col">
+            {sections.favorites.items.map((item) => (
+              <div class="flex gap-4">
+                <div class="w-20 h-20 shrink-0 overflow-hidden rounded-2xl shadow-sm">
+                  <Picture
+                    src={item.image}
+                    alt={item.title}
+                    class="w-full h-full object-cover"
+                    formats={["avif", "webp"]}
+                    widths={[160, 240, 320]}
+                    sizes="80px"
+                    fallbackFormat="jpg"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <div>
+                  <h4 class="text-base font-bold text-text-dark dark:text-text-light mb-1">
+                    {item.title}
+                  </h4>
+                  <p class="text-sm text-text/70 leading-snug line-clamp-3">
+                    {item.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </article>
+
+        <!-- My Journey: Corrected Timeline Positioning -->
+        <article class="rounded-3xl border border-border bg-section-bg dark:bg-body/50 p-6 md:p-8 flex flex-col h-full">
+          <h3 class="text-xl md:text-2xl font-bold text-text-dark dark:text-text-light mb-6 shrink-0">
+            {sections.journey.title}
+          </h3>
+          <ol class="relative space-y-5 pl-10 flex-1">
+            <!-- Timeline Axis -->
+            <div
+              class="absolute left-4.25 top-2 bottom-2 w-0.5 bg-border dark:bg-dark/20"
+              aria-hidden="true"
+            />
+            {sections.journey.milestones.map((item) => (
+              <li class="relative">
+                <div class="absolute -left-7.5 top-1.5 h-4 w-4 flex items-center justify-center">
+                   <span class="h-3 w-3 rounded-full bg-primary" />
+                </div>
+                <div class="flex flex-col">
+                  <p class="text-xs font-extrabold uppercase text-primary mb-1">
+                    {item.year}
+                  </p>
+                  <h4 class="text-lg font-bold text-text-dark dark:text-text-light leading-tight">
+                    {item.title}
+                  </h4>
+                  <p class="text-sm text-text/70 leading-relaxed mt-2">
+                    {item.description}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </article>
       </div>
     </div>
   </section>

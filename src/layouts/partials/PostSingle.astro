@@ -5,7 +5,7 @@ import { getSinglePage } from "@/lib/contentParser.astro";
 import dateFormat from "@/lib/utils/dateFormat";
 import similerItems from "@/lib/utils/similarItems";
 import { humanize, markdownify, slugify } from "@/lib/utils/textConverter";
-import { Image } from "astro:assets";
+import { Picture } from "astro:assets";
 import { render } from "astro:content";
 
 const allAuthors = await getSinglePage("authors");
@@ -13,10 +13,8 @@ const posts = await getSinglePage("posts");
 const { post } = Astro.props;
 const similarPosts = similerItems(post, posts, post.slug);
 const { Content } = await render(post);
-const { title, description, authors, categories, image, date, tags } =
-  post.data;
+const { title, description, authors, categories, image, date, tags } = post.data;
 
-// 预先筛选出当前文章的作者对象，方便后续复用
 const postAuthors = allAuthors.filter((author) =>
   authors
     .map((author: string) => slugify(author))
@@ -24,123 +22,106 @@ const postAuthors = allAuthors.filter((author) =>
 );
 ---
 
-<section class="section">
+<section class="section pt-16 md:pt-24">
   <div class="container">
-    <article class="row justify-center">
-      <div class="md:col-8">
+    <article>
+      <!-- Header -->
+      <header class="text-center max-w-4xl mx-auto mb-12 md:mb-16">
+        <div class="flex items-center justify-center gap-3 mb-6">
+          {categories.map((category: string) => (
+            <a
+              href={`/categories/${slugify(category)}`}
+              class="text-xs font-bold uppercase tracking-[0.2em] text-primary hover:text-text-dark dark:hover:text-text-light transition-colors"
+            >
+              {humanize(category)}
+            </a>
+          ))}
+        </div>
+
         <h1
           set:html={markdownify(title)}
-          class="h2 mb-12 text-center font-bold font-serif text-text-dark"
+          class="h1 font-serif italic font-bold text-4xl md:text-6xl text-text-dark dark:text-text-light mb-10 leading-[1.1]"
         />
 
-        <div
-          class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-14"
-        >
-          <div class="flex items-center -space-x-4 pl-2">
-            {
-              postAuthors.map((author, index) => (
-                <div
-                  class="relative inline-block ring-2 ring-white rounded-full"
-                  style={{ zIndex: 10 - index }}
-                >
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-6 text-sm font-medium text-text/80">
+          <div class="flex items-center gap-3">
+            <div class="flex -space-x-3">
+              {postAuthors.map((author) => (
+                <div class="w-10 h-10 rounded-full border-2 border-white dark:border-dark overflow-hidden bg-light">
                   {author.data.image ? (
-                    <Image
+                    <Picture
                       src={author.data.image}
                       alt={author.data.title}
-                      height={64}
-                      width={64}
-                      class="h-16 w-16 rounded-full object-cover bg-gray-100"
+                      formats={['avif', 'webp']}
+                      widths={[40, 80]}
+                      sizes="40px"
+                      class="w-full h-full object-cover"
                     />
                   ) : (
-                    <div class="h-16 w-16 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-500">
-                      {author.data.title.substring(0, 1)}
+                    <div class="w-full h-full flex items-center justify-center bg-primary/10 text-primary font-bold">
+                      {author.data.title[0]}
                     </div>
                   )}
                 </div>
-              ))
-            }
+              ))}
+            </div>
+            <div class="flex flex-col sm:flex-row sm:gap-1 text-left sm:text-center">
+              <span>By</span>
+              <span class="text-text-dark dark:text-text-light font-bold">
+                {postAuthors.map((a, i) => (
+                  <a href={`/authors/${slugify(a.id)}`} class="hover:text-primary transition-colors">
+                    {a.data.title}{i < postAuthors.length - 1 && ","}
+                  </a>
+                ))}
+              </span>
+            </div>
           </div>
-
-          <div class="text-center sm:text-left">
-            <div class="text-xl font-bold leading-tight text-text-dark">
-              {
-                postAuthors.map((author, i) => (
-                  <>
-                    <a
-                      href={`/authors/${slugify(author.id)}`}
-                      class="hover:text-primary transition decoration-primary"
-                    >
-                      {author.data.title}
-                    </a>
-                    {i < postAuthors.length - 1 && <span class="mr-1">,</span>}
-                  </>
-                ))
-              }
-            </div>
-
-            <div
-              class="mt-1 text-base text-gray-600 dark:text-gray-400 flex flex-wrap justify-center sm:justify-start items-center gap-x-2"
-            >
-              <span>{dateFormat(date)}</span>
-              <span class="text-gray-300">•</span>
-              <ul class="flex items-center gap-x-1">
-                {
-                  categories.map((category: string, i: number) => (
-                    <li class="inline-block">
-                      <a
-                        href={`/categories/${slugify(category)}`}
-                        class="hover:text-primary font-medium transition"
-                      >
-                        {humanize(category)}
-                      </a>
-                      {i !== categories.length - 1 && ","}
-                    </li>
-                  ))
-                }
-              </ul>
-            </div>
+          
+          <div class="hidden sm:block w-1 h-1 rounded-full bg-text/30"></div>
+          
+          <div class="flex items-center gap-2">
+            <span>{dateFormat(date)}</span>
           </div>
         </div>
-      </div>
+      </header>
 
-      <div class="col-12 mb-14 p-0">
-        {
-          image && (
-            <Image
+      <!-- Main Image -->
+      {image && (
+        <div class="max-w-5xl mx-auto mb-16 md:mb-20">
+          <div class="rounded-2xl md:rounded-3xl overflow-hidden shadow-sm">
+            <Picture
               src={image}
-              height={600}
-              width={1200}
               alt={title}
-              class="w-full md:rounded-md"
+              formats={['avif', 'webp']}
+              widths={[800, 1200, 1600]}
+              sizes="(max-width: 1200px) 100vw, 1200px"
+              class="w-full h-auto object-cover aspect-[16/9] md:aspect-[21/9]"
+              priority
             />
-          )
-        }
-      </div>
+          </div>
+        </div>
+      )}
 
-      <div class="md:col-8">
-        <div class="content mb-16 text-left">
+      <!-- Content -->
+      <div class="max-w-[720px] mx-auto">
+        <div class="content prose-lg prose-headings:font-serif prose-headings:font-bold prose-p:font-sans prose-p:text-lg prose-p:leading-8 prose-p:text-text-dark/90 dark:prose-p:text-text-light/90">
           <Content />
         </div>
 
-        <div
-          class="flex flex-wrap items-center justify-between border-t border-border pt-8 dark:border-darkmode-border"
-        >
-          <ul class="mr-4 mb-4 space-x-3">
-            {
-              tags.map((tag: string) => (
-                <li class="inline-block">
-                  <a
-                    href={`/tags/${slugify(tag)}`}
-                    class="block rounded-lg bg-theme-light px-4 py-2 font-semibold text-dark text-sm hover:text-primary transition duration-300 dark:bg-darkmode-theme-light dark:text-darkmode-light dark:hover:text-primary"
-                  >
-                    #{humanize(tag)}
-                  </a>
-                </li>
-              ))
-            }
-          </ul>
+        <!-- Footer: Tags & Share -->
+        <div class="mt-16 pt-8 border-t border-border dark:border-border flex flex-col md:flex-row justify-between items-center gap-6">
+          <div class="flex flex-wrap gap-2">
+            {tags.map((tag: string) => (
+              <a
+                href={`/tags/${slugify(tag)}`}
+                class="inline-block px-4 py-1.5 rounded-full bg-light text-xs font-bold uppercase tracking-wider text-text/80 hover:bg-primary hover:text-white transition-colors duration-300"
+              >
+                #{humanize(tag)}
+              </a>
+            ))}
+          </div>
           <Share
-            className="social-share mb-4"
+            className="social-share"
             title={title}
             description={description}
             slug={post.id}
@@ -151,13 +132,11 @@ const postAuthors = allAuthors.filter((author) =>
   </div>
 </section>
 
-{
-  similarPosts.length > 0 && (
-    <section class="section pt-0">
-      <div class="container">
-        <h2 class="mb-8 text-center h3">Similar Posts</h2>
-        <SimilarPosts posts={similarPosts.slice(0, 3)} />
-      </div>
-    </section>
-  )
-}
+{similarPosts.length > 0 && (
+  <section class="section pt-12 border-t border-border dark:border-border mt-20">
+    <div class="container">
+      <h2 class="mb-12 text-center h3 font-serif italic">Read Next</h2>
+      <SimilarPosts posts={similarPosts.slice(0, 3)} />
+    </div>
+  </section>
+)}
