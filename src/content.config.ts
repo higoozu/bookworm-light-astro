@@ -109,6 +109,23 @@ const postsCollection = defineCollection({
   }),
 });
 
+// Galleries collection schema
+const galleriesCollection = defineCollection({
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "src/content/galleries" }),
+  schema: ({ image }) => z.object({
+    title: z.string(),
+    meta_title: z.string().optional(),
+    description: z.string().optional(),
+    date: z.date().optional(),
+    cover: image(),
+    draft: z.boolean().optional(),
+    images: z.array(z.object({
+      src: image(),
+      alt: z.string().optional(),
+    })).default([]),
+  }),
+});
+
 // Pages collection schema
 const pagesCollection = defineCollection({
   schema: z.object({
@@ -125,6 +142,7 @@ const pagesCollection = defineCollection({
 // Export collections
 export const collections = {
   posts: postsCollection,
+  galleries: galleriesCollection,
   about: aboutCollection,
   authors: authorsCollection,
   pages: pagesCollection,

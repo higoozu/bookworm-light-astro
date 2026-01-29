@@ -1,0 +1,80 @@
+---
+import Base from "@/layouts/Base.astro";
+import { getCollection } from "astro:content";
+import { Picture } from "astro:assets";
+import { FaImages } from "react-icons/fa";
+
+const galleries = await getCollection("galleries", ({ data }) => {
+  return !data.draft;
+});
+
+// Sort by date desc
+const sortedGalleries = galleries.sort(
+  (a, b) => (b.data.date?.getTime() || 0) - (a.data.date?.getTime() || 0)
+);
+---
+
+<Base title="Gallery" description="Explore our photo collections">
+  <section class="section pt-0">
+    <!-- Stylish Header Section -->
+    <div class="relative py-20 mb-10 overflow-hidden bg-theme-light dark:bg-darkmode-theme-light">
+       <div class="absolute inset-0 pointer-events-none overflow-hidden">
+          {/* Decorative Abstract Shapes */}
+          <div class="absolute top-[-10%] left-[-5%] w-64 h-64 rounded-full bg-primary/10 blur-3xl"></div>
+          <div class="absolute bottom-[-20%] right-[-10%] w-80 h-80 rounded-full bg-secondary/10 blur-3xl"></div>
+          
+          <svg class="absolute top-10 right-[10%] w-24 h-24 text-primary/20 opacity-60 animate-spin-slow" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+             <circle cx="50" cy="50" r="45" stroke="currentColor" stroke-width="2" stroke-dasharray="10 10"/>
+          </svg>
+           
+          <div class="absolute top-[30%] left-[20%] w-4 h-4 rounded-full bg-accent/40"></div>
+          <div class="absolute bottom-[40%] right-[25%] w-3 h-3 rounded-full bg-primary/40"></div>
+       </div>
+
+       <div class="container relative z-10 text-center">
+         <span class="inline-block py-1 px-3 rounded-full bg-primary/10 text-primary text-sm font-semibold tracking-wide mb-4 uppercase">
+            Travel & Photography
+         </span>
+         <h1 class="text-5xl md:text-6xl font-bold tracking-tight mb-4 text-text-dark dark:text-text-light">
+            Photo Gallery
+         </h1>
+         <p class="text-lg text-text max-w-2xl mx-auto">
+            A visual journey through landscapes, cities, and moments frozen in time.
+         </p>
+       </div>
+    </div>
+
+    <div class="container">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {
+          sortedGalleries.map((album) => (
+            <a
+              href={`/gallery/${album.id}`}
+              class="group relative overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-300 block bg-theme-light dark:bg-darkmode-theme-light"
+            >
+              <div class="aspect-[4/3] overflow-hidden relative">
+                 <Picture
+                  src={album.data.cover}
+                  alt={album.data.title}
+                  formats={['avif', 'webp']}
+                  width={800}
+                  height={600}
+                  class="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
+                
+                <div class="absolute bottom-0 left-0 p-6 w-full text-white">
+                  <h3 class="h4 text-white dark:text-dark mb-2 group-hover:text-primary transition-colors font-bold">{album.data.title}</h3>
+                  <div class="flex items-center text-sm text-white/90 dark:text-dark/90">
+                    <FaImages className="mr-2" />
+                    <span>{album.data.images?.length || 0} Photos</span>
+                  </div>
+                </div>
+              </div>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</Base>

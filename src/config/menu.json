@@ -9,6 +9,10 @@
       "url": "/about"
     },
     {
+      "name": "Gallery",
+      "url": "/gallery"
+    },
+    {
       "name": "Pages",
       "url": "",
       "hasChildren": true,
