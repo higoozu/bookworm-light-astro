@@ -13,6 +13,10 @@
       "url": "/gallery"
     },
     {
+      "name": "Footprints",
+      "url": "/footprints"
+    },
+    {
       "name": "Pages",
       "url": "",
       "hasChildren": true,

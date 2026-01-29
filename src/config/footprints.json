@@ -1,0 +1,47 @@
+{
+  "visitedCountries": [
+    "CHN",
+    "USA",
+    "JPN",
+    "THA",
+    "FRA",
+    "ITA"
+  ],
+  "locations": [
+    {
+      "name": "Beijing",
+      "country": "China",
+      "coordinates": [39.9042, 116.4074],
+      "description": "The capital city, full of history and modernity.",
+      "relatedPosts": ["my-train-dream-from-erenhot-to-ulaanbaatar"]
+    },
+    {
+      "name": "Tokyo",
+      "country": "Japan",
+      "coordinates": [35.6762, 139.6503],
+      "description": "A bustling metropolis mixing traditional culture with cutting-edge technology.",
+      "relatedPosts": []
+    },
+    {
+      "name": "Paris",
+      "country": "France",
+      "coordinates": [48.8566, 2.3522],
+      "description": "City of Light, known for art, fashion, and gastronomy.",
+      "relatedPosts": ["post-1"]
+    },
+    {
+      "name": "New York",
+      "country": "USA",
+      "coordinates": [40.7128, -74.0060],
+      "description": "The city that never sleeps.",
+      "relatedPosts": ["post-2", "post-3"]
+    },
+    {
+      "name": "Chiang Mai",
+      "country": "Thailand",
+      "coordinates": [18.7883, 98.9853],
+      "description": "Ancient temples and beautiful mountains.",
+      "relatedPosts": []
+    }
+  ]
+}

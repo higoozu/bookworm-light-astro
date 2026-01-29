@@ -1,0 +1,23 @@
+---
+import Base from "@/layouts/Base.astro";
+import FootprintMap from "@/layouts/components/FootprintMap";
+import { getCollection } from "astro:content";
+
+// Fetch all posts to create a slug -> title mapping
+const posts = await getCollection("posts");
+const postsData: Record<string, string> = {};
+
+posts.forEach((post) => {
+  postsData[post.id] = post.data.title;
+});
+---
+
+<Base 
+  title="My Travel Footprint" 
+  description="A map of countries and cities I've visited."
+  noFooter={true}
+>
+  <div class="h-[calc(100vh-4rem)] md:h-[calc(100vh-5rem)] w-full relative overflow-hidden">
+    <FootprintMap client:only="react" postsData={postsData} />
+  </div>
+</Base>

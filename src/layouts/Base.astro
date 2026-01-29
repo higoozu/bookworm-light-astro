@@ -31,10 +31,11 @@ export interface Props {
   image?: string;
   noindex?: boolean;
   canonical?: string;
+  noFooter?: boolean;
 }
 
 // distructure frontmatters
-const { title, meta_title, description, image, noindex, canonical } =
+const { title, meta_title, description, image, noindex, canonical, noFooter } =
   Astro.props;
 ---
 
@@ -211,6 +212,6 @@ const { title, meta_title, description, image, noindex, canonical } =
     <main id="main-content" class="min-h-[60vh] bg-body dark:bg-body transition-colors">
       <slot />
     </main>
-    <Footer />
+    {!noFooter && <Footer />}
   </body>
 </html>
