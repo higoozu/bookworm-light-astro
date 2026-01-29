@@ -98,6 +98,7 @@ const postsCollection = defineCollection({
     title: z.string(),
     meta_title: z.string().optional(),
     description: z.string().optional(),
+    summary: z.string().optional(),
     date: z.date().optional(),
     image: image().optional(), // 将 z.string() 修改为 image()
     categories: z.array(z.string()).default(["others"]),

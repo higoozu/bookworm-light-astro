@@ -2,7 +2,15 @@
 // src/layouts/components/Hero.astro
 import { Picture } from "astro:assets";
 
-const { title, description, image, date, link } = Astro.props;
+type Props = {
+  title: string;
+  description: string;
+  image: string;
+  date: string;
+  link: string;
+};
+
+const { title, description, image, date, link } = Astro.props as Props;
 
 // Import all images from src/assets
 const allImages = import.meta.glob<{ default: ImageMetadata }>(

@@ -1,5 +1,5 @@
 // similer products
-const similerItems = (currentItem: any, allItems: any, slug: string) => {
+const similerItems = (currentItem: any, allItems: any, id: string) => {
   let categories: [] = [];
   let tags: [] = [];
 
@@ -28,7 +28,7 @@ const similerItems = (currentItem: any, allItems: any, slug: string) => {
   const mergedItems = [...new Set([...filterByCategories, ...filterByTags])];
 
   // filter by slug
-  const filterBySlug = mergedItems.filter((product) => product.slug !== slug);
+  const filterBySlug = mergedItems.filter((product) => product.id !== id);
 
   return filterBySlug;
 };

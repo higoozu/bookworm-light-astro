@@ -10,11 +10,18 @@ interface Props {
 
 const { src, alt, caption, style = "standard" } = Astro.props;
 
-const containerClass = style === "wide" 
-  ? "w-full md:-ml-[10%] md:w-[120%] my-8" // Wide: Break out of container on desktop
-  : "w-full my-8"; // Standard: Contain
+// Mobile: Break out of container padding (-mx-4)
+// Desktop Standard: Contain (w-full)
+// Desktop Wide: Break out (w-[120%] -ml-[10%])
+const containerClass =
+  style === "wide"
+    ? "w-[calc(100%+2rem)] -ml-4 md:w-[1100px] md:relative md:left-1/2 md:-translate-x-1/2 my-8"
+    : "w-[calc(100%+2rem)] -ml-4 md:w-full md:ml-0 my-8";
 
-const imageClass = "w-full h-auto rounded-lg shadow-sm";
+// Mobile: No rounded corners (rounded-none)
+// Desktop: Rounded corners (md:rounded-lg)
+// No shadow/border as requested
+const imageClass = "w-full h-auto rounded-none md:rounded-lg";
 ---
 
 <figure class={containerClass}>
@@ -22,12 +29,12 @@ const imageClass = "w-full h-auto rounded-lg shadow-sm";
     src={src}
     alt={alt}
     formats={["avif", "webp"]}
-    widths={[720, 1200, 1600]}
-    sizes={style === "wide" ? "(max-width: 768px) 100vw, 1200px" : "(max-width: 768px) 100vw, 720px"}
+    widths={[720, 1100, 1600]}
+    sizes={style === "wide" ? "(max-width: 768px) 100vw, 1100px" : "(max-width: 768px) 100vw, 720px"}
     class={imageClass}
   />
   {caption && (
-    <figcaption class="text-right text-xs text-text/60 mt-2 italic font-serif">
+    <figcaption class="text-right text-xs text-text/60 mt-2 italic font-serif px-4 md:px-0">
       {caption}
     </figcaption>
   )}

@@ -40,6 +40,17 @@ export const plainify = (content: string) => {
   return stripHTML;
 };
 
+// summarize markdown/MDX content safely (remove MDX imports/exports and code blocks)
+export const summarize = (content: string, length = 100) => {
+  const withoutMdxImports = content.replace(
+    /^\s*(import|export)\s.+$/gm,
+    "",
+  );
+  const withoutCodeBlocks = withoutMdxImports.replace(/```[\s\S]*?```/g, "");
+  const cleaned = plainify(withoutCodeBlocks).trim();
+  return cleaned.slice(0, length);
+};
+
 // strip entities for plainify
 const htmlEntityDecoder = (htmlWithEntities: string) => {
   let entityList: { [key: string]: string } = {

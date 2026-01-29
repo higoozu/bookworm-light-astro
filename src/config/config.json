@@ -29,7 +29,8 @@
 
   "params": {
     "contact_form_action": "#",
-    "copyright": "Copyright © 2026"
+    "copyright": "Copyright © 2026",
+    "footer_tagline": "A travel journal of slow mornings, long train rides, and stories gathered along the way."
   },
 
   "contactinfo": {

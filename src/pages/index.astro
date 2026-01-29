@@ -37,9 +37,7 @@ const recentPosts = sortedPosts.slice(0, 6);
       </div>
       <div class="row gx-4">
         {selectionPosts.map((post) => (
-          <div class="col-12 md:col-4 mb-8 md:mb-0 last:mb-0">
-            <SelectionCard post={post} />
-          </div>
+          <SelectionCard post={post} className="col-12 md:col-4 mb-8 md:mb-0 last:mb-0" />
         ))}
       </div>
     </div>
@@ -71,6 +69,17 @@ const recentPosts = sortedPosts.slice(0, 6);
             <PostCard post={post} />
           </div>
         ))}
+        <div class="col-12">
+          <div class="flex justify-center">
+            <a
+              href="/blog"
+              class="group inline-flex items-center gap-3 rounded-full border border-border px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] text-text-dark dark:text-text-light hover:text-primary dark:hover:text-primary hover:border-primary transition-colors"
+            >
+              View All Stories
+              <span class="transition-transform group-hover:translate-x-1">→</span>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </section>

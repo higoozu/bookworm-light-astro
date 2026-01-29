@@ -2,7 +2,17 @@
 // src/layouts/components/Explore.astro
 import { Picture } from "astro:assets";
 
-const { items } = Astro.props;
+type ExploreItem = {
+  name: string;
+  image?: string;
+  link: string;
+};
+
+type Props = {
+  items: ExploreItem[];
+};
+
+const { items } = Astro.props as Props;
 
 // Import all images from src/assets
 const allImages = import.meta.glob<{ default: ImageMetadata }>(
@@ -20,7 +30,7 @@ const resolveImage = (imagePath: string) => {
 ---
 
 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-  {items.map((item: any) => {
+  {items.map((item) => {
     const imageModule = item.image ? resolveImage(item.image) : null;
     return (
       <a href={item.link} class="relative group aspect-square overflow-hidden block rounded-2xl bg-light transition-all duration-300">
@@ -32,6 +42,8 @@ const resolveImage = (imagePath: string) => {
             widths={[200, 400]}
             sizes="(max-width: 768px) 50vw, 16vw"
             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-115 opacity-90 group-hover:opacity-100"
+            loading="lazy"
+            decoding="async"
           />
         )}
               <div class="absolute inset-0 bg-black/30 group-hover:bg-black/10 flex items-center justify-center transition-all duration-500">

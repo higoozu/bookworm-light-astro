@@ -1,7 +1,7 @@
 ---
 // src/layouts/components/Posts.astro
 import dateFormat from "@/lib/utils/dateFormat";
-import { humanize, plainify, slugify } from "@/lib/utils/textConverter";
+import { humanize, slugify, summarize } from "@/lib/utils/textConverter";
 import { Picture } from "astro:assets"; 
 import type { CollectionEntry } from "astro:content";
 
@@ -73,7 +73,7 @@ const { className, posts, showSummary = true, showAuthor = true } = Astro.props;
 
         {showSummary && (
           <p class="text-text line-clamp-2 text-sm leading-relaxed">
-            {plainify(post.body ?? "").slice(0, 100)}
+            {post.data.summary ?? summarize(post.body ?? "", 100)}
           </p>
         )}
       </div>

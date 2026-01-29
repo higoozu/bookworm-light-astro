@@ -4,6 +4,8 @@ import SimilarPosts from "@/components/SimilarPosts.astro";
 import { getSinglePage } from "@/lib/contentParser.astro";
 import dateFormat from "@/lib/utils/dateFormat";
 import similerItems from "@/lib/utils/similarItems";
+import SelectionCard from "@/layouts/components/SelectionCard.astro";
+import { sortByDate } from "@/lib/utils/sortFunctions";
 import { humanize, markdownify, slugify } from "@/lib/utils/textConverter";
 import { Picture } from "astro:assets";
 import { render } from "astro:content";
@@ -11,7 +13,7 @@ import { render } from "astro:content";
 const allAuthors = await getSinglePage("authors");
 const posts = await getSinglePage("posts");
 const { post } = Astro.props;
-const similarPosts = similerItems(post, posts, post.slug);
+const similarPosts = similerItems(post, posts, post.id);
 const { Content } = await render(post);
 const { title, description, authors, categories, image, date, tags } = post.data;
 
@@ -20,13 +22,17 @@ const postAuthors = allAuthors.filter((author) =>
     .map((author: string) => slugify(author))
     .includes(slugify(author.data.title)),
 );
+const sortedPosts = sortByDate(posts);
+const selectionPosts = sortedPosts
+  .filter((post) => post.data.selection === true)
+  .slice(0, 3);
 ---
 
 <section class="section pt-16 md:pt-24">
-  <div class="container">
+  <div class="container px-4 md:px-8">
     <article>
       <!-- Header -->
-      <header class="text-center max-w-4xl mx-auto mb-12 md:mb-16">
+      <header class="text-center max-w-4xl mx-auto mb-12 md:mb-16 px-4 md:px-0">
         <div class="flex items-center justify-center gap-3 mb-6">
           {categories.map((category: string) => (
             <a
@@ -87,23 +93,25 @@ const postAuthors = allAuthors.filter((author) =>
 
       <!-- Main Image -->
       {image && (
-        <div class="max-w-5xl mx-auto mb-16 md:mb-20">
-          <div class="rounded-2xl md:rounded-3xl overflow-hidden shadow-sm">
-            <Picture
-              src={image}
-              alt={title}
-              formats={['avif', 'webp']}
-              widths={[800, 1200, 1600]}
-              sizes="(max-width: 1200px) 100vw, 1200px"
-              class="w-full h-auto object-cover aspect-[16/9] md:aspect-[21/9]"
-              priority
-            />
+        <div class="max-w-340 mx-auto px-4 mb-16 md:mb-20">
+          <div class="relative -mx-4 sm:-mx-6 md:-mx-10">
+            <div class="w-[calc(100%+2rem)] -ml-4 rounded-none md:rounded-4xl overflow-hidden">
+              <Picture
+                src={image}
+                alt={title}
+                formats={["avif", "webp"]}
+                widths={[900, 1400, 2000]}
+                sizes="(max-width: 767px) 100vw, (max-width: 1200px) 90vw, 1400px"
+                class="w-full h-auto object-cover aspect-video md:aspect-21/9"
+                priority
+              />
+            </div>
           </div>
         </div>
       )}
 
       <!-- Content -->
-      <div class="max-w-[720px] mx-auto">
+      <div class="max-w-180 mx-auto">
         <div class="content prose-lg prose-headings:font-serif prose-headings:font-bold prose-p:font-sans prose-p:text-lg prose-p:leading-8 prose-p:text-text-dark/90 dark:prose-p:text-text-light/90">
           <Content />
         </div>
@@ -133,10 +141,25 @@ const postAuthors = allAuthors.filter((author) =>
 </section>
 
 {similarPosts.length > 0 && (
-  <section class="section pt-12 border-t border-border dark:border-border mt-20">
+  <section class="section pt-12 mt-20">
     <div class="container">
       <h2 class="mb-12 text-center h3 font-serif italic">Read Next</h2>
       <SimilarPosts posts={similarPosts.slice(0, 3)} />
     </div>
   </section>
 )}
+
+<section class="bg-section-bg dark:bg-section-bg rounded-4xl my-12 pt-16 pb-5 md:py-24 transition-colors">
+    <div class="container">
+      <div class="flex justify-start mb-16 px-2 md:px-0">
+        <div class="inline-block bg-badge-bg dark:bg-badge-bg rounded-full px-6 py-2 shadow-sm">
+          <h2 class="text-xs font-bold uppercase tracking-[0.2em] m-0 text-badge-text dark:text-badge-text">Editor's Selection</h2>
+        </div>
+      </div>
+      <div class="row gx-4">
+        {selectionPosts.map((post) => (
+          <SelectionCard post={post} className="col-12 md:col-4 mb-8 md:mb-0 last:mb-0" />
+        ))}
+      </div>
+    </div>
+  </section>

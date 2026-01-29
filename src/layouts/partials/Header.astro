@@ -28,7 +28,7 @@ const { pathname } = Astro.url;
 >
   <div class="container mx-auto px-4 h-16 md:h-20 flex items-center justify-between">
     <!-- Logo -->
-    <div class="flex-shrink-0 z-[60] relative">
+    <div class="shrink-0 z-60 relative">
       <Logo />
     </div>
 
@@ -46,12 +46,12 @@ const { pathname } = Astro.url;
                       <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
                     </svg>
                   </button>
-                  <ul class="absolute top-full left-0 min-w-[200px] bg-white dark:bg-body rounded-lg shadow-lg border border-border dark:border-border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0 p-2">
+                  <ul class="absolute top-full left-0 min-w-50 bg-white dark:bg-body rounded-lg shadow-lg border border-border dark:border-border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0 p-2">
                     {menu.children?.map((child) => (
                       <li>
                         <a
                           href={child.url}
-                          class={`block px-4 py-2 hover:text-primary dark:hover:text-primary hover:bg-dark/5 rounded-md transition-colors ${
+                          class={`block px-4 py-2 hover:text-primary dark:hover:text-primary rounded-md transition-colors ${
                             pathname === child.url || pathname === `${child.url}/`
                               ? "text-primary font-semibold"
                               : "text-text-dark dark:text-text-light"
@@ -106,13 +106,13 @@ const { pathname } = Astro.url;
         </button>
         <!-- Theme Dropdown -->
         <div class="absolute right-0 top-full mt-2 w-32 bg-white dark:bg-body rounded-lg shadow-lg border border-border dark:border-border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0 overflow-hidden">
-            <button class="theme-btn w-full text-left px-4 py-2 flex items-center gap-2 hover:bg-dark/5 text-text-dark dark:text-text-light cursor-pointer data-[active=true]:text-primary data-[active=true]:font-semibold transition-colors" data-theme="light">
+            <button class="theme-btn w-full text-left px-4 py-2 flex items-center gap-2 text-text-dark dark:text-text-light cursor-pointer data-[active=true]:text-primary data-[active=true]:font-semibold transition-colors" data-theme="light">
                 <IoSunny className="text-sm" /> <span>Light</span>
             </button>
-            <button class="theme-btn w-full text-left px-4 py-2 flex items-center gap-2 hover:bg-dark/5 text-text-dark dark:text-text-light cursor-pointer data-[active=true]:text-primary data-[active=true]:font-semibold transition-colors" data-theme="dark">
+            <button class="theme-btn w-full text-left px-4 py-2 flex items-center gap-2 text-text-dark dark:text-text-light cursor-pointer data-[active=true]:text-primary data-[active=true]:font-semibold transition-colors" data-theme="dark">
                 <IoMoon className="text-sm" /> <span>Dark</span>
             </button>
-            <button class="theme-btn w-full text-left px-4 py-2 flex items-center gap-2 hover:bg-dark/5 text-text-dark dark:text-text-light cursor-pointer data-[active=true]:text-primary data-[active=true]:font-semibold transition-colors" data-theme="system">
+            <button class="theme-btn w-full text-left px-4 py-2 flex items-center gap-2 text-text-dark dark:text-text-light cursor-pointer data-[active=true]:text-primary data-[active=true]:font-semibold transition-colors" data-theme="system">
                 <IoInvertMode className="text-sm" /> <span>System</span>
             </button>
         </div>

@@ -10,19 +10,7 @@ tags: ["slow travel", "mindfulness", "design"]
 draft: false
 ---
 import PostImage from "@/shortcodes/PostImage.astro";
-import Gallery from "@/shortcodes/Gallery.astro";
-
-{/* Note: In a real scenario, we would import images. For this test, we use the shortcode which accepts ImageMetadata. 
-    However, standard markdown images `![alt](path)` are also handled. 
-    Here we simulate the shortcodes. Since I cannot import 'assets' inside this string easily without knowing exact paths,
-    I will rely on standard markdown for standard images and assume the shortcode is used for special layouts.
-    
-    Actually, to test the shortcodes properly, I need to pass image objects.
-    I will use standard markdown for now for the basic test, and assume the user will use imports in real MDX.
-    
-    Wait, I can use relative paths if I know them.
-    `../../assets/images/posts/02.jpg`
-*/}
+import PostGallery from "@/shortcodes/PostGallery.astro";
 
 import img02 from "../../assets/images/posts/02.jpg";
 import img03 from "../../assets/images/posts/03.jpg";
@@ -57,7 +45,7 @@ Slow travel also fosters deeper connections with locals. Instead of a transactio
 
 We captured some moments from our recent trip that embody this philosophy. Notice the lighting, the colors, and the stillness in these frames.
 
-<Gallery images={[
+<PostGallery images={[
   { src: img11, alt: "Detail 1" },
   { src: img12, alt: "Detail 2" },
   { src: img13, alt: "Detail 3" },
@@ -69,3 +57,16 @@ We captured some moments from our recent trip that embody this philosophy. Notic
 ## Conclusion
 
 So, next time you plan a trip, consider doing less. Stay in one place longer. Wake up without an alarm. Let the day unfold. You might find that by doing less, you experience so much more. It is a journey worth taking.
+
+{/* Note: In a real scenario, we would import images. For this test, we use the shortcode which accepts ImageMetadata. 
+    However, standard markdown images `![alt](path)` are also handled. 
+    Here we simulate the shortcodes. Since I cannot import 'assets' inside this string easily without knowing exact paths,
+    I will rely on standard markdown for standard images and assume the shortcode is used for special layouts.
+    
+    Actually, to test the shortcodes properly, I need to pass image objects.
+    I will use standard markdown for now for the basic test, and assume the user will use imports in real MDX.
+    
+    Wait, I can use relative paths if I know them.
+    `../../assets/images/posts/02.jpg`
+*/}
+

@@ -1,17 +1,23 @@
 ---
 // src/layouts/components/PostCard.astro
+import type { CollectionEntry } from "astro:content";
 import dateFormat from "@/lib/utils/dateFormat";
-import { plainify, slugify } from "@/lib/utils/textConverter";
+import { slugify, summarize } from "@/lib/utils/textConverter";
 import { Picture } from "astro:assets";
 
-const { post } = Astro.props;
+type Props = {
+  post: CollectionEntry<"posts">;
+};
+
+const { post } = Astro.props as Props;
 const { title, image, date, summary, authors, categories } = post.data;
+const href = `/blog/${post.id}`;
 ---
 
 <div class="h-full group flex flex-col">
   {image && (
     <div class="overflow-hidden rounded-2xl mb-6 bg-light transition-colors duration-300">
-      <a href={`/blog/${post.id}`} class="block aspect-16/10 overflow-hidden">
+      <a href={href} class="block aspect-16/10 overflow-hidden">
         <Picture
           class="transition-transform duration-700 group-hover:scale-105 w-full h-full object-cover"
           src={image}
@@ -19,6 +25,8 @@ const { title, image, date, summary, authors, categories } = post.data;
           formats={["avif", "webp"]}
           widths={[400, 800]}
           sizes="(max-width: 768px) 100vw, 33vw"
+          loading="lazy"
+          decoding="async"
         />
       </a>
     </div>
@@ -42,17 +50,17 @@ const { title, image, date, summary, authors, categories } = post.data;
     </div>
 
     <h3 class="mb-4 text-2xl font-bold leading-tight group-hover:text-primary transition-colors duration-300 line-clamp-2">
-      <a href={`/blog/${post.id}`}>
+      <a href={href}>
         {title}
       </a>
     </h3>
 
     <p class="text-text line-clamp-2 text-sm leading-relaxed mb-6">
-      {summary ? summary : plainify(post.body ?? "").slice(0, 100)}
+      {summary ?? summarize(post.body ?? "", 100)}
     </p>
     
     <div class="mt-auto pt-2">
-      <a href={`/blog/${post.id}`} class="text-xs font-bold uppercase tracking-widest text-text-dark dark:text-text-light hover:text-primary transition-colors inline-flex items-center gap-2">
+      <a href={href} class="text-xs font-bold uppercase tracking-widest text-text-dark dark:text-text-light hover:text-primary transition-colors inline-flex items-center gap-2">
         Read Story <span class="transition-transform group-hover:translate-x-1">→</span>
       </a>
     </div>
