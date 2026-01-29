@@ -85,7 +85,7 @@ const lightboxImages = await Promise.all(
             </div>
         )}
         
-        <Lightbox client:load images={lightboxImages} />
+        <Lightbox client:only="react" images={lightboxImages} />
     </div>
 
     <script>

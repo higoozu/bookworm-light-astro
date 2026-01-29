@@ -86,7 +86,7 @@ const FootprintMap: React.FC<FootprintMapProps> = ({ postsData }) => {
       `}} />
 
        {/* Title Overlay - Higher z-index to be above map and popups */}
-      <div className="absolute top-6 left-16 z-[1000] bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md p-4 rounded-xl shadow-2xl border border-gray-200 dark:border-zinc-700 max-w-xs transition-colors duration-300">
+      <div className="absolute top-6 left-16 z-1000 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md p-4 rounded-xl shadow-2xl border border-gray-200 dark:border-zinc-700 max-w-xs transition-colors duration-300">
         <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">My Travel Footprint</h1>
         <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 leading-relaxed">
           Exploring the world, one city at a time.
@@ -120,7 +120,7 @@ const FootprintMap: React.FC<FootprintMapProps> = ({ postsData }) => {
         {config.locations.map((loc, idx) => (
           <Marker key={idx} position={loc.coordinates as [number, number]}>
             <Popup className="custom-popup">
-              <div className="p-1 min-w-[200px]">
+              <div className="p-1 min-w-50">
                 <h3 className="text-lg font-bold mb-1 text-gray-900">{loc.name}</h3>
                 <p className="text-[10px] text-gray-500 mb-2 uppercase tracking-widest font-semibold">{loc.country}</p>
                 <p className="text-sm text-gray-700 mb-3 leading-snug">{loc.description}</p>
