@@ -113,10 +113,8 @@
 
 /* Blockquotes: Distinctive */
 .content blockquote {
-  @apply font-serif italic text-xl leading-relaxed;
   @apply border-l-[4px] border-primary;
-  @apply bg-light dark:bg-body/40;
-  @apply py-6 px-8 my-10 rounded-r-lg;
+  @apply py-4 px-8 my-10;
   font-style: normal; /* Reset default tailwind italic if needed, but font-serif italic usually implies italic style */
 }
 
@@ -136,7 +134,7 @@
 
 /* Image styling in content */
 .content img {
-  @apply rounded-xl shadow-sm my-10;
+  @apply my-10;
 }
 
 /* Code and pre styling */

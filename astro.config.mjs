@@ -35,6 +35,7 @@ export default defineConfig({
         "@/shortcodes/Youtube",
         "@/shortcodes/Tabs",
         "@/shortcodes/Tab",
+        "@/shortcodes/Gallery.astro",
       ],
     }),
     mdx(),

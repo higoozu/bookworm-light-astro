@@ -17,7 +17,7 @@ const { className, posts, showSummary = true, showAuthor = true } = Astro.props;
 
 <div
   id="post-container"
-  class={`row gy-5 gx-4 ${className} ${posts.length == 1 ? "justify-center" : ""} `}
+  class={`row gy-5 gx-4 ${className}`}
 >
   {
     posts.map((post) => (

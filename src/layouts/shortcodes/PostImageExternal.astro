@@ -1,14 +1,27 @@
 ---
-import { Picture } from "astro:assets";
-
 interface Props {
-  src: ImageMetadata;
+  avifSrc?: string;
+  webpSrc?: string;
+  fallbackSrc: string;
   alt: string;
+  width: number;
+  height: number;
   caption?: string;
   style?: "standard" | "wide";
+  class?: string;
 }
 
-const { src, alt, caption, style = "standard" } = Astro.props;
+const {
+  avifSrc,
+  webpSrc,
+  fallbackSrc,
+  alt,
+  width,
+  height,
+  caption,
+  style = "standard",
+  class: className,
+} = Astro.props;
 
 // Mobile: Break out of container padding (-mx-4)
 // Desktop Standard: Contain (w-full)
@@ -20,19 +33,23 @@ const containerClass =
 
 // Mobile: No rounded corners (rounded-none)
 // Desktop: Rounded corners (md:rounded-lg)
-// No shadow/border as requested
 const imageClass = "w-full h-auto md:rounded-lg";
 ---
 
-<figure class={containerClass}>
-  <Picture
-    src={src}
-    alt={alt}
-    formats={["avif", "webp"]}
-    widths={[720, 1100, 1600]}
-    sizes={style === "wide" ? "(max-width: 768px) 100vw, 1100px" : "(max-width: 768px) 100vw, 720px"}
-    class={imageClass}
-  />
+<figure class:list={[containerClass, className]}>
+  <picture>
+    {avifSrc && <source srcset={avifSrc} type="image/avif" />}
+    {webpSrc && <source srcset={webpSrc} type="image/webp" />}
+    <img
+      src={fallbackSrc}
+      alt={alt}
+      width={width}
+      height={height}
+      class={imageClass}
+      loading="lazy"
+      decoding="async"
+    />
+  </picture>
   {caption && (
     <figcaption class="text-right text-sm text-text/60 mt-2 italic font-serif px-4 md:px-0">
       {caption}

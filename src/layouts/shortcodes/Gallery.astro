@@ -1,0 +1,111 @@
+---
+import { Picture } from "astro:assets";
+
+interface ImageItem {
+  src: ImageMetadata;
+  alt?: string;
+  caption?: string;
+}
+
+interface Props {
+  items: ImageItem[] | ImageItem[][];
+  style?: "standard" | "wide";
+  class?: string;
+}
+
+const { items, style = "standard", class: className } = Astro.props;
+
+// Normalize to array of arrays (rows)
+const rows = Array.isArray(items[0])
+  ? (items as ImageItem[][])
+  : ([items] as ImageItem[][]);
+
+// Mobile: enforce max 2 images per row by chunking each row
+const mobileRows = rows.flatMap((row) => {
+  if (row.length <= 2) return [row];
+  const chunks: ImageItem[][] = [];
+  for (let i = 0; i < row.length; i += 2) {
+    chunks.push(row.slice(i, i + 2));
+  }
+  return chunks;
+});
+
+// Mobile: Break out of container padding (-mx-4)
+// Desktop Standard: Contain (w-full)
+// Desktop Wide: Break out (w-[120%] -ml-[10%])
+const containerClass =
+  style === "wide"
+    ? "w-[calc(100%+2rem)] -ml-4 md:w-[1100px] md:relative md:left-1/2 md:-translate-x-1/2 my-8"
+    : "w-[calc(100%+2rem)] -ml-4 md:w-full md:ml-0 my-8";
+---
+
+<div class:list={["not-prose", containerClass, className]}>
+  <div class="flex flex-col gap-4 md:hidden">
+    {
+      mobileRows.map((row) => (
+        <div class="flex gap-4">
+          {row.map((item) => {
+            const aspectRatio = item.src.width / item.src.height;
+            const isSingle = row.length === 1;
+            return (
+              <div
+                class={`flex min-w-0 ${isSingle ? "w-full" : ""}`}
+                style={isSingle ? "flex: 1 1 100%" : `flex: ${aspectRatio} 1 0%`}
+              >
+                <figure class="m-0 flex flex-col">
+                  <div style={`aspect-ratio: ${aspectRatio}`}>
+                    <Picture
+                      src={item.src}
+                      alt={item.alt || ""}
+                      formats={["avif", "webp"]}
+                      widths={[400, 800, 1200]}
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      class="w-full h-full object-cover rounded-none md:rounded-lg my-0!"
+                    />
+                  </div>
+                  {item.caption && (
+                    <figcaption class="text-right md:text-center text-sm text-text/60 mt-2 italic font-serif px-4 md:px-0">
+                      {item.caption}
+                    </figcaption>
+                  )}
+                </figure>
+              </div>
+            );
+          })}
+        </div>
+      ))
+    }
+  </div>
+  <div class="hidden md:flex md:flex-col md:gap-4">
+    {
+      rows.map((row) => (
+        <div class="flex flex-nowrap gap-4">
+          {row.map((item) => {
+            const aspectRatio = item.src.width / item.src.height;
+            return (
+              <div class="flex-grow basis-0" style={`flex-grow: ${aspectRatio}`}>
+                <figure class="m-0 flex flex-col">
+                  <div style={`aspect-ratio: ${aspectRatio}`}>
+                    <Picture
+                      src={item.src}
+                      alt={item.alt || ""}
+                      formats={["avif", "webp"]}
+                      widths={[400, 800, 1200]}
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      class="w-full h-full object-cover rounded-none md:rounded-lg my-0!"
+                    />
+                  </div>
+                  {item.caption && (
+                    <figcaption class="text-right md:text-center text-sm text-text/60 mt-2 italic font-serif px-4 md:px-0">
+                      {item.caption}
+                    </figcaption>
+                  )}
+                </figure>
+              </div>
+            );
+          })}
+        </div>
+      ))
+    }
+  </div>
+</div>
