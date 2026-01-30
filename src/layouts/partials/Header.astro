@@ -52,7 +52,7 @@ const { pathname } = Astro.url;
                     </svg>
                   </button>
                   <ul
-                    class="absolute top-full left-0 min-w-50 bg-white dark:bg-body rounded-lg shadow-lg border border-border dark:border-border opacity-0 invisible pointer-events-none group-hover:opacity-100 group-hover:visible group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:visible group-focus-within:pointer-events-auto transition-all duration-200 transform translate-y-2 group-hover:translate-y-0 group-focus-within:translate-y-0 p-2"
+                    class="absolute top-full left-0 min-w-50 bg-white dark:bg-body rounded-lg shadow-lg border border-border dark:border-border opacity-0 invisible pointer-events-none transition-all duration-200 transform translate-y-2 p-2 before:content-[''] before:absolute before:-top-2 before:left-0 before:h-2 before:w-full before:pointer-events-auto"
                     data-dropdown-panel
                   >
                     {menu.children?.map((child) => (
@@ -117,7 +117,7 @@ const { pathname } = Astro.url;
         </button>
         <!-- Theme Dropdown -->
         <div
-          class="absolute right-0 top-full mt-2 w-32 bg-white dark:bg-body rounded-lg shadow-lg border border-border dark:border-border opacity-0 invisible pointer-events-none group-hover:opacity-100 group-hover:visible group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:visible group-focus-within:pointer-events-auto transition-all duration-200 transform translate-y-2 group-hover:translate-y-0 group-focus-within:translate-y-0 overflow-hidden"
+          class="absolute right-0 top-full mt-2 w-32 bg-white dark:bg-body rounded-lg shadow-lg border border-border dark:border-border opacity-0 invisible pointer-events-none transition-all duration-200 transform translate-y-2 overflow-hidden before:content-[''] before:absolute before:-top-2 before:left-0 before:h-2 before:w-full before:pointer-events-auto"
           data-dropdown-panel
         >
             <button class="theme-btn w-full text-left px-4 py-2 flex items-center gap-2 text-text-dark dark:text-text-light cursor-pointer data-[active=true]:text-primary data-[active=true]:font-semibold transition-colors" data-theme="light">
@@ -395,6 +395,8 @@ const { pathname } = Astro.url;
     class DesktopDropdownController {
         constructor() {
             this.activeRoot = null;
+            this.closeTimers = new Map();
+            this.canHover = window.matchMedia('(hover: hover) and (pointer: fine)');
             this.onDocumentClick = this.onDocumentClick.bind(this);
             this.onKeyDown = this.onKeyDown.bind(this);
 
@@ -407,12 +409,41 @@ const { pathname } = Astro.url;
                 toggle.addEventListener('click', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    if (this.activeRoot && this.activeRoot !== root) {
-                        this.close(this.activeRoot);
+                    if (this.canHover.matches) {
+                        this.clearCloseTimer(root);
+                        this.open(root);
+                        return;
                     }
-                    const isOpen = root.dataset.open === 'true';
-                    if (isOpen) this.close(root);
-                    else this.open(root);
+                    this.toggle(root);
+                });
+
+                root.addEventListener('mouseenter', () => {
+                    if (!this.canHover.matches) return;
+                    this.clearCloseTimer(root);
+                    this.open(root);
+                });
+
+                root.addEventListener('mouseleave', () => {
+                    if (!this.canHover.matches) return;
+                    this.setCloseTimer(root);
+                });
+
+                root.addEventListener('focusin', () => {
+                    if (!this.canHover.matches) return;
+                    this.clearCloseTimer(root);
+                    this.open(root);
+                });
+
+                root.addEventListener('focusout', () => {
+                    if (!this.canHover.matches) return;
+                    this.setCloseTimer(root);
+                });
+
+                panel.addEventListener('click', (e) => {
+                    if (this.canHover.matches) return;
+                    const target = e.target;
+                    if (!(target instanceof HTMLElement)) return;
+                    if (target.closest('a, button')) this.close(root);
                 });
             });
 
@@ -420,7 +451,16 @@ const { pathname } = Astro.url;
             document.addEventListener('keydown', this.onKeyDown);
         }
 
+        toggle(root) {
+            const isOpen = root.dataset.open === 'true';
+            if (isOpen) this.close(root);
+            else this.open(root);
+        }
+
         open(root) {
+            if (this.activeRoot && this.activeRoot !== root) {
+                this.close(this.activeRoot);
+            }
             const toggle = root.querySelector('[data-dropdown-toggle]');
             const panel = root.querySelector('[data-dropdown-panel]');
             if (!panel) return;
@@ -440,7 +480,20 @@ const { pathname } = Astro.url;
             if (this.activeRoot === root) this.activeRoot = null;
         }
 
+        setCloseTimer(root) {
+            this.clearCloseTimer(root);
+            const timer = window.setTimeout(() => this.close(root), 120);
+            this.closeTimers.set(root, timer);
+        }
+
+        clearCloseTimer(root) {
+            const timer = this.closeTimers.get(root);
+            if (timer) window.clearTimeout(timer);
+            this.closeTimers.delete(root);
+        }
+
         onDocumentClick(e) {
+            if (this.canHover.matches) return;
             if (!this.activeRoot) return;
             if (this.activeRoot.contains(e.target)) return;
             this.close(this.activeRoot);

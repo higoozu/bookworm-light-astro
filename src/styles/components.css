@@ -94,6 +94,35 @@
   @apply hover:text-primary dark:hover:text-primary;
 }
 
+.social-share button {
+  @apply block p-3 transition duration-300;
+  @apply text-text-dark dark:text-text-light;
+  @apply hover:text-primary dark:hover:text-primary;
+}
+
+.social-share button[data-copied="true"] {
+  @apply text-primary;
+}
+
+/* Author card social icons */
+.author-social {
+  @apply flex flex-wrap gap-2 list-none m-0 p-0;
+}
+
+.author-social li {
+  @apply inline-flex;
+}
+
+.author-social a {
+  @apply inline-flex h-9 w-9 items-center justify-center rounded-full border border-border/70 bg-light text-text-dark transition;
+  @apply dark:text-text-light;
+  @apply hover:border-primary hover:text-primary;
+}
+
+.author-social svg {
+  @apply text-base;
+}
+
 /* Content style - Refined for "Storytelling" feel */
 .content {
   @apply prose max-w-none;

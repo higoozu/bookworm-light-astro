@@ -1,0 +1,49 @@
+---
+import { Picture } from "astro:assets";
+import Social from "@/layouts/components/Social.astro";
+import { slugify } from "@/lib/utils/textConverter";
+
+const { author } = Astro.props;
+---
+
+<article class="rounded-3xl border border-border bg-section-bg dark:bg-body/50 p-6 md:p-8">
+  <div class="flex flex-row gap-4 md:gap-6 items-start">
+    <div class="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden shrink-0 bg-light ring-2 ring-white/80 dark:ring-dark/40">
+      {author?.data?.image ? (
+        <Picture
+          src={author.data.image}
+          alt={author.data.title}
+          formats={["avif", "webp"]}
+          widths={[96, 160]}
+          sizes="(max-width: 640px) 72px, 88px"
+          class="w-full h-full object-cover"
+        />
+      ) : (
+        <div class="w-full h-full flex items-center justify-center bg-primary/10 text-primary font-bold">
+          {author?.data?.title?.[0]}
+        </div>
+      )}
+    </div>
+
+    <div class="flex-1 min-w-0">
+      <a
+        href={`/authors/${slugify(author.id)}/`}
+        class="text-lg md:text-xl font-bold text-text-dark dark:text-text-light hover:text-primary transition-colors"
+      >
+        {author.data.title}
+      </a>
+
+      {author.data.description && (
+        <p class="mt-2 text-sm text-text/70 leading-relaxed line-clamp-3">
+          {author.data.description}
+        </p>
+      )}
+
+      {author.data.social && (
+        <div class="mt-4">
+          <Social source={author.data.social} className="author-social" />
+        </div>
+      )}
+    </div>
+  </div>
+</article>

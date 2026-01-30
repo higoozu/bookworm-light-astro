@@ -4,6 +4,7 @@ import SimilarPosts from "@/components/SimilarPosts.astro";
 import { getSinglePage } from "@/lib/contentParser.astro";
 import dateFormat from "@/lib/utils/dateFormat";
 import similerItems from "@/lib/utils/similarItems";
+import AuthorCard from "@/layouts/components/AuthorCard.astro";
 import SelectionCard from "@/layouts/components/SelectionCard.astro";
 import { sortByDate } from "@/lib/utils/sortFunctions";
 import { humanize, markdownify, slugify } from "@/lib/utils/textConverter";
@@ -116,13 +117,28 @@ const selectionPosts = sortedPosts
           <Content />
         </div>
 
-        <!-- Footer: Tags & Share -->
-        <div class="mt-16 pt-8 border-t border-border dark:border-border flex flex-col md:flex-row justify-between items-center gap-6">
+        <!-- Footer: Author Card + Tags & Share -->
+        <div class="mt-16">
+          {postAuthors.length > 0 && (
+            <>
+              <div class="flex items-center justify-between mb-6">
+                <span class="text-xs font-bold uppercase tracking-[0.2em] text-text/60">About the Author</span>
+              </div>
+
+              <div class="flex flex-col gap-6">
+                {postAuthors.map((author) => (
+                  <AuthorCard author={author} />
+                ))}
+              </div>
+            </>
+          )}
+
+          <div class="mt-10 pt-8 border-t border-border dark:border-border flex flex-col md:flex-row justify-between items-center gap-6">
           <div class="flex flex-wrap gap-2">
             {tags.map((tag: string) => (
               <a
                 href={`/tags/${slugify(tag)}/`}
-                class="inline-block px-4 py-1.5 rounded-full bg-light text-xs font-bold uppercase tracking-wider text-text/80 hover:bg-primary hover:text-white transition-colors duration-300"
+                class="inline-block px-4 py-1.5 rounded-full border border-border text-xs uppercase tracking-wider text-text/80 hover:border-primary hover:text-primary transition-colors duration-300"
               >
                 #{humanize(tag)}
               </a>
@@ -133,7 +149,9 @@ const selectionPosts = sortedPosts
             title={title}
             description={description}
             slug={post.id}
+            showCopy={true}
           />
+          </div>
         </div>
       </div>
     </article>
