@@ -3,6 +3,7 @@ import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 import AutoImport from "astro-auto-import";
+import pagefind from "astro-pagefind";
 import { defineConfig } from "astro/config";
 import remarkCollapse from "remark-collapse";
 import remarkToc from "remark-toc";
@@ -15,10 +16,16 @@ export default defineConfig({
   base: config.site.base_path ? config.site.base_path : "/",
   trailingSlash: config.site.trailing_slash ? "always" : "never",
   image: { service: sharp() },
-  vite: { plugins: [tailwindcss()] },
+  vite: { 
+    plugins: [tailwindcss()],
+    optimizeDeps: {
+      include: ["leaflet", "react-leaflet"]
+    }
+  },
   integrations: [
     react(),
     sitemap(),
+    pagefind(),
     AutoImport({
       imports: [
         "@/shortcodes/Button",

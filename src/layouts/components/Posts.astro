@@ -25,7 +25,7 @@ const { className, posts, showSummary = true, showAuthor = true } = Astro.props;
         {post.data.image && (
           <div class="overflow-hidden rounded-xl mb-6 transition-all duration-300">
             <a
-              href={`/blog/${post.id}`}
+              href={`/blog/${post.id}/`}
               class="block aspect-16/10 overflow-hidden group"
             >
               <Picture
@@ -45,7 +45,7 @@ const { className, posts, showSummary = true, showAuthor = true } = Astro.props;
         <ul class="mb-3 flex items-center flex-nowrap whitespace-nowrap overflow-hidden text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-text/70">
           {showAuthor && (
             <li class="flex items-center shrink-0">
-              <a href={`/authors/${slugify(post.data.authors[0])}`} class="hover:text-primary transition-colors">
+              <a href={`/authors/${slugify(post.data.authors[0])}/`} class="hover:text-primary transition-colors">
                 {post.data.authors[0]}
               </a>
               {post.data.authors.length > 1 && (
@@ -59,14 +59,14 @@ const { className, posts, showSummary = true, showAuthor = true } = Astro.props;
           </li>
           <li class="flex items-center overflow-hidden min-w-0">
             <span class="mx-2 opacity-30 text-xs shrink-0">/</span>
-            <a href={`/categories/${slugify(post.data.categories[0])}`} class="hover:text-primary transition-colors truncate">
+            <a href={`/categories/${slugify(post.data.categories[0])}/`} class="hover:text-primary transition-colors truncate">
               {humanize(post.data.categories[0])}
             </a>
           </li>
         </ul>
 
         <h3 class="mb-3 h4 font-bold leading-tight">
-          <a href={`/blog/${post.id}`} class="block hover:text-primary transition-colors duration-300">
+          <a href={`/blog/${post.id}/`} class="block hover:text-primary transition-colors duration-300">
             {post.data.title}
           </a>
         </h3>

@@ -134,7 +134,7 @@ const FootprintMap: React.FC<FootprintMapProps> = ({ postsData }) => {
                          if (!title) return null;
                          return (
                             <li key={slug}>
-                              <a href={`/blog/${slug}`} className="text-primary hover:text-primary/80 transition-colors text-sm font-medium flex items-start gap-2 group">
+                              <a href={`/blog/${slug}/`} className="text-primary hover:text-primary/80 transition-colors text-sm font-medium flex items-start gap-2 group">
                                 <span className="mt-1 text-[10px]">📄</span>
                                 <span className="group-hover:underline">{title}</span>
                               </a>

@@ -11,7 +11,7 @@ type Props = {
 
 const { post, className = "" } = Astro.props as Props;
 const { title, image, date } = post.data;
-const href = `/blog/${post.id}`;
+const href = `/blog/${post.id}/`;
 ---
 
 <div class={className}>

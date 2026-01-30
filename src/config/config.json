@@ -3,7 +3,7 @@
     "title": "Wanderlust Chronicles",
     "base_url": "https://bookworm-light-astro.vercel.app",
     "base_path": "/",
-    "trailing_slash": false,
+    "trailing_slash": true,
     "favicon": "/images/favicon.png",
     "logo": "/src/assets/images/logo.png",
     "logo_darkmode": "/src/assets/images/logo-dark.png",

@@ -6,15 +6,15 @@
     },
     {
       "name": "About",
-      "url": "/about"
+      "url": "/about/"
     },
     {
       "name": "Gallery",
-      "url": "/gallery"
+      "url": "/gallery/"
     },
     {
       "name": "Footprints",
-      "url": "/footprints"
+      "url": "/footprints/"
     },
     {
       "name": "Pages",
@@ -23,23 +23,23 @@
       "children": [
         {
           "name": "Authors",
-          "url": "/authors"
+          "url": "/authors/"
         },
         {
           "name": "Categories",
-          "url": "/categories"
+          "url": "/categories/"
         },
         {
           "name": "Tags",
-          "url": "/tags"
+          "url": "/tags/"
         },
         {
           "name": "Elements",
-          "url": "/elements"
+          "url": "/elements/"
         },
         {
           "name": "Privacy Policy",
-          "url": "/privacy-policy"
+          "url": "/privacy-policy/"
         }
       ]
     }
@@ -47,15 +47,15 @@
   "footer": [
     {
       "name": "About",
-      "url": "/about"
+      "url": "/about/"
     },
     {
       "name": "Elements",
-      "url": "/elements"
+      "url": "/elements/"
     },
     {
       "name": "Privacy Policy",
-      "url": "/privacy-policy"
+      "url": "/privacy-policy/"
     }
   ]
 }

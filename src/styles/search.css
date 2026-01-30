@@ -1,0 +1,89 @@
+@layer components {
+  .search-shell {
+    @apply relative overflow-hidden rounded-3xl border border-border bg-light/80 p-6 shadow-sm backdrop-blur-md dark:border-border/70 dark:bg-body/60 md:p-10;
+  }
+
+  .search-shell::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(1200px circle at top left, rgb(46 196 182 / 0.15), transparent 55%),
+      radial-gradient(900px circle at bottom right, rgb(255 159 28 / 0.12), transparent 60%);
+    pointer-events: none;
+  }
+
+  .search-shell > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .pagefind-ui {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: var(--color-primary);
+    --pagefind-ui-text: var(--color-text-dark);
+    --pagefind-ui-background: var(--color-light);
+    --pagefind-ui-border: var(--color-border);
+    --pagefind-ui-tag: var(--color-section-bg);
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 16px;
+    --pagefind-ui-image-border-radius: 14px;
+    --pagefind-ui-image-box-ratio: 4 / 3;
+    --pagefind-ui-font: var(--font-primary);
+  }
+
+  .dark .pagefind-ui {
+    --pagefind-ui-text: var(--color-text-dark);
+    --pagefind-ui-background: var(--color-light);
+    --pagefind-ui-border: var(--color-border);
+    --pagefind-ui-tag: var(--color-body);
+  }
+
+  .pagefind-ui__search-input {
+    @apply text-text-dark placeholder:text-text focus:border-primary focus:ring-2 focus:shadow-[0_0_0_3px_rgba(46,196,182,0.25)] dark:text-text-light dark:placeholder:text-text;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .pagefind-ui__search-clear {
+    @apply text-text-dark/70 hover:text-primary dark:text-text-light/70 dark:hover:text-primary;
+  }
+
+  .pagefind-ui__results {
+    @apply mt-8;
+  }
+
+  .pagefind-ui__result {
+    @apply rounded-2xl border border-border bg-white/70 p-6 transition duration-200 hover:-translate-y-0.5 hover:border-primary/50 hover:bg-white/90 dark:border-border/60 dark:bg-light/40 dark:hover:border-primary/60;
+    margin-bottom: 18px;
+  }
+
+  .pagefind-ui__result:last-of-type {
+    margin-bottom: 0;
+  }
+
+  .pagefind-ui__result-title .pagefind-ui__result-link {
+    @apply text-text-dark transition-colors duration-200 hover:text-primary dark:text-text-light;
+  }
+
+  .pagefind-ui__result-excerpt {
+    @apply text-text-dark/80 dark:text-text-light/80;
+  }
+
+  .pagefind-ui mark {
+    @apply rounded-md bg-accent/20 px-1 text-text-dark dark:bg-accent/30 dark:text-text-light;
+  }
+
+  .pagefind-ui__result-tag {
+    @apply text-text-dark/80 dark:text-text-light/80;
+  }
+
+  @media (max-width: 640px) {
+    .pagefind-ui {
+      --pagefind-ui-scale: 0.8;
+    }
+
+    .pagefind-ui__result {
+      @apply p-5;
+    }
+  }
+}

@@ -106,6 +106,7 @@ const postsCollection = defineCollection({
     tags: z.array(z.string()).default(["others"]),
     draft: z.boolean().optional(),
     selection: z.boolean().optional(),
+    pagefind: z.boolean().optional(),
   }),
 });
 

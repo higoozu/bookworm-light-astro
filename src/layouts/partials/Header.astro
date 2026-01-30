@@ -85,7 +85,7 @@ const { pathname } = Astro.url;
     <div class="hidden md:flex items-center gap-4">
       <!-- Search -->
       <a
-        href="/search"
+        href="/search/"
         class="p-2 text-xl text-text-dark dark:text-text-light hover:text-primary dark:hover:text-primary transition-colors"
         aria-label="Search"
       >
@@ -120,9 +120,9 @@ const { pathname } = Astro.url;
     </div>
 
     <!-- Mobile Controls -->
-    <div class="flex md:hidden items-center gap-3 z-[60] relative">
+    <div class="flex md:hidden items-center gap-3 z-60 relative">
       <a
-        href="/search"
+        href="/search/"
         class="p-2 text-2xl text-text-dark dark:text-text-light transition-colors"
         aria-label="Search"
       >
@@ -142,14 +142,14 @@ const { pathname } = Astro.url;
   <!-- Mobile Menu Overlay -->
   <div
     id="mobile-overlay"
-    class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[40] opacity-0 invisible transition-all duration-300 md:hidden"
+    class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 opacity-0 invisible transition-all duration-300 md:hidden"
   >
   </div>
 
   <!-- Mobile Menu Sidebar -->
   <div
     id="mobile-menu"
-    class="fixed top-0 right-0 h-[100dvh] w-full bg-white/98 dark:bg-body/98 backdrop-blur-md z-[50] transform translate-x-full transition-transform duration-300 md:hidden flex flex-col pt-20 overscroll-contain"
+    class="fixed top-0 right-0 h-dvh w-full bg-white/98 dark:bg-body/98 backdrop-blur-md z-50 transform translate-x-full transition-transform duration-300 md:hidden flex flex-col pt-20 overscroll-contain"
   >
     <div class="flex-1 overflow-y-auto py-6 px-6">
       <ul class="space-y-4">
@@ -170,7 +170,7 @@ const { pathname } = Astro.url;
                         <a
                           href={child.url}
                           class={`mobile-nav-link block text-lg transition-colors ${
-                            pathname === child.url || pathname === `${child.url}/`
+                            pathname === child.url || pathname === child.url.replace(/\/$/, "")
                               ? "text-primary font-medium"
                               : "text-text-dark/80 dark:text-text-light/80 hover:text-primary dark:hover:text-primary"
                           }`}
@@ -185,7 +185,7 @@ const { pathname } = Astro.url;
                 <a
                   href={menu.url}
                   class={`mobile-nav-link block text-xl font-medium ${
-                    pathname === menu.url
+                    pathname === menu.url || pathname === menu.url.replace(/\/$/, "")
                       ? "text-primary"
                       : "text-text-dark dark:text-text-light"
                   }`}

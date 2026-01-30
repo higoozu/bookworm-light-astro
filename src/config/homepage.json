@@ -5,14 +5,14 @@
     "image": "/images/posts/04.jpg",
     "date": "Explore 2026",
     "button": "Read Latest Stories",
-    "link": "/blog"
+    "link": "/blog/"
   },
   "explore": [
-    { "name": "DIY", "image": "/images/posts/03.jpg", "link": "/tags/diy" },
-    { "name": "TOY", "image": "/images/posts/03.jpg", "link": "/tags/toy" },
-    { "name": "Art", "image": "/images/posts/03.jpg", "link": "/categories/art" },
-    { "name": "Accessories", "image": "/images/posts/03.jpg", "link": "/categories/accessories" },
-    { "name": "Balloon", "image": "/images/posts/03.jpg", "link": "/tags/balloon" },
-    { "name": "Gas", "image": "/images/posts/04.jpg", "link": "/tags/gas" }
+    { "name": "DIY", "image": "/images/posts/03.jpg", "link": "/tags/diy/" },
+    { "name": "TOY", "image": "/images/posts/03.jpg", "link": "/tags/toy/" },
+    { "name": "Art", "image": "/images/posts/03.jpg", "link": "/categories/art/" },
+    { "name": "Accessories", "image": "/images/posts/03.jpg", "link": "/categories/accessories/" },
+    { "name": "Balloon", "image": "/images/posts/03.jpg", "link": "/tags/balloon/" },
+    { "name": "Gas", "image": "/images/posts/04.jpg", "link": "/tags/gas/" }
   ]
 }

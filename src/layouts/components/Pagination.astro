@@ -48,7 +48,7 @@ const hasNextPage = totalPages > currentPage;
       // If section starts with '/', append '/page/X'. If not, prepend '/'.
       // For tags: section="/tags/mytag" -> "/tags/mytag/page/2"
       const baseUrl = sec ? (sec.startsWith('/') ? sec : `/${sec}`) : '';
-      const url = `${baseUrl}/page/${next}`;
+      const url = `${baseUrl}/page/${next}/`;
       
       try {
         const res = await fetch(url);

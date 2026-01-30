@@ -11,7 +11,7 @@ type Props = {
 
 const { post } = Astro.props as Props;
 const { title, image, date, summary, authors, categories } = post.data;
-const href = `/blog/${post.id}`;
+const href = `/blog/${post.id}/`;
 ---
 
 <div class="h-full group flex flex-col">
@@ -35,7 +35,7 @@ const href = `/blog/${post.id}`;
   <div class="flex-1 flex flex-col">
     <div class="mb-3 flex items-center flex-wrap gap-2 text-[10px] font-bold uppercase tracking-widest text-text/60">
       {authors && authors[0] && (
-        <a href={`/authors/${slugify(authors[0])}`} class="hover:text-primary transition-colors">
+        <a href={`/authors/${slugify(authors[0])}/`} class="hover:text-primary transition-colors">
           {authors[0]}
         </a>
       )}
@@ -43,7 +43,7 @@ const href = `/blog/${post.id}`;
       <span>{dateFormat(date!)}</span>
       <span class="opacity-30">/</span>
       {categories && categories[0] && (
-        <a href={`/categories/${slugify(categories[0])}`} class="text-primary hover:opacity-80 transition-colors">
+        <a href={`/categories/${slugify(categories[0])}/`} class="text-primary hover:opacity-80 transition-colors">
           {categories[0]}
         </a>
       )}

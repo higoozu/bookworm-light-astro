@@ -1,23 +1,29 @@
 ---
-import SearchBar from "@/helpers/SearchBar";
 import Base from "@/layouts/Base.astro";
-import { getSinglePage } from "@/lib/contentParser.astro";
-
-// Retrieve all articles
-const posts = await getSinglePage("posts");
-
-// List of items to search in
-const searchList = posts.map((item) => ({
-  slug: item.id,
-  data: item.data,
-  content: item.body,
-}));
+import Search from "astro-pagefind/components/Search";
 ---
 
 <Base title={`Search`}>
   <section class="section">
     <div class="container">
-      <SearchBar client:load searchList={searchList} />
+      <div class="mx-auto max-w-3xl text-center">
+        <p class="mb-3 inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-primary">
+          Explore the journal
+        </p>
+        <h1 class="h2 page-heading mb-4">Search</h1>
+        <p class="text-text">
+          Find stories, galleries, and places across the site. Try keywords like
+          "railway", "mountain", or a city name.
+        </p>
+      </div>
+
+      <div class="search-shell mx-auto mt-10 max-w-4xl">
+        <Search
+          id="search"
+          className="pagefind-ui"
+          uiOptions={{ showImages: false, autofocus: true }}
+        />
+      </div>
     </div>
   </section>
 </Base>
