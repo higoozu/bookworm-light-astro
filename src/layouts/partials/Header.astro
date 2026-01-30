@@ -37,16 +37,24 @@ const { pathname } = Astro.url;
       <ul class="flex items-center gap-6">
         {
           main.map((menu) => (
-            <li class="relative group">
+            <li class="relative group" data-dropdown="menu">
               {menu.hasChildren ? (
                 <>
-                  <button class="flex items-center gap-1 py-2 text-lg font-medium text-text-dark dark:text-text-light hover:text-primary dark:hover:text-primary transition-colors">
+                  <button
+                    type="button"
+                    class="flex items-center gap-1 py-2 text-lg font-medium text-text-dark dark:text-text-light hover:text-primary dark:hover:text-primary transition-colors"
+                    aria-expanded="false"
+                    data-dropdown-toggle
+                  >
                     {menu.name}
                     <svg class="h-4 w-4 fill-current opacity-70 group-hover:rotate-180 transition-transform duration-200" viewBox="0 0 20 20">
                       <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
                     </svg>
                   </button>
-                  <ul class="absolute top-full left-0 min-w-50 bg-white dark:bg-body rounded-lg shadow-lg border border-border dark:border-border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0 p-2">
+                  <ul
+                    class="absolute top-full left-0 min-w-50 bg-white dark:bg-body rounded-lg shadow-lg border border-border dark:border-border opacity-0 invisible pointer-events-none group-hover:opacity-100 group-hover:visible group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:visible group-focus-within:pointer-events-auto transition-all duration-200 transform translate-y-2 group-hover:translate-y-0 group-focus-within:translate-y-0 p-2"
+                    data-dropdown-panel
+                  >
                     {menu.children?.map((child) => (
                       <li>
                         <a
@@ -93,10 +101,13 @@ const { pathname } = Astro.url;
       </a>
 
       <!-- Theme Switcher -->
-      <div class="relative group">
+      <div class="relative group" data-dropdown="theme">
         <button
+          type="button"
           class="p-2 text-xl text-text-dark dark:text-text-light hover:text-primary dark:hover:text-primary transition-colors cursor-pointer"
           aria-label="Toggle Theme"
+          aria-expanded="false"
+          data-dropdown-toggle
         >
           <span class="theme-icon-display">
             <span class="theme-icon-light hidden"><IoSunny /></span>
@@ -105,7 +116,10 @@ const { pathname } = Astro.url;
           </span>
         </button>
         <!-- Theme Dropdown -->
-        <div class="absolute right-0 top-full mt-2 w-32 bg-white dark:bg-body rounded-lg shadow-lg border border-border dark:border-border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0 overflow-hidden">
+        <div
+          class="absolute right-0 top-full mt-2 w-32 bg-white dark:bg-body rounded-lg shadow-lg border border-border dark:border-border opacity-0 invisible pointer-events-none group-hover:opacity-100 group-hover:visible group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:visible group-focus-within:pointer-events-auto transition-all duration-200 transform translate-y-2 group-hover:translate-y-0 group-focus-within:translate-y-0 overflow-hidden"
+          data-dropdown-panel
+        >
             <button class="theme-btn w-full text-left px-4 py-2 flex items-center gap-2 text-text-dark dark:text-text-light cursor-pointer data-[active=true]:text-primary data-[active=true]:font-semibold transition-colors" data-theme="light">
                 <IoSunny className="text-sm" /> <span>Light</span>
             </button>
@@ -149,7 +163,7 @@ const { pathname } = Astro.url;
   <!-- Mobile Menu Sidebar -->
   <div
     id="mobile-menu"
-    class="fixed top-0 right-0 h-dvh w-full bg-white/98 dark:bg-body/98 backdrop-blur-md z-50 transform translate-x-full transition-transform duration-300 md:hidden flex flex-col pt-20 overscroll-contain"
+    class="fixed top-0 right-0 h-dvh w-full bg-white/98 dark:bg-body/98 backdrop-blur-md z-50 transform translate-x-full opacity-0 invisible transition-all duration-300 md:hidden flex flex-col pt-20 overscroll-contain"
   >
     <div class="flex-1 overflow-y-auto py-6 px-6">
       <ul class="space-y-4">
@@ -223,6 +237,7 @@ const { pathname } = Astro.url;
 <script>
     document.addEventListener("astro:page-load", () => {
         new NavbarController();
+        new DesktopDropdownController();
         initTheme();
     });
 
@@ -353,6 +368,7 @@ const { pathname } = Astro.url;
             if (this.isMenuOpen) {
                 // Open
                 mobileMenu?.classList.remove("translate-x-full");
+                mobileMenu?.classList.remove("opacity-0", "invisible");
                 this.mobileOverlay?.classList.remove("opacity-0", "invisible");
                 iconMenu?.classList.add("hidden");
                 iconClose?.classList.remove("hidden");
@@ -364,6 +380,7 @@ const { pathname } = Astro.url;
             } else {
                 // Close
                 mobileMenu?.classList.add("translate-x-full");
+                mobileMenu?.classList.add("opacity-0", "invisible");
                 this.mobileOverlay?.classList.add("opacity-0", "invisible");
                 iconMenu?.classList.remove("hidden");
                 iconClose?.classList.add("hidden");
@@ -372,6 +389,66 @@ const { pathname } = Astro.url;
                 // Reset state based on scroll
                 this.update(); 
             }
+        }
+    }
+
+    class DesktopDropdownController {
+        constructor() {
+            this.activeRoot = null;
+            this.onDocumentClick = this.onDocumentClick.bind(this);
+            this.onKeyDown = this.onKeyDown.bind(this);
+
+            const roots = document.querySelectorAll('[data-dropdown]');
+            roots.forEach((root) => {
+                const toggle = root.querySelector('[data-dropdown-toggle]');
+                const panel = root.querySelector('[data-dropdown-panel]');
+                if (!toggle || !panel) return;
+
+                toggle.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (this.activeRoot && this.activeRoot !== root) {
+                        this.close(this.activeRoot);
+                    }
+                    const isOpen = root.dataset.open === 'true';
+                    if (isOpen) this.close(root);
+                    else this.open(root);
+                });
+            });
+
+            document.addEventListener('click', this.onDocumentClick);
+            document.addEventListener('keydown', this.onKeyDown);
+        }
+
+        open(root) {
+            const toggle = root.querySelector('[data-dropdown-toggle]');
+            const panel = root.querySelector('[data-dropdown-panel]');
+            if (!panel) return;
+            root.dataset.open = 'true';
+            toggle?.setAttribute('aria-expanded', 'true');
+            panel.classList.remove('opacity-0', 'invisible', 'pointer-events-none', 'translate-y-2');
+            this.activeRoot = root;
+        }
+
+        close(root) {
+            const toggle = root.querySelector('[data-dropdown-toggle]');
+            const panel = root.querySelector('[data-dropdown-panel]');
+            if (!panel) return;
+            root.dataset.open = 'false';
+            toggle?.setAttribute('aria-expanded', 'false');
+            panel.classList.add('opacity-0', 'invisible', 'pointer-events-none', 'translate-y-2');
+            if (this.activeRoot === root) this.activeRoot = null;
+        }
+
+        onDocumentClick(e) {
+            if (!this.activeRoot) return;
+            if (this.activeRoot.contains(e.target)) return;
+            this.close(this.activeRoot);
+        }
+
+        onKeyDown(e) {
+            if (e.key !== 'Escape') return;
+            if (this.activeRoot) this.close(this.activeRoot);
         }
     }
 

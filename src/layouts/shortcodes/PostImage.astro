@@ -15,7 +15,7 @@ const { src, alt, caption, style = "standard" } = Astro.props;
 // Desktop Wide: Break out (w-[120%] -ml-[10%])
 const containerClass =
   style === "wide"
-    ? "w-[calc(100%+2rem)] -ml-4 md:w-[1100px] md:relative md:left-1/2 md:-translate-x-1/2 my-8"
+    ? "w-[calc(100%+2rem)] -ml-4 md:w-full md:ml-0 lg:w-[1100px] lg:relative lg:left-1/2 lg:-translate-x-1/2 my-8"
     : "w-[calc(100%+2rem)] -ml-4 md:w-full md:ml-0 my-8";
 
 // Mobile: No rounded corners (rounded-none)

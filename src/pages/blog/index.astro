@@ -40,7 +40,7 @@ const gridPosts = currentPosts.slice(1);
     <div class="container">
       <div class="bg-section-bg dark:bg-section-bg rounded-4xl p-8 md:p-16 text-center transition-colors relative overflow-hidden group">
         <!-- Decorative subtle element -->
-        <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-primary/50 to-transparent opacity-50"></div>
+        <div class="absolute top-0 left-0 w-full h-2 bg-linear-to-r from-primary/50 to-transparent opacity-50"></div>
         
         <h1 class="text-4xl md:text-6xl font-serif italic font-bold mb-6 text-text-dark dark:text-text-light relative z-10">
           Wanderlust Chronicles
@@ -80,14 +80,14 @@ const gridPosts = currentPosts.slice(1);
     <section class="pt-16 pb-8">
       <div class="container">
         <div class="flex items-center gap-2 mb-8">
-          <span class="w-8 h-[2px] bg-primary"></span>
+          <span class="w-8 h-0.5 bg-primary"></span>
           <span class="text-xs font-bold uppercase tracking-[0.2em] text-text/60">Latest Story</span>
         </div>
 
-        <a href={`/blog/${highlightPost.id}`} class="group block">
+        <a href={`/blog/${highlightPost.id}/`} class="group block">
           <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
             <!-- Image Side -->
-            <div class="md:col-span-8 relative overflow-hidden rounded-2xl aspect-video md:aspect-auto md:h-[450px]">
+            <div class="md:col-span-8 relative overflow-hidden rounded-2xl aspect-video md:aspect-auto md:h-112.5">
                {highlightPost.data.image && (
                 <Picture
                   src={highlightPost.data.image}
@@ -133,7 +133,7 @@ const gridPosts = currentPosts.slice(1);
   <section class="section pt-0">
     <div class="container">
       <div class="flex items-center gap-2 mb-10">
-        <span class="w-8 h-[2px] bg-border dark:border-border"></span>
+        <span class="w-8 h-0.5 bg-border dark:border-border"></span>
         <span class="text-xs font-bold uppercase tracking-[0.2em] text-text/60">Recent Posts</span>
       </div>
 
