@@ -2,7 +2,7 @@
 title: John Doe
 meta_title: ""
 image: "@/assets/images/authors/john-doe.jpg"
-description: this is meta description
+description: this is meta test description
 social:
   facebook: https://www.facebook.com/johndoe
   x: https://www.x.com/johndoe

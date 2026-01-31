@@ -59,7 +59,7 @@ const Lightbox: React.FC<LightboxProps> = ({ images }) => {
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/95 backdrop-blur-sm p-4"
+      className="fixed inset-0 z-100 flex flex-col items-center justify-center bg-black/95 backdrop-blur-sm p-4"
       onClick={closeLightbox}
     >
       {/* Close Button - Forced White Color */}
