@@ -5,6 +5,7 @@ import { getSinglePage } from "@/lib/contentParser.astro";
 import dateFormat from "@/lib/utils/dateFormat";
 import similerItems from "@/lib/utils/similarItems";
 import AuthorCard from "@/layouts/components/AuthorCard.astro";
+import Comments from "@/layouts/components/Comments.astro";
 import SelectionCard from "@/layouts/components/SelectionCard.astro";
 import { sortByDate } from "@/lib/utils/sortFunctions";
 import { humanize, markdownify, slugify } from "@/lib/utils/textConverter";
@@ -133,24 +134,29 @@ const selectionPosts = sortedPosts
             </>
           )}
 
-          <div class="mt-10 pt-8 border-t border-border dark:border-border flex flex-col md:flex-row justify-between items-center gap-6">
-          <div class="flex flex-wrap gap-2">
-            {tags.map((tag: string) => (
-              <a
-                href={`/tags/${slugify(tag)}/`}
-                class="inline-block px-4 py-1.5 rounded-full border border-border text-xs uppercase tracking-wider text-text/80 hover:border-primary hover:text-primary transition-colors duration-300"
-              >
-                #{humanize(tag)}
-              </a>
-            ))}
-          </div>
-          <Share
-            className="social-share"
-            title={title}
-            description={description}
-            slug={post.id}
-            showCopy={true}
-          />
+          <div class="mt-10 pt-8">
+            <div class="flex flex-wrap gap-2">
+              {tags.map((tag: string) => (
+                <a
+                  href={`/tags/${slugify(tag)}/`}
+                  class="inline-block px-4 py-1.5 rounded-full border border-border text-xs uppercase tracking-wider text-text/80 hover:border-primary hover:text-primary transition-colors duration-300"
+                >
+                  #{humanize(tag)}
+                </a>
+              ))}
+            </div>
+            
+            <!-- Comment & Share Section -->
+            <Comments postId={post.id} className="mt-6">
+              <Share
+                slot="share"
+                className="post-share-trigger-wrap"
+                title={title}
+                description={description}
+                slug={post.id}
+                showCopy={true}
+              />
+            </Comments>
           </div>
         </div>
       </div>
@@ -181,3 +187,4 @@ const selectionPosts = sortedPosts
       </div>
     </div>
   </section>
+

@@ -1,0 +1,130 @@
+---
+import { FaHeart } from "react-icons/fa6";
+import config from "@/config/config.json";
+
+const { postId, className } = Astro.props;
+const { api_url, turnstile_site_key } = config.comments;
+---
+
+<div class={className} data-comment-root data-article-id={postId} data-api-base={api_url}>
+  <!-- Like Button (Part of the comment system interaction) -->
+  <div class="flex items-center justify-between gap-2 py-6 border-t border-border dark:border-border mt-6">
+    <button
+      type="button"
+      class="like-button comment-like-btn group flex items-center gap-2 px-4 py-2 rounded-full border border-border cursor-pointer hover:border-primary hover:text-primary transition-colors"
+      aria-label="like this post"
+    >
+      <FaHeart class="transition-transform group-active:scale-125" />
+      <span>Like</span>
+      <span class="comment-like-count text-sm font-bold min-w-[1ch] text-center">0</span>
+    </button>
+    <slot name="share" />
+  </div>
+
+  <!-- Comment Section -->
+  <section id="comments" class="mt-12 pt-8">
+    <div class="flex items-center gap-4 mb-8">
+      <h3 class="h3 font-serif italic text-2xl text-text-dark dark:text-text-light">Leave a comment</h3>
+      <span class="text-xs font-bold bg-primary/10 text-primary px-2 py-0.5 rounded-full" data-comment-count>0</span>
+    </div>
+
+    <form data-comment-form class="mb-12">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <input
+          type="text"
+          name="authorName"
+          placeholder="Name *"
+          required
+          class="w-full px-5 py-3 bg-white dark:bg-light border border-border rounded-xl focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-text/50"
+        />
+        <input
+          type="email"
+          name="authorEmail"
+          placeholder="Email *"
+          required
+          class="w-full px-5 py-3 bg-white dark:bg-light border border-border rounded-xl focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-text/50"
+        />
+      </div>
+      <textarea
+        name="content"
+        rows="4"
+        placeholder="Write a comment..."
+        required
+        class="w-full px-5 py-3 bg-white dark:bg-light border border-border rounded-xl focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-text/50 mb-6 resize-y"
+      ></textarea>
+
+      <!-- Turnstile Placeholder -->
+      {turnstile_site_key && (
+        <div class="cf-turnstile mb-6" data-sitekey={turnstile_site_key}></div>
+      )}
+
+      <button
+        type="submit"
+        class="btn btn-primary px-8 py-3 rounded-full font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        Submit Comment
+      </button>
+    </form>
+
+    <div class="comment-tree space-y-6"></div>
+  </section>
+</div>
+
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<script async src="/static/js/comments.js"></script>
+
+<style is:global>
+  @reference "../../styles/main.css";
+
+  .comment-list {
+    @apply flex flex-col gap-6;
+  }
+  .comment-item {
+    @apply flex flex-col gap-4;
+  }
+  .comment-header {
+    @apply flex gap-4 items-start;
+  }
+  .comment-avatar-wrapper {
+    @apply shrink-0;
+  }
+  .comment-avatar {
+    @apply w-10 h-10 min-w-10 min-h-10 rounded-full object-cover border border-border;
+  }
+  .comment-body {
+    @apply grow min-w-0;
+  }
+  .comment-meta {
+    @apply flex flex-wrap items-center gap-2 text-sm text-text/60 mb-1;
+  }
+  .comment-author {
+    @apply font-bold text-text-dark dark:text-text-light;
+  }
+  .comment-admin-badge {
+    @apply text-[10px] uppercase font-bold tracking-wider bg-primary text-white px-2 py-0.5 rounded-full ml-1;
+  }
+  .comment-date {
+    @apply text-xs;
+  }
+  .comment-content {
+    @apply text-text-dark/90 dark:text-text-light/90 text-sm leading-relaxed mb-2 break-all;
+  }
+  .comment-reply-name {
+    @apply text-primary font-medium;
+  }
+  .comment-reply {
+    @apply text-xs font-bold text-text/60 hover:text-primary transition-colors cursor-pointer;
+  }
+  .comment-children {
+    @apply pl-12 mt-4 border-l-2 border-border/50;
+  }
+  .comment-empty {
+    @apply text-center text-text/60 py-8;
+  }
+  .comment-error {
+    @apply text-center text-red-500 py-4;
+  }
+  .comment-like-btn.is-liked {
+    @apply text-primary border-primary;
+  }
+</style>

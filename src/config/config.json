@@ -22,6 +22,11 @@
     "meta_description": "Bookworm Light Astro Blog Template"
   },
 
+  "comments": {
+    "api_url": "http://localhost:8080",
+    "turnstile_site_key": ""
+  },
+
   "google_tag_manager": {
     "enable": false,
     "gtm_id": "GTM-XXXXXX"
@@ -31,11 +36,5 @@
     "contact_form_action": "#",
     "copyright": "Copyright © 2026",
     "footer_tagline": "A travel journal of slow mornings, long train rides, and stories gathered along the way."
-  },
-
-  "contactinfo": {
-    "address": "355 S Grand Ave <br/> Los Angeles, CA 90071",
-    "email": "info@bookworm.org",
-    "phone": "+800 567 1234"
   }
 }

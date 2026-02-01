@@ -1,6 +1,8 @@
 ---
 import config from "@/config/config.json";
 import {
+  FaBluesky,
+  FaShareNodes,
   FaLink,
   FaFacebook,
   FaLinkedin,
@@ -8,83 +10,159 @@ import {
 } from "react-icons/fa6";
 
 const { base_url } = config.site;
-const { title, description, slug, className, showCopy = false } = Astro.props;
+const { title, description, slug, className, showCopy = true } = Astro.props;
 const pathname = Astro.url?.pathname || `/${slug}`;
 const shareUrl = `${base_url}${pathname}`;
+const shareTitle = title ?? "";
+const shareText = description ?? title ?? "";
+const encodedUrl = encodeURIComponent(shareUrl);
+const encodedTitle = encodeURIComponent(shareTitle);
+const encodedText = encodeURIComponent(`${shareTitle} ${shareUrl}`.trim());
 ---
 
-<ul class={`${className}`}>
-  <li class="inline-block">
+<div class={`post-share ${className ?? ""}`} data-share-wrapper>
+  <button
+    type="button"
+    class="post-share-trigger cursor-pointer"
+    aria-label="share options"
+    aria-haspopup="dialog"
+    aria-expanded="false"
+    data-share-trigger
+  >
+    <FaShareNodes />
+  </button>
+
+  <div class="post-share-panel" role="dialog" aria-label="Share" data-share-panel hidden>
+    {showCopy && (
+      <button
+        type="button"
+        class="post-share-item post-share-copy cursor-pointer"
+        data-share-copy={shareUrl}
+        aria-label="copy link"
+      >
+        <FaLink />
+        <span data-share-copy-text>Copy link</span>
+      </button>
+    )}
+
+    <div class="post-share-divider"></div>
+
     <a
-      aria-label="facebook share button"
-      href={`https://facebook.com/sharer/sharer.php?u=${shareUrl}`}
+      class="post-share-item"
+      href={`https://facebook.com/sharer/sharer.php?u=${encodedUrl}`}
       target="_blank"
       rel="noreferrer noopener"
     >
       <FaFacebook />
+      <span>Share on Facebook</span>
     </a>
-  </li>
-  <li class="inline-block">
     <a
-      aria-label="twitter share button"
-      href={`https://twitter.com/intent/tweet/?text=${title}&amp;url=${shareUrl}`}
+      class="post-share-item"
+      href={`https://twitter.com/intent/tweet/?text=${encodedTitle}&amp;url=${encodedUrl}`}
       target="_blank"
       rel="noreferrer noopener"
     >
       <FaXTwitter />
+      <span>Share on X</span>
     </a>
-  </li>
-  <li class="inline-block">
     <a
-      aria-label="linkedin share button"
-      href={`https://www.linkedin.com/shareArticle?mini=true&url=${shareUrl}&title=${title}&summary=${description}&source=${base_url}`}
+      class="post-share-item"
+      href={`https://bsky.app/intent/compose?text=${encodedText}`}
+      target="_blank"
+      rel="noreferrer noopener"
+    >
+      <FaBluesky />
+      <span>Share on Bluesky</span>
+    </a>
+    <a
+      class="post-share-item"
+      href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodedUrl}&title=${encodedTitle}&summary=${encodeURIComponent(shareText)}&source=${base_url}`}
       target="_blank"
       rel="noreferrer noopener"
     >
       <FaLinkedin />
+      <span>Share on LinkedIn</span>
     </a>
-  </li>
-  {showCopy && (
-    <li class="inline-block">
-      <button
-        type="button"
-        aria-label="copy link"
-        data-share-copy={shareUrl}
-        title="Copy link"
-        class="cursor-pointer"
-      >
-        <FaLink />
-      </button>
-    </li>
-  )}
-</ul>
+  </div>
+</div>
 
-{showCopy && (
-  <script define:vars={{ shareUrl }}>
-    const buttons = document.querySelectorAll("[data-share-copy]");
-    const fallbackCopy = (value) => {
-      const input = document.createElement("input");
-      input.value = value;
-      input.setAttribute("readonly", "");
-      input.style.position = "absolute";
-      input.style.left = "-9999px";
-      document.body.appendChild(input);
-      input.select();
-      document.execCommand("copy");
-      document.body.removeChild(input);
-    };
+<script define:vars={{ shareUrl, shareTitle, shareText }}>
+  const wrappers = document.querySelectorAll("[data-share-wrapper]");
 
-    buttons.forEach((button) => {
-      button.addEventListener("click", async () => {
-        const value = button.getAttribute("data-share-copy") || shareUrl;
+  const isMobile = () =>
+    window.matchMedia("(max-width: 767px)").matches;
+
+  const fallbackCopy = (value) => {
+    const input = document.createElement("input");
+    input.value = value;
+    input.setAttribute("readonly", "");
+    input.style.position = "absolute";
+    input.style.left = "-9999px";
+    document.body.appendChild(input);
+    input.select();
+    document.execCommand("copy");
+    document.body.removeChild(input);
+  };
+
+  const closePanel = (panel, trigger) => {
+    if (!panel || !trigger) return;
+    panel.hidden = true;
+    trigger.setAttribute("aria-expanded", "false");
+  };
+
+  wrappers.forEach((wrapper) => {
+    const trigger = wrapper.querySelector("[data-share-trigger]");
+    const panel = wrapper.querySelector("[data-share-panel]");
+    const copyButton = wrapper.querySelector("[data-share-copy]");
+
+    trigger?.addEventListener("click", async (event) => {
+      if (isMobile() && navigator.share) {
+        event.preventDefault();
         try {
-          await navigator.clipboard.writeText(value);
+          await navigator.share({
+            title: shareTitle,
+            text: shareText,
+            url: shareUrl,
+          });
         } catch (error) {
-          fallbackCopy(value);
+          // ignore user cancellation
         }
-        button.setAttribute("data-copied", "true");
-        window.setTimeout(() => button.removeAttribute("data-copied"), 1800);
-      });
+        return;
+      }
+
+      if (!panel) return;
+      if (panel.hidden) {
+        panel.hidden = false;
+        trigger.setAttribute("aria-expanded", "true");
+      } else {
+        closePanel(panel, trigger);
+      }
     });
-  </script>
-)}
+
+    copyButton?.addEventListener("click", async () => {
+      const value = copyButton.getAttribute("data-share-copy") || shareUrl;
+      try {
+        await navigator.clipboard.writeText(value);
+      } catch (error) {
+        fallbackCopy(value);
+      }
+      copyButton.setAttribute("data-copied", "true");
+      const textNode = copyButton.querySelector("[data-share-copy-text]");
+      if (textNode) textNode.textContent = "Copied!";
+      window.setTimeout(() => {
+        copyButton.removeAttribute("data-copied");
+        if (textNode) textNode.textContent = "Copy link";
+      }, 1800);
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!panel || panel.hidden) return;
+      if (wrapper.contains(event.target)) return;
+      closePanel(panel, trigger);
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closePanel(panel, trigger);
+    });
+  });
+</script>

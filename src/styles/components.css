@@ -123,6 +123,45 @@
   @apply text-base;
 }
 
+.like-button {
+  @apply inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-semibold text-text-dark transition;
+  @apply hover:border-primary hover:text-primary dark:text-text-light;
+}
+
+.like-button svg {
+  @apply text-sm;
+}
+
+.post-share {
+  @apply relative;
+}
+
+.post-share-trigger {
+  @apply inline-flex h-10 w-10 items-center justify-center rounded-full border border-border text-text-dark transition;
+  @apply hover:border-primary hover:text-primary dark:text-text-light;
+}
+
+.post-share-panel {
+  @apply absolute right-0 z-20 mt-3 w-54 rounded-2xl border border-border bg-body p-2 shadow-lg;
+}
+
+.post-share-divider {
+  @apply my-2 border-t border-border;
+}
+
+.post-share-item {
+  @apply flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-text-dark transition;
+  @apply hover:text-primary dark:text-text-light;
+}
+
+.post-share-item svg {
+  @apply text-base;
+}
+
+.post-share-copy[data-copied="true"] {
+  @apply text-primary;
+}
+
 /* Content style - Refined for "Storytelling" feel */
 .content {
   @apply prose max-w-none;
