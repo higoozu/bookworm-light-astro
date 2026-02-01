@@ -12,11 +12,7 @@ posts.forEach((post) => {
 });
 ---
 
-<Base 
-  title="My Travel Footprint" 
-  description="A map of countries and cities I've visited."
-  noFooter={true}
->
+<Base noFooter={true}>
   <div class="h-[calc(100vh-4rem)] md:h-[calc(100vh-5rem)] w-full relative overflow-hidden">
     <FootprintMap client:only="react" postsData={postsData} />
   </div>

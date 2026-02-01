@@ -114,7 +114,7 @@ const selectionPosts = sortedPosts
 
       <!-- Content -->
       <div class="max-w-180 mx-auto">
-        <div class="content prose-lg prose-headings:font-serif prose-headings:font-bold prose-p:font-sans prose-p:text-lg prose-p:leading-8 prose-p:text-text-dark/90 dark:prose-p:text-text-light/90">
+        <div class="content prose-headings:font-ui prose-headings:font-bold prose-p:leading-8 prose-p:text-text-dark/90 dark:prose-p:text-text-light/90">
           <Content />
         </div>
 
@@ -167,7 +167,7 @@ const selectionPosts = sortedPosts
 {similarPosts.length > 0 && (
   <section class="section pt-12 mt-20">
     <div class="container">
-      <h2 class="mb-12 text-center h3 font-serif italic">Read Next</h2>
+      <h2 class="mb-12 text-center h3 font-ui">Read Next</h2>
       <SimilarPosts posts={similarPosts.slice(0, 3)} />
     </div>
   </section>
@@ -187,4 +187,3 @@ const selectionPosts = sortedPosts
       </div>
     </div>
   </section>
-

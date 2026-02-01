@@ -1,3 +1,4 @@
+@import "./fonts.css";
 @import "tailwindcss";
 @plugin "../tailwind-plugin/tw-theme.mjs";
 @plugin "../tailwind-plugin/tw-bs-grid.mjs";

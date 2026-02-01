@@ -1,12 +1,21 @@
 {
   "site": {
     "title": "Wanderlust Chronicles",
+    "site_name": "Wanderlust Chronicles",
+    "language": "zh-CN",
+    "locale": "zh_CN",
     "base_url": "https://bookworm-light-astro.vercel.app",
     "base_path": "/",
     "trailing_slash": true,
-    "favicon": "/images/favicon.png",
+    "favicon": "/favicon.png",
+    "icon_16": "/icons/icon-16.png",
+    "icon_32": "/icons/icon-32.png",
+    "apple_touch_icon": "/icons/icon-180.png",
+    "manifest": "/site.webmanifest",
+    "mask_icon": "",
     "logo": "/src/assets/images/logo.png",
     "logo_darkmode": "/src/assets/images/logo-dark.png",
+    "logo_public": "/logo.png",
     "logo_width": "200",
     "logo_height": "34",
     "logo_text": ""
@@ -19,7 +28,74 @@
   "metadata": {
     "meta_author": "Themefisher",
     "meta_image": "/images/og-image.png",
-    "meta_description": "Bookworm Light Astro Blog Template"
+    "meta_description": "Bookworm Light Astro Blog Template",
+    "title_template": "%s · Wanderlust Chronicles",
+    "default_robots": "index,follow",
+    "sitemap_path": "/sitemap-index.xml",
+    "theme_color_light": "#FAFAFA",
+    "theme_color_dark": "#1C1C1E",
+    "twitter_handle": "",
+    "twitter_creator": "",
+    "resource_hints": {
+      "preconnect": ["https://cdnjs.cloudflare.com"],
+      "dns_prefetch": ["//cdnjs.cloudflare.com"]
+    },
+    "page_meta": {
+      "/": {
+        "title": "Wanderlust Chronicles",
+        "description": "Discovering the hidden gems and untold stories from around the globe.",
+        "og_image": "/og/pages/home.png",
+        "og_type": "website"
+      },
+      "/blog/": {
+        "title": "All Stories",
+        "description": "Long-form travel stories, guides, and photo essays.",
+        "og_image": "/og/pages/blog.png",
+        "og_type": "website"
+      },
+      "/categories/": {
+        "title": "Browse by Category",
+        "description": "Find stories by destination, theme, and travel style.",
+        "og_image": "/og/pages/categories.png",
+        "og_type": "website"
+      },
+      "/tags/": {
+        "title": "Browse by Tag",
+        "description": "Topics, moments, and ideas collected from the road.",
+        "og_image": "/og/pages/tags.png",
+        "og_type": "website"
+      },
+      "/gallery/": {
+        "title": "Photo Galleries",
+        "description": "Visual travel diaries and curated photo sets.",
+        "og_image": "/og/pages/gallery.png",
+        "og_type": "website"
+      },
+      "/authors/": {
+        "title": "Authors",
+        "description": "Meet the writers behind the journeys.",
+        "og_image": "/og/pages/authors.png",
+        "og_type": "profile"
+      },
+      "/about/": {
+        "title": "About",
+        "description": "The story and philosophy behind Wanderlust Chronicles.",
+        "og_image": "/og/pages/about.png",
+        "og_type": "profile"
+      },
+      "/search/": {
+        "title": "Search",
+        "description": "Search the travel archive.",
+        "og_image": "/og/pages/search.png",
+        "og_type": "website"
+      },
+      "/footprints/": {
+        "title": "Travel Footprints",
+        "description": "A living map of journeys, routes, and highlights.",
+        "og_image": "/og/pages/footprints.png",
+        "og_type": "website"
+      }
+    }
   },
 
   "comments": {

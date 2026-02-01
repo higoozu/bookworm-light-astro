@@ -16,6 +16,11 @@ const {
   meta_title,
   description,
   image,
+  og_image,
+  twitter_image,
+  image_alt,
+  canonical,
+  noindex,
   hero,
   introduction,
   sections,
@@ -36,6 +41,11 @@ const statIcons = {
   meta_title={meta_title}
   description={description}
   image={metaImage}
+  og_image={og_image || "/og/pages/about.png"}
+  twitter_image={twitter_image || "/og/pages/about.png"}
+  image_alt={image_alt}
+  canonical={canonical}
+  noindex={noindex}
 >
   <!-- Hero Section -->
   <section class="pt-8 pb-4">

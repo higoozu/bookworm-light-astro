@@ -17,7 +17,22 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { title, meta_title, image, description, pagefind } = post.data;
+const {
+  title,
+  meta_title,
+  image,
+  description,
+  pagefind,
+  date,
+  authors,
+  categories,
+  tags,
+  og_image,
+  twitter_image,
+  image_alt,
+  canonical,
+  noindex,
+} = post.data;
 ---
 
 <Base
@@ -25,6 +40,16 @@ const { title, meta_title, image, description, pagefind } = post.data;
   meta_title={meta_title}
   description={description}
   image={image}
+  og_image={og_image || `/og/posts/${post.id}.png`}
+  twitter_image={twitter_image || `/og/posts/${post.id}.png`}
+  image_alt={image_alt}
+  ogType="article"
+  publishedTime={date}
+  authorNames={authors}
+  section={categories?.[0]}
+  tags={tags}
+  canonical={canonical}
+  noindex={noindex}
   pagefind={pagefind !== false}
 >
   <PostSingle post={post} />

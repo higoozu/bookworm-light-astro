@@ -14,7 +14,17 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await render(entry);
-const { title, description, cover, images } = entry.data;
+const {
+  title,
+  description,
+  cover,
+  images,
+  og_image,
+  twitter_image,
+  image_alt,
+  canonical,
+  noindex,
+} = entry.data;
 
 // Prepare images for Lightbox (max 1920px)
 const lightboxImages = await Promise.all(
@@ -33,7 +43,16 @@ const lightboxImages = await Promise.all(
 );
 ---
 
-<Base title={title} description={description}>
+<Base
+  title={title}
+  description={description}
+  image={cover}
+  og_image={og_image || cover}
+  twitter_image={twitter_image || cover}
+  image_alt={image_alt}
+  canonical={canonical}
+  noindex={noindex}
+>
     <!-- Hero Section -->
     <div class="relative py-20 md:py-32 flex items-center justify-center text-center overflow-hidden">
          <div class="absolute inset-0 z-0">

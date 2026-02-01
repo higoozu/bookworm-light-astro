@@ -24,7 +24,7 @@ const { pathname } = Astro.url;
 
 <header
   id="main-header"
-  class="absolute top-0 left-0 w-full z-50 will-change-transform"
+  class="absolute top-0 left-0 w-full z-50 will-change-transform font-ui"
 >
   <div class="container mx-auto px-4 h-16 md:h-20 flex items-center justify-between">
     <!-- Logo -->
@@ -537,6 +537,7 @@ const { pathname } = Astro.url;
                 if (window.matchMedia('(prefers-color-scheme: dark)').matches) html.classList.add('dark');
                 else html.classList.remove('dark');
             }
+            window.__setThemeColor?.(theme);
         }
 
         function updateThemeUI(theme) {

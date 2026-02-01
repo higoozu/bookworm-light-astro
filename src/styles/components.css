@@ -10,7 +10,7 @@
 
 /* page heading */
 .page-heading {
-  @apply mb-20 text-center font-bold leading-10 text-text-dark dark:text-text-light;
+  @apply mb-20 text-center font-bold leading-10 text-text-dark dark:text-text-light font-display;
   transition: color 0.3s ease;
 }
 
@@ -166,10 +166,10 @@
 .content {
   @apply prose max-w-none;
   /* Headings: Serif, Bold */
-  @apply prose-headings:font-serif prose-headings:font-bold prose-headings:text-text-dark dark:prose-headings:text-text-light;
-  @apply prose-h1:mb-6 prose-h1:text-4xl md:prose-h1:text-5xl;
-  @apply prose-h2:mt-12 prose-h2:mb-6 prose-h2:text-3xl md:prose-h2:text-4xl;
-  @apply prose-h3:mt-8 prose-h3:mb-4 prose-h3:text-2xl md:prose-h3:text-3xl;
+  @apply prose-headings:font-ui prose-headings:font-bold prose-headings:text-text-dark dark:prose-headings:text-text-light;
+  @apply prose-h1:mb-6 prose-h1:text-4xl md:prose-h1:text-5xl prose-h1:font-display;
+  @apply prose-h2:mt-12 prose-h2:mb-6 prose-h2:text-3xl md:prose-h2:text-4xl prose-h2:font-ui;
+  @apply prose-h3:mt-8 prose-h3:mb-4 prose-h3:text-2xl md:prose-h3:text-3xl prose-h3:font-ui;
   
   /* Body: Sans-serif, Readable */
   @apply prose-p:font-sans prose-p:text-lg prose-p:leading-[1.8] prose-p:text-text-dark/90 dark:prose-p:text-text-light/90 prose-p:mb-8;
@@ -182,8 +182,7 @@
 /* Blockquotes: Distinctive */
 .content blockquote {
   @apply border-l-[4px] border-primary;
-  @apply py-4 px-8 my-10;
-  font-style: normal; /* Reset default tailwind italic if needed, but font-serif italic usually implies italic style */
+  @apply py-4 px-8 my-10 font-lora italic;
 }
 
 /* Remove default quotes from blockquote */

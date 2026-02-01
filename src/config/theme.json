@@ -40,8 +40,18 @@
   },
   "fonts": {
     "font_family": {
-      "primary": "Mulish:wght@400;600;700",
-      "primary_type": "sans-serif"
+      "primary": "ui-sans-serif, system-ui, -apple-system, \"SF Pro Text\", \"SF Pro Display\", \"Segoe UI\", \"Roboto\", \"Noto Sans\", \"Helvetica Neue\", Arial, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\"",
+      "primary_type": "sans-serif",
+      "sans": "ui-sans-serif, system-ui, -apple-system, \"SF Pro Text\", \"SF Pro Display\", \"Segoe UI\", \"Roboto\", \"Noto Sans\", \"Helvetica Neue\", Arial, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\"",
+      "sans_type": "sans-serif",
+      "serif": "\"Playfair Display\", \"Times New Roman\", serif",
+      "serif_type": "serif",
+      "display": "\"Playfair Display\", \"Times New Roman\", serif",
+      "display_type": "serif",
+      "ui": "\"DM Sans\", \"Helvetica Neue\", Arial, sans-serif",
+      "ui_type": "sans-serif",
+      "lora": "\"Lora\", \"Times New Roman\", serif",
+      "lora_type": "serif"
     },
     "font_size": {
       "base": "16",

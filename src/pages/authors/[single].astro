@@ -19,7 +19,18 @@ export async function getStaticPaths() {
 }
 
 const { author } = Astro.props;
-const { title, meta_title, description, image, social } = author.data;
+const {
+  title,
+  meta_title,
+  description,
+  image,
+  social,
+  og_image,
+  twitter_image,
+  image_alt,
+  canonical,
+  noindex,
+} = author.data;
 const { Content } = await render(author);
 
 // Author Posts
@@ -51,6 +62,12 @@ const imageSrc = image || placeholderImage();
   meta_title={meta_title}
   description={description}
   image={image?.src} 
+  og_image={og_image}
+  twitter_image={twitter_image}
+  image_alt={image_alt}
+  canonical={canonical}
+  noindex={noindex}
+  ogType="profile"
 >
   <section class="section">
     <div class="container">

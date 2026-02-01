@@ -34,7 +34,7 @@ const highlightPost = currentPosts[0];
 const gridPosts = currentPosts.slice(1);
 ---
 
-<Base title={"All Posts"}>
+<Base>
   <!-- Lively Hero Section -->
   <section class="section pb-0">
     <div class="container">
@@ -115,7 +115,7 @@ const gridPosts = currentPosts.slice(1);
                 {highlightPost.data.title}
               </h2>
               
-              <p class="text-text line-clamp-3 md:line-clamp-4 mb-6 leading-relaxed">
+              <p class="text-text line-clamp-3 md:line-clamp-4 mb-6 leading-relaxed font-lora">
                 {highlightPost.data.summary || plainify(highlightPost.body).slice(0, 150)}...
               </p>
 
