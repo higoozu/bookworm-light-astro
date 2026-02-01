@@ -537,7 +537,6 @@ const { pathname } = Astro.url;
                 if (window.matchMedia('(prefers-color-scheme: dark)').matches) html.classList.add('dark');
                 else html.classList.remove('dark');
             }
-            window.__setThemeColor?.(theme);
         }
 
         function updateThemeUI(theme) {
@@ -560,5 +559,6 @@ const { pathname } = Astro.url;
             else if (theme === 'dark') iconDark?.classList.remove('hidden');
             else iconSystem?.classList.remove('hidden');
         }
+
     }
 </script>
