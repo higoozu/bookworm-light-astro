@@ -49,9 +49,8 @@ const currentPosts = sortedPosts.slice(indexOfFirstPost, indexOfLastPost);
 
 <Base title={`Blog - Page ${currentPage}`}>
   <section class="section">
-    <div class="container text-center mb-10">
-      <h1 class="h2 font-serif italic">All Stories</h1>
-      <p class="text-text opacity-60 uppercase tracking-widest text-sm">Page {currentPage} of {totalPages}</p>
+    <div class="container">
+      <h1 class="page-heading">All Stories</h1>
     </div>
     <div class="container">
       <Posts posts={currentPosts} className="mb-16" />

@@ -48,7 +48,7 @@ const selectionPosts = sortedPosts
 
         <h1
           set:html={markdownify(title)}
-          class="h1 font-serif italic font-bold text-4xl md:text-6xl text-text-dark dark:text-text-light mb-10 leading-[1.1]"
+          class="font-display italic font-bold text-4xl md:text-6xl text-text-dark dark:text-text-light mb-10 leading-[1.1]"
         />
 
         <div class="flex flex-col sm:flex-row items-center justify-center gap-6 text-sm font-medium text-text/80">
@@ -114,7 +114,7 @@ const selectionPosts = sortedPosts
 
       <!-- Content -->
       <div class="max-w-180 mx-auto">
-        <div class="content prose-headings:font-ui prose-headings:font-bold prose-p:leading-8 prose-p:text-text-dark/90 dark:prose-p:text-text-light/90">
+        <div class="content">
           <Content />
         </div>
 

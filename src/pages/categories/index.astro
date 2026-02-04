@@ -48,11 +48,11 @@ const categoryItems = categories.map((category) => {
 <Base>
   <section class="section">
     <div class="container">
-      <h1 class="h2 page-heading text-center mb-16">Categories</h1>
-      
-      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <h1 class="page-heading">Categories</h1>
+      <div class="row g-2">
         {
           categoryItems.map((item) => (
+            <div class="col-6 md:col-4 lg:col-3">
             <a 
               href={`/categories/${item.name}/`} 
               class="relative group aspect-square overflow-hidden block rounded-xl shadow-sm transition-all duration-300"
@@ -74,10 +74,10 @@ const categoryItems = categories.map((category) => {
                   {item.count} {item.count > 1 ? 'articles' : 'article'}
                 </span>
               </div>
-            </a>
+            </a></div>
           ))
         }
-      </div>
+      </div></div>
     </div>
   </section>
 </Base>

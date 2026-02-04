@@ -89,7 +89,7 @@ const buildTextSvg = ({
   const titleY = withImage ? 240 : 220;
 
   const serif =
-    themeVars["font-serif"] || themeVars["font-display"] || "ui-serif, serif";
+    themeVars["font-display"] || themeVars["font-serif"] || "ui-serif, serif";
   const sans =
     themeVars["font-sans"] ||
     themeVars["font-primary"] ||

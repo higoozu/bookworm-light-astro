@@ -10,7 +10,7 @@
 
 /* page heading */
 .page-heading {
-  @apply mb-20 text-center font-bold leading-10 text-text-dark dark:text-text-light font-display;
+  @apply mb-20 text-center font-bold leading-10 text-text-dark dark:text-text-light;
   transition: color 0.3s ease;
 }
 
@@ -167,7 +167,7 @@
   @apply prose max-w-none;
   /* Headings: Serif, Bold */
   @apply prose-headings:font-ui prose-headings:font-bold prose-headings:text-text-dark dark:prose-headings:text-text-light;
-  @apply prose-h1:mb-6 prose-h1:text-4xl md:prose-h1:text-5xl prose-h1:font-display;
+  @apply prose-h1:mb-6 prose-h1:text-4xl md:prose-h1:text-5xl prose-h1:font-ui;
   @apply prose-h2:mt-12 prose-h2:mb-6 prose-h2:text-3xl md:prose-h2:text-4xl prose-h2:font-ui;
   @apply prose-h3:mt-8 prose-h3:mb-4 prose-h3:text-2xl md:prose-h3:text-3xl prose-h3:font-ui;
   

@@ -74,7 +74,7 @@ const { pathname } = Astro.url;
               ) : (
                 <a
                   href={menu.url}
-                  class={`block py-2 text-lg font-medium transition-colors ${
+                  class={`block py-2 text-lg transition-colors ${
                     pathname === menu.url || pathname === `${menu.url}/`
                       ? "text-primary"
                       : "text-text-dark dark:text-text-light hover:text-primary dark:hover:text-primary"
