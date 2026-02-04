@@ -2,8 +2,8 @@
   "site": {
     "title": "Wanderlust Chronicles",
     "site_name": "Wanderlust Chronicles",
-    "language": "zh-CN",
-    "locale": "zh_CN",
+    "language": "en",
+    "locale": "en",
     "base_url": "https://bookworm-light-astro.vercel.app",
     "base_path": "/",
     "trailing_slash": true,
@@ -32,8 +32,8 @@
     "title_template": "%s · Wanderlust Chronicles",
     "default_robots": "index,follow",
     "sitemap_path": "/sitemap-index.xml",
-    "theme_color_light": "#FAFAFA",
-    "theme_color_dark": "#1C1C1E",
+    "theme_color_light": "#F7F7F7",
+    "theme_color_dark": "#051F18",
     "twitter_handle": "",
     "twitter_creator": "",
     "resource_hints": {

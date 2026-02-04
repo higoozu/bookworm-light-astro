@@ -247,10 +247,10 @@ const jsonLdData = structuredData
     <!-- <script is:inline>
       (function () {
         const light = {JSON.stringify(
-          config.metadata.theme_color_light || "#FAFAFA"
+          config.metadata.theme_color_light || "#F7F7F7"
         )};
         const dark = {JSON.stringify(
-          config.metadata.theme_color_dark || "#1C1C1E"
+          config.metadata.theme_color_dark || "#051F18"
         )};
         const head = document.head;
         if (!head) return;
@@ -306,12 +306,12 @@ const jsonLdData = structuredData
     <meta
       name="theme-color"
       media="(prefers-color-scheme: light)"
-      content={config.metadata.theme_color_light || "#FAFAFA"}
+      content={config.metadata.theme_color_light || "#F7F7F7"}
     />
     <meta
       name="theme-color"
       media="(prefers-color-scheme: dark)"
-      content={config.metadata.theme_color_dark || "#1C1C1E"}
+      content={config.metadata.theme_color_dark || "#051F18"}
     />
     <!-- icons -->
     <link rel="icon" href={config.site.favicon} />
@@ -320,7 +320,7 @@ const jsonLdData = structuredData
     <link rel="apple-touch-icon" sizes="180x180" href={config.site.apple_touch_icon} />
     <link rel="manifest" href={config.site.manifest} />
     {config.site.mask_icon && (
-      <link rel="mask-icon" href={config.site.mask_icon} color={config.metadata.theme_color_dark || "#111111"} />
+      <link rel="mask-icon" href={config.site.mask_icon} color={config.metadata.theme_color_dark || "#1B8A62"} />
     )}
 
     <!-- SEO meta -->

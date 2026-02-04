@@ -3,13 +3,13 @@
 }
 
 .btn-primary {
-  @apply bg-primary text-white dark:text-white;
-  @apply border-primary;
-  @apply hover:opacity-90 transition-opacity;
+  @apply bg-button text-white dark:text-white;
+  @apply border-button;
+  @apply hover:bg-button-hover hover:border-button-hover transition-colors;
 }
 
 .btn-outline-primary {
-  @apply border-primary bg-transparent text-primary dark:text-primary;
-  @apply hover:bg-primary hover:text-white dark:hover:text-white;
+  @apply border-button bg-transparent text-button dark:text-button;
+  @apply hover:bg-button hover:text-white dark:hover:text-white hover:border-button;
   @apply transition-all duration-200;
 }

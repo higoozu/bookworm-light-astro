@@ -2,11 +2,12 @@
 import { FaHeart } from "react-icons/fa6";
 import config from "@/config/config.json";
 
-const { postId, className } = Astro.props;
+const { postId, articlePath, className } = Astro.props;
 const { api_url, turnstile_site_key } = config.comments;
+const resolvedArticlePath = articlePath || Astro.url.pathname || postId;
 ---
 
-<div class={className} data-comment-root data-article-id={postId} data-api-base={api_url}>
+<div class={className} data-comment-root data-article-id={resolvedArticlePath} data-api-base={api_url}>
   <!-- Like Button (Part of the comment system interaction) -->
   <div class="flex items-center justify-between gap-2 py-6 border-t border-border dark:border-border mt-6">
     <button
@@ -25,7 +26,12 @@ const { api_url, turnstile_site_key } = config.comments;
   <section id="comments" class="mt-12 pt-8">
     <div class="flex items-center gap-4 mb-8">
       <h3 class="h3 font-ui text-2xl text-text-dark dark:text-text-light">Leave a comment</h3>
-      <span class="text-xs font-bold bg-primary/10 text-primary px-2 py-0.5 rounded-full" data-comment-count>0</span>
+      <span
+        class="text-xs font-bold bg-primary/10 text-primary px-2 py-0.5 rounded-full comment-count"
+        data-comment-count
+      >
+        0
+      </span>
     </div>
 
     <form data-comment-form class="mb-12">
@@ -52,6 +58,15 @@ const { api_url, turnstile_site_key } = config.comments;
         required
         class="w-full px-5 py-3 bg-white dark:bg-light border border-border rounded-xl focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-text/50 mb-6 resize-y"
       ></textarea>
+
+      <label class="flex items-center gap-3 text-sm text-text/70 mb-6 select-none">
+        <input
+          type="checkbox"
+          name="rememberAuthor"
+          class="h-4 w-4 rounded border-border text-primary focus:ring-primary"
+        />
+        Remember my name and email on this device
+      </label>
 
       <!-- Turnstile Placeholder -->
       {turnstile_site_key && (

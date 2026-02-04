@@ -182,7 +182,7 @@
 /* Blockquotes: Distinctive */
 .content blockquote {
   @apply border-l-[4px] border-primary;
-  @apply py-4 px-8 my-10 font-lora italic;
+  @apply py-4 px-8 my-10;
 }
 
 /* Remove default quotes from blockquote */
@@ -200,9 +200,9 @@
 }
 
 /* Image styling in content */
-.content img {
+/* .content img {
   @apply my-10;
-}
+} */
 
 /* Code and pre styling */
 .content pre {
@@ -368,15 +368,11 @@
 }
 
 .notice.tip {
-  color: #40D294;
-  border-color: #40D294;
-  background-color: rgba(64, 210, 148, 0.1);
+  @apply text-primary border-primary bg-primary/10;
 }
 
 .notice.info {
-  color: #E3A72C;
-  border-color: #E3A72C;
-  background-color: rgba(227, 167, 44, 0.1);
+  @apply text-accent border-accent bg-accent/10;
 }
 
 .notice.warning {
@@ -391,17 +387,9 @@
   background-color: rgba(91, 163, 255, 0.1);
 }
 
-.dark .notice.tip {
-  color: #5ADBA8;
-  border-color: #5ADBA8;
-  background-color: rgba(90, 219, 168, 0.1);
-}
 
-.dark .notice.info {
-  color: #F4B860;
-  border-color: #F4B860;
-  background-color: rgba(244, 184, 96, 0.1);
-}
+
+
 
 .dark .notice.warning {
   color: #FF6B63;

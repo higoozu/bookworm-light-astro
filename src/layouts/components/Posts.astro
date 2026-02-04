@@ -42,14 +42,14 @@ const { className, posts, showSummary = true, showAuthor = true } = Astro.props;
             </a>
           </div>
         )}
-        <ul class="mb-3 flex items-center flex-nowrap whitespace-nowrap overflow-hidden text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-text/70">
+        <ul class="mb-3 flex items-center flex-nowrap whitespace-nowrap overflow-hidden text-xs font-bold uppercase text-text/70">
           {showAuthor && (
             <li class="flex items-center shrink-0">
               <a href={`/authors/${slugify(post.data.authors[0])}/`} class="hover:text-primary transition-colors">
                 {post.data.authors[0]}
               </a>
               {post.data.authors.length > 1 && (
-                <span class="ml-1 text-text/40 lowercase font-medium shrink-0">et al.</span>
+                <span class="ml-1 text-text/40 lowercase font-medium shrink-0">+</span>
               )}
             </li>
           )}

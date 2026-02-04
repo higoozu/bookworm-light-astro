@@ -6,7 +6,7 @@ import Pagination from "@/layouts/components/Pagination.astro";
 import { getSinglePage } from "@/lib/contentParser.astro";
 import { getAllTaxonomy, getTaxonomy } from "@/lib/taxonomyParser.astro";
 import { sortByDate } from "@/lib/utils/sortFunctions";
-import { humanize, slugify, plainify } from "@/lib/utils/textConverter";
+import { humanize, summarize } from "@/lib/utils/textConverter";
 import { Picture } from "astro:assets";
 import dateFormat from "@/lib/utils/dateFormat";
 
@@ -46,7 +46,7 @@ const gridPosts = currentPosts.slice(1);
           Wanderlust Chronicles
         </h1>
         <p class="text-lg md:text-xl text-text opacity-80 max-w-2xl mx-auto mb-10 relative z-10">
-          Discover hidden gems, travel tips, and stories from around the globe. Where will your next adventure begin?
+          Discover hidden gems, travel tips, and stories from around the globe.
         </p>
 
         <!-- Interactive Category Pills -->
@@ -115,8 +115,8 @@ const gridPosts = currentPosts.slice(1);
                 {highlightPost.data.title}
               </h2>
               
-              <p class="text-text line-clamp-3 md:line-clamp-4 mb-6 leading-relaxed font-lora">
-                {highlightPost.data.summary || plainify(highlightPost.body).slice(0, 150)}...
+              <p class="text-text line-clamp-3 md:line-clamp-4 mb-6 leading-relaxed">
+                {highlightPost.data.summary ?? summarize(highlightPost.body ?? "", 150)}
               </p>
 
               <span class="inline-flex items-center text-sm font-bold uppercase tracking-widest text-text-dark dark:text-text-light group-hover:underline decoration-2 underline-offset-4">

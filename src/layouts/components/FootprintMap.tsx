@@ -50,7 +50,7 @@ const FootprintMap: React.FC<FootprintMapProps> = ({ postsData }) => {
   const countryStyle = (feature: any) => {
     const isVisited = config.visitedCountries.includes(feature.id);
     return {
-      fillColor: isVisited ? "#2EC4B6" : "transparent",
+      fillColor: isVisited ? "#1B8A62" : "transparent",
       weight: 1,
       opacity: 1,
       color: isDarkMode ? "#444" : "#ccc",
@@ -70,18 +70,18 @@ const FootprintMap: React.FC<FootprintMapProps> = ({ postsData }) => {
       <style dangerouslySetInnerHTML={{ __html: `
         .dark .leaflet-popup-content-wrapper,
         .dark .leaflet-popup-tip {
-          background-color: #18181b !important;
+          background-color: #051F18 !important;
           color: #f4f4f5 !important;
-          border: 1px solid #3f3f46;
+          border: 1px solid #A0A0A0;
         }
         .dark .leaflet-popup-content h3 {
           color: #ffffff !important;
         }
         .dark .leaflet-popup-content p {
-          color: #d4d4d8 !important;
+          color: #D8D8D8 !important;
         }
         .dark .leaflet-container a.leaflet-popup-close-button {
-          color: #a1a1aa !important;
+          color: #A0A0A0 !important;
         }
       `}} />
 
@@ -99,10 +99,10 @@ const FootprintMap: React.FC<FootprintMapProps> = ({ postsData }) => {
 
       <MapContainer
         center={[20, 0]}
-        zoom={2}
+        zoom={3}
         scrollWheelZoom={true}
         className="h-full w-full outline-none z-0"
-        minZoom={2}
+        minZoom={2.8}
         maxBounds={[[-90, -180], [90, 180]]}
       >
         <TileLayer

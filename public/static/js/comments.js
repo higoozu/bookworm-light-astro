@@ -3,9 +3,9 @@ const initCommentSystem = () => {
   if (!container || container.dataset.loaded) return;
   container.dataset.loaded = "true";
 
-  const articleId = container.getAttribute("data-article-id") || window.location.pathname;
+  const articlePath = window.location.pathname;
   const apiBase = container.getAttribute("data-api-base") || "";
-  const likeKey = `comment-like-${articleId}`;
+  const likeKey = `comment-like-${articlePath}`;
 
   const createEl = (tag, cls) => {
     const el = document.createElement(tag);
@@ -94,23 +94,16 @@ const initCommentSystem = () => {
     parent.appendChild(list);
   };
 
-  const countComments = (nodes) => {
-    let count = 0;
-    nodes.forEach(node => {
-      count++;
-      if (node.children) count += countComments(node.children);
-    });
-    return count;
-  };
-
   const loadComments = async () => {
     try {
-      const res = await fetch(`${apiBase}/articles/${encodeURIComponent(articleId)}/comments`);
+      const res = await fetch(`${apiBase}/articles/${encodeURIComponent(articlePath)}/comments`);
       if (!res.ok) {
          // If 404, it might just mean no comments yet or article not initialized in DB
          if (res.status === 404) {
              const target = container.querySelector(".comment-tree");
              if (target) target.innerHTML = '<div class="comment-empty">No comments yet.</div>';
+             const countEl = container.querySelector("[data-comment-count]");
+             if (countEl) countEl.textContent = "0";
              return;
          }
          throw new Error("Failed to load comments");
@@ -124,10 +117,11 @@ const initCommentSystem = () => {
         renderTree(tree, target);
       }
 
-      // Update total count
-      const totalCount = countComments(tree);
+      // Update total count (use API-provided count)
       const countEl = container.querySelector("[data-comment-count]");
-      if (countEl) countEl.textContent = totalCount;
+      if (countEl && typeof data.count === "number") {
+        countEl.textContent = String(data.count);
+      }
 
     } catch (e) {
       console.warn("Comments load error:", e);
@@ -142,7 +136,7 @@ const initCommentSystem = () => {
 
     // Fetch initial like count
     try {
-        const res = await fetch(`${apiBase}/articles/${encodeURIComponent(articleId)}/likes`);
+        const res = await fetch(`${apiBase}/articles/${encodeURIComponent(articlePath)}/likes`);
         if (res.ok) {
             const data = await res.json();
             if (likeCount) likeCount.textContent = data.likes ?? "0";
@@ -170,7 +164,7 @@ const initCommentSystem = () => {
       likeBtn.classList.add("is-liked");
 
       try {
-        const res = await fetch(`${apiBase}/articles/${encodeURIComponent(articleId)}/likes`, {
+        const res = await fetch(`${apiBase}/articles/${encodeURIComponent(articlePath)}/likes`, {
             method: "POST",
             headers: { 
                 "Content-Type": "application/json"
@@ -200,6 +194,10 @@ const initCommentSystem = () => {
     if (!form) return;
     const submitBtn = form.querySelector("button[type='submit']");
     const originalBtnText = submitBtn ? submitBtn.textContent : "Submit";
+    const authorNameInput = form.querySelector("input[name='authorName']");
+    const authorEmailInput = form.querySelector("input[name='authorEmail']");
+    const rememberInput = form.querySelector("input[name='rememberAuthor']");
+    const authorStorageKey = "comment-author-info";
     
     // Check if Turnstile is enabled in config (placeholder exists)
     const turnstileContainer = form.querySelector(".cf-turnstile");
@@ -226,6 +224,47 @@ const initCommentSystem = () => {
       }
       return input;
     };
+
+    const applyRememberedAuthor = () => {
+      if (!authorNameInput || !authorEmailInput || !rememberInput) return;
+      try {
+        const raw = localStorage.getItem(authorStorageKey);
+        if (!raw) return;
+        const data = JSON.parse(raw);
+        if (typeof data?.name === "string") authorNameInput.value = data.name;
+        if (typeof data?.email === "string") authorEmailInput.value = data.email;
+        rememberInput.checked = true;
+      } catch (e) {
+        localStorage.removeItem(authorStorageKey);
+      }
+    };
+
+    const persistRememberedAuthor = () => {
+      if (!authorNameInput || !authorEmailInput || !rememberInput) return;
+      if (!rememberInput.checked) {
+        localStorage.removeItem(authorStorageKey);
+        return;
+      }
+      const payload = {
+        name: authorNameInput.value || "",
+        email: authorEmailInput.value || ""
+      };
+      try {
+        localStorage.setItem(authorStorageKey, JSON.stringify(payload));
+      } catch (e) {
+        // ignore storage failures (quota/private mode)
+      }
+    };
+
+    if (rememberInput) {
+      rememberInput.addEventListener("change", () => {
+        if (!rememberInput.checked) {
+          localStorage.removeItem(authorStorageKey);
+        }
+      });
+    }
+
+    applyRememberedAuthor();
 
     container.addEventListener("click", (e) => {
       const target = e.target;
@@ -257,16 +296,12 @@ const initCommentSystem = () => {
       const formData = new FormData(form);
       const payload = Object.fromEntries(formData.entries());
       
-      // Convert ID strings to integers for backend validation
-      if (payload.parentId) {
-          payload.parentId = parseInt(payload.parentId, 10);
-      } else {
+      // Keep IDs as strings (backend now uses base64-style IDs)
+      if (!payload.parentId) {
           payload.parentId = null;
       }
       
-      if (payload.replyToId) {
-          payload.replyToId = parseInt(payload.replyToId, 10);
-      } else {
+      if (!payload.replyToId) {
           payload.replyToId = null;
       }
       const fingerprint = navigator.userAgent + ":" + navigator.language;
@@ -283,7 +318,7 @@ const initCommentSystem = () => {
       }
 
       try {
-        const res = await fetch(`${apiBase}/articles/${encodeURIComponent(articleId)}/comments`, {
+        const res = await fetch(`${apiBase}/articles/${encodeURIComponent(articlePath)}/comments`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
@@ -311,8 +346,10 @@ const initCommentSystem = () => {
         if (submitBtn) {
             submitBtn.textContent = successMsg;
         }
-        
+
+        persistRememberedAuthor();
         form.reset();
+        applyRememberedAuthor();
         replyToInput().value = "";
         parentIdInput().value = "";
         const content = form.querySelector("textarea[name='content']");

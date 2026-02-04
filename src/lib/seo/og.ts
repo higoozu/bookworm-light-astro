@@ -130,8 +130,8 @@ const buildTextSvg = ({
 };
 
 const buildSolidBackground = () => {
-  const primary = theme.colors?.default?.theme_color?.primary || "#1C1C1E";
-  const accent = theme.colors?.default?.theme_color?.accent || "#FF9F1C";
+  const primary = theme.colors?.default?.theme_color?.primary || "#1B8A62";
+  const accent = theme.colors?.default?.theme_color?.accent || "#D65A00";
   return sharp({
     create: {
       width: OG_WIDTH,
