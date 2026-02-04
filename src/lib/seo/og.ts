@@ -2,10 +2,13 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
 import config from "@/config/config.json";
-import theme from "@/config/theme.json";
 
 const OG_WIDTH = 1200;
 const OG_HEIGHT = 630;
+const THEME_CSS_PATH = path.resolve(process.cwd(), "src/styles/theme.css");
+
+type ThemeVars = Record<string, string>;
+let cachedThemeVars: ThemeVars | null = null;
 
 const clamp = (value: number, min: number, max: number) =>
   Math.min(Math.max(value, min), max);
@@ -48,14 +51,36 @@ const resolveLogoPath = async (logoPath?: string) => {
   }
 };
 
+const loadThemeVars = async (): Promise<ThemeVars> => {
+  if (cachedThemeVars) return cachedThemeVars;
+  try {
+    const css = await fs.readFile(THEME_CSS_PATH, "utf8");
+    const themeMatch = css.match(/@theme\s*{([\s\S]*?)}/);
+    const block = themeMatch ? themeMatch[1] : css;
+    const vars: ThemeVars = {};
+    const varRegex = /--([a-zA-Z0-9-]+)\s*:\s*([^;]+);/g;
+    let match: RegExpExecArray | null;
+    while ((match = varRegex.exec(block))) {
+      vars[match[1]] = match[2].trim();
+    }
+    cachedThemeVars = vars;
+    return vars;
+  } catch {
+    cachedThemeVars = {};
+    return cachedThemeVars;
+  }
+};
+
 const buildTextSvg = ({
   title,
   subtitle,
   withImage,
+  themeVars,
 }: {
   title: string;
   subtitle?: string;
   withImage: boolean;
+  themeVars: ThemeVars;
 }) => {
   const titleLines = wrapText(title, withImage ? 28 : 22, 3);
   const titleSize = clamp(84 - (titleLines.length - 1) * 10, 52, 84);
@@ -63,8 +88,12 @@ const buildTextSvg = ({
   const titleX = 80;
   const titleY = withImage ? 240 : 220;
 
-  const serif = theme.fonts?.font_family?.serif || "ui-serif, serif";
-  const sans = theme.fonts?.font_family?.sans || theme.fonts?.font_family?.primary;
+  const serif =
+    themeVars["font-serif"] || themeVars["font-display"] || "ui-serif, serif";
+  const sans =
+    themeVars["font-sans"] ||
+    themeVars["font-primary"] ||
+    "ui-sans-serif, system-ui, sans-serif";
 
   const subtitleText = subtitle ? wrapText(subtitle, 46, 2) : [];
   const subtitleSize = 30;
@@ -129,9 +158,9 @@ const buildTextSvg = ({
   `;
 };
 
-const buildSolidBackground = () => {
-  const primary = theme.colors?.default?.theme_color?.primary || "#1B8A62";
-  const accent = theme.colors?.default?.theme_color?.accent || "#D65A00";
+const buildSolidBackground = (themeVars: ThemeVars) => {
+  const primary = themeVars["color-primary"] || "#1B8A62";
+  const accent = themeVars["color-accent"] || "#D65A00";
   return sharp({
     create: {
       width: OG_WIDTH,
@@ -171,6 +200,7 @@ export const renderOgImage = async ({
   backgroundImagePath?: string;
   logoPath?: string;
 }) => {
+  const themeVars = await loadThemeVars();
   let baseImage: sharp.Sharp;
   let hasBackgroundImage = false;
 
@@ -182,16 +212,17 @@ export const renderOgImage = async ({
         .modulate({ brightness: 0.9 });
       hasBackgroundImage = true;
     } catch {
-      baseImage = buildSolidBackground();
+      baseImage = buildSolidBackground(themeVars);
     }
   } else {
-    baseImage = buildSolidBackground();
+    baseImage = buildSolidBackground(themeVars);
   }
 
   const textSvg = buildTextSvg({
     title,
     subtitle,
     withImage: hasBackgroundImage,
+    themeVars,
   });
 
   const layers: sharp.OverlayOptions[] = [

@@ -1,0 +1,62 @@
+@theme {
+  --color-primary: #1b8a62;
+  --color-primary-hover: #2db881;
+  --color-accent: #d65a00;
+  --color-accent-hover: #ff9933;
+  --color-button: #f07d1a;
+  --color-button-hover: #ff9933;
+  --color-body: #f7f7f7;
+  --color-border: #e5e5e7;
+  --color-light: #fff0e6;
+  --color-dark: #0d5d42;
+  --color-section-bg: #e8f7f1;
+  --color-badge-bg: #e8f7f1;
+  --color-text: #1f1f1f;
+  --color-text-dark: #0d5d42;
+  --color-text-light: #555555;
+  --color-badge-text: #1b8a62;
+  --font-primary: ui-sans-serif, system-ui, -apple-system, "SF Pro Text",
+    "SF Pro Display", "Segoe UI", "Roboto", "Noto Sans", "Helvetica Neue",
+    Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "SF Pro Text",
+    "SF Pro Display", "Segoe UI", "Roboto", "Noto Sans", "Helvetica Neue",
+    Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+  --font-display: "Libre Baskerville", "Times New Roman", serif;
+  --font-serif: "Libre Baskerville", "Times New Roman", serif;
+  --font-ui: "DM Sans", "Helvetica Neue", Arial, sans-serif;
+  --text-h1: 2.985984rem;
+  --text-h1-sm: 2.3887872rem;
+  --text-h2: 2.48832rem;
+  --text-h2-sm: 1.990656rem;
+  --text-h3: 2.0736rem;
+  --text-h3-sm: 1.65888rem;
+  --text-h4: 1.728rem;
+  --text-h4-sm: 1.3824rem;
+  --text-h5: 1.44rem;
+  --text-h5-sm: 1.152rem;
+  --text-h6: 1.2rem;
+  --text-h6-sm: 0.96rem;
+  --text-base: 16px;
+  --text-base-sm: 12.8px;
+}
+
+@layer base {
+  .dark {
+    --color-primary: #4fe8c1;
+    --color-primary-hover: #80f0d5;
+    --color-accent: #ffb84d;
+    --color-accent-hover: #ffd485;
+    --color-button: #ffb84d;
+    --color-button-hover: #ffd485;
+    --color-body: #051f18;
+    --color-border: #a0a0a0;
+    --color-light: #3d1500;
+    --color-dark: #f5f5f5;
+    --color-section-bg: #0d2e24;
+    --color-badge-bg: #3d1500;
+    --color-text: #d8d8d8;
+    --color-text-dark: #f5f5f5;
+    --color-text-light: #a0a0a0;
+    --color-badge-text: #ffb84d;
+  }
+}
